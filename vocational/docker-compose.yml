@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # Container Website (PHP + Apache)
+  web:
+    build: .
+    container_name: vocational-web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/apache/vhost.conf:/etc/apache2/sites-available/000-default.conf
+    networks:
+      - vocational-network
+    depends_on:
+      - db
+
+  # Container Database (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: vocational-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - vocational-network
+
+  # Container phpMyAdmin
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: vocational-pma
+    environment:
+      PMA_HOST: db
+      PMA_ARBITRARY: 1
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+    ports:
+      - "8081:80"
+    networks:
+      - vocational-network
+    depends_on:
+      - db
+
+networks:
+  vocational-network:
+    driver: bridge
+
+volumes:
+  db_data:
