@@ -10,6 +10,14 @@ Sebelum menjalankan perintah apa pun, pastikan perangkat Anda memenuhi syarat be
 * [**Mode WSL 2**](https://medium.com/@janinehuang/how-to-upgrade-from-wsl1-to-wsl2-and-wslg-d9bb5f22ccdd): Pastikan Docker menggunakan *WSL 2 Engine* untuk performa terbaik di Windows.
 * [**Bebaskan Port**](https://sentry.io/answers/kill-process-using-port-in-windows/): Pastikan aplikasi seperti XAMPP (Apache & MySQL) atau aplikasi lain yang menggunakan port `8080` dan `8081` sudah **Nonaktif** (Stop) untuk menghindari bentrokan (*port collision*).
 
+### 1.1. Persiapan Lingkungan Menggunakan Video
+
+| Penjelasan | Video |
+| --- | --- |
+| Persiapan lingkungan docker pada ekosistem windows, menggunakan Docker, Docker Compose, dan WSL 2. | [Link](https://drive.google.com/file/d/1BTZ9gKbQWn-BQef50ePOAj4gj-J7jSMw/view?usp=sharing) |
+| Setup GitHub repository untuk version control dan collaboration | [Link](https://drive.google.com/file/d/1GKs3OIT-GJwWVogHOdU8z0urAmprO_sS/view?usp=sharing) |
+| Setup Service Vocational menggunakan Docker Compose dengan GUI (Docker Desktop) | [Link](https://drive.google.com/file/d/1YSoDktAxjoclfIxxmfcJ20cnLkeMSpOn/view?usp=sharing) |
+
 ## 2. Instruksi Perintah (Command Line)
 
 Gunakan terminal (CMD, PowerShell, atau Git Bash) tepat di dalam folder `vocational`, lalu gunakan perintah berikut:
