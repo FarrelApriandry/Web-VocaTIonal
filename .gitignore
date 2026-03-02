@@ -1,0 +1,32 @@
+### --- VocaTIonal Git Ignore --- ###
+
+# 1. Security & Environment
+.env
+.env.local
+.env.dev
+.env.prod
+*.log
+
+# 2. Dependencies
+vocational/vendor/
+node_modules/
+
+# 3. Docker Specific
+.docker/data/
+docker/mysql/data/
+*.db
+
+# 4. OS Specific
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 5. Public Assets & Uploads
+vocational/public/assets/uploads/*
+# Tapi kita simpan folder-nya, abaikan isinya saja
+!vocational/public/assets/uploads/.gitkeep
+
+# 6. Documentation Assets
+documentation/*.pdf
+documentation/*.docx
