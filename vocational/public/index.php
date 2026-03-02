@@ -143,15 +143,19 @@
                     <ul class="space-y-4 md:space-y-6 text-xs md:text-sm text-gray-600 font-medium leading-relaxed">
                         <li class="flex gap-4">
                             <span class="font-bold text-blue-900">01</span>
-                            <p><span class="font-bold text-gray-900">Bersihkan Identitas:</span> Hindari menyebutkan nama atau NIM.</p>
+                            <p><span class="font-bold text-gray-900">Bersihkan Identitas:</span> Hindari menyebutkan nama atau NIM dalam subjek dan detail laporan.</p>
                         </li>
                         <li class="flex gap-4">
                             <span class="font-bold text-blue-900">02</span>
-                            <p><span class="font-bold text-gray-900">Sensor Bukti:</span> Tutupi informasi pribadi pada foto.</p>
+                            <p><span class="font-bold text-gray-900">Sensor Bukti:</span> Pastikan foto bukti tidak mengandung informasi pribadi yang tidak relevan.</p>
                         </li>
                         <li class="flex gap-4">
                             <span class="font-bold text-blue-900">03</span>
-                            <p><span class="font-bold text-gray-900">Metadata Strip:</span> Sistem menghapus data lokasi (EXIF) otomatis.</p>
+                            <p><span class="font-bold text-gray-900">Metadata Strip:</span> Sistem otomatis menghapus data lokasi (EXIF) pada setiap gambar yang diunggah.</p>
+                        </li>
+                        <li class="flex gap-4">
+                            <span class="font-bold text-blue-900">04</span>
+                            <p><span class="font-bold text-gray-900">Session Purge:</span> Tutup browser setelah melapor untuk menghapus jejak sesi pada perangkat.</p>
                         </li>
                     </ul>
                 </div>
