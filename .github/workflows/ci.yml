@@ -1,0 +1,21 @@
+name: VocaTIonal CI-Lint
+
+on: [push, pull_request] # Jalan setiap kali ada push atau PR
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest # Pake server Linux gratisan GitHub
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 # Robot GitHub buat narik kode lo
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2 # Robot buat install PHP
+        with:
+          php-version: '8.2' # Sesuaikan sama versi PHP di Docker lo
+
+      - name: Check PHP Syntax (Lint)
+        run: |
+          # Cari semua file .php dan cek syntax-nya satu per satu
+          find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \;
