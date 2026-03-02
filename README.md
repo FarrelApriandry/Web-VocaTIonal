@@ -1,114 +1,89 @@
-# Software Design Document (SDD): VocaTIonal
+# 🎓 VocaTIonal: Advanced IT Student Grievance System
 
-**Project Name:** VocaTIonal - Platform Aspirasi Terintegrasi Mahasiswa Teknologi Informasi
-
-**Version:** 0.0.1
-
-**Stack:** PHP Native, MySQL
-
-**Architecture:** S5-Layered Modular System
-
-## 1. Project Overview
-
-VocaTIonal adalah platform digital yang dirancang untuk menggantikan metode pengumpulan aspirasi konvensional (seperti Google Forms) menjadi sistem ticketing yang diharapkan profesional, transparan, dan aman. Sistem ini fokus pada validasi identitas berbasis NPM dan manajemen status laporan secara real-time.
+**VocaTIonal** is a professional-grade, secure reporting platform specifically designed for Vocational IT students. It bridges the gap between students and stakeholders through a transparent yet secure grievance mechanism. Built with a **Zero-Trust** mindset, the system ensures data integrity and user anonymity while maintaining high-performance standards.
 
 ---
 
-## 2. System Architecture (S5 Model)
+## 🚀 Architectural Excellence
 
-Sistem ini dibangun menggunakan pendekatan 5 lapis (S1-S5) untuk memisahkan tanggung jawab setiap komponen dan memastikan keamanan data.
+The project follows a modular **Clean Architecture** approach, ensuring that business logic is decoupled from infrastructure.
 
-* **S5: Interface Layer (Navigasi & UI)**
-* Fungsi: Menangani tampilan (HTML/Tailwind) dan feedback ke user.
+### 1. DevSecOps & Automation (S1 Infrastructure Layer)
 
+* **Automated Linting**: Every push is scanned for PHP syntax errors to ensure code reliability.
+* **Secret Scanning**: Integrated **TruffleHog** to prevent sensitive credentials from leaking into the public repository.
+* **Docker Build Validation**: Automated testing of container builds to ensure environment consistency across development and production.
 
-* **S4: Security Layer (Middleware Configuration)**
-* Fungsi: Validasi sesi, pengecekan role, dan sanitasi input mentah.
+### 2. Database Engineering
 
+* **Version-Controlled Migrations**: A custom PHP-based migration system that allows team members to synchronize database schemas effortlessly.
+* **NPM Whitelisting**: A security layer that only allows verified student IDs to submit reports, preventing spam and unauthorized data entry.
 
-* **S3: Business Logic Layer (Internal Process)**
-* Fungsi: Inti aplikasi (CRUD Aspirasi, Upload Bukti).
+### 3. Modern Tech Stack
 
-
-* **S2: Service Layer (Validation & Utilities)**
-* Fungsi: Validasi spesifik (Format NPM) dan helper (Pagination).
-
-
-* **S1: Infrastructure Layer (Data Persistence)**
-* Fungsi: Koneksi database PDO dan Query Builder.
-
-
+* **Backend**: PHP 8.2 (Native) with a custom modular kernel [cite: 2025-12-23].
+* **Frontend**: Tailwind CSS for high-performance styling, Lucide Icons for aesthetic clarity, and Framer Motion for seamless UI transitions.
+* **Database**: MySQL 8.0.
+* **Orchestration**: Docker Compose for a "one-click" development setup.
 
 ---
 
-## 3. Module Specification (The 15 Modules)
-
-| ID | Module Name | Responsibility | Layer |
-| --- | --- | --- | --- |
-| **M1** | DB Connection | Singleton PDO instance untuk efisiensi koneksi. | S1 |
-| **M2** | NPM Validator | Cek format & Whitelist mahasiswa TI di database. | S2 |
-| **M3** | Admin Auth | Verifikasi `password_hash` untuk akses pengurus. | S2 |
-| **M4** | Session Manager | Manajemen `session_start` & `session_regenerate_id`. | S4 |
-| **M5** | Input Sanitizer | Proteksi XSS & SQL Injection (Cleaning $_POST). | S4 |
-| **M6** | Aspirasi Engine | Logika utama penyimpanan data laporan ke MySQL. | S3 |
-| **M7** | File Uploader | Validasi mime-type, size, dan move_uploaded_file. | S3 |
-| **M8** | Status Controller | Logic transisi status: Pending > Proses > Selesai. | S3 |
-| **M9** | Response Handler | Logika penyimpanan tanggapan resmi dari Admin. | S3 |
-| **M10** | Query Builder | Helper untuk mempermudah query SELECT/JOIN. | S1 |
-| **M11** | Notif Logic | Feedback UI (Toast/Alert) setelah eksekusi fungsi. | S5 |
-| **M12** | Role Guard | Middleware pengecekan hak akses tiap halaman. | S4 |
-| **M13** | Pagination Logic | Membagi data tabel aspirasi agar tidak lag. | S2 |
-| **M14** | Report Generator | Fungsi agregasi untuk statistik laporan bulanan. | S2 |
-| **M15** | Redirect & Router | Manajemen header location & query strings. | S5 |
-
----
-
-## 4. Data Design (Database Schema)
-
-### 4.1 Tabel `mhs_whitelist`
-
-Menyimpan daftar mahasiswa TI yang berhak memberikan aspirasi.
-
-* `npm` (PK, VARCHAR 15)
-* `nama` (VARCHAR 100)
-
-### 4.2 Tabel `aspirasi`
-
-Penyimpanan utama laporan.
-
-* `id_aspirasi` (PK, AUTO_INC)
-* `npm_pelapor` (FK, VARCHAR 15)
-* `judul` (VARCHAR 255)
-* `deskripsi` (TEXT)
-* `kategori` (ENUM: Akademik, Fasilitas, UKT, Lainnya)
-* `foto` (VARCHAR 255)
-* `status` (ENUM: Pending, Proses, Selesai)
-* `created_at` (TIMESTAMP)
-
-### 4.3 Tabel `tanggapan`
-
-Tanggapan resmi dari pihak advokasi.
-
-* `id_tanggapan` (PK)
-* `id_aspirasi` (FK)
-* `isi_tanggapan` (TEXT)
-* `admin_id` (FK)
-
----
-
-## 5. Security Protocols (Zero Trust Approach)
-
-1. **Input Filtering:** Semua data dari user wajib melewati modul **M5** sebelum diproses.
-2. **Access Control:** Setiap file di folder admin wajib menyertakan modul **M12** (Role Guard) di baris paling atas.
-3. **No Direct Access:** Menggunakan `.htaccess` untuk memblokir akses langsung ke folder `/includes` dan `/config`.
-4. **Prepared Statements:** Seluruh interaksi database wajib menggunakan PDO Prepared Statements (Modul **M10**).
-
----
-
-## 6. Directory Structure
+## 📂 Project Structure
 
 ```text
-/vocational
-└── Will be updated soon
+Web-VocaTIonal/
+├── .github/workflows/       # Automated DevSecOps CI/CD Pipelines
+├── vocational/              # Main Application Source
+│   ├── app/                 # Encapsulated Application Logic
+│   │   ├── Config/          # DB Connections & Auto-Migrations
+│   │   ├── Core/            # System Kernel & Env Loaders
+│   │   └── Controllers/     # Logic Orchestrators
+│   ├── docker/              # Infrastructure-as-Code (IaC)
+│   ├── public/              # Web Entry Point & Static Assets
+│   └── documentation/       # SDD & Operational Manuals
+├── docker-compose.yml       # Multi-container service definition
+└── .gitignore               # Security-driven file exclusion
 
 ```
+
+---
+
+## 🛠️ Installation & Setup
+
+Ensure you have **Docker** and **Docker Compose** installed on your machine.
+
+1. **Clone the Repository**:
+```bash
+git clone https://github.com/FarrelApriandry/Web-VocaTIonal.git
+cd Web-VocaTIonal/vocational
+```
+
+2. **Environment Configuration**:
+Duplicate the example environment file and configure your database credentials:
+```bash
+cp .env.example .env
+```
+
+3. **Boot Up Containers**:
+```bash
+docker-compose up -d --build
+```
+
+4. **Execute Database Migrations**:
+Sync your database schema automatically without manual SQL imports:
+```bash
+docker exec -it vocational-web php app/Config/Migration.php
+
+```
+
+---
+
+## 🛡️ Security Implementation (Zero Trust)
+
+This project prioritizes **Cyber Security** over mere functionality:
+
+* **Data Isolation**: All sensitive data is managed via `.env` files and never committed to version control.
+* **Principle of Least Privilege**: Docker containers are configured with restricted permissions and isolated networks.
+* **Integrity Checks**: Automated workflows verify that no "backdoors" or leaked secrets are introduced into the codebase.
+
+---
