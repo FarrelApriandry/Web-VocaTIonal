@@ -84,7 +84,7 @@ jobs:
         run: |
           echo "Starting Docker services..."
           cd vocational
-          docker-compose up -d
+          docker build -t vocational-test:latest .  
           sleep 30
           
           echo "Testing web service..."
