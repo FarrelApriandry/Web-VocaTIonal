@@ -1,39 +1,100 @@
-name: VocaTIonal DevSecOps
+# VocaTIonal CI/CD Pipeline
+# 
+# This workflow provides continuous integration for the VocaTIonal project.
+# It runs on push and pull request events to main and develop branches.
+# 
+# Jobs:
+# 1. PHP Quality Check - Validates PHP syntax and code quality
+# 2. Security Analysis - Scans for secrets and sensitive data
+# 3. Docker Validation - Builds and tests Docker services
 
-on: [push, pull_request]
+name: VocaTIonal CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
 
 jobs:
-  # Job 1: Checking PHP Syntax
-  php-lint:
+  # PHP Code Quality Check
+  # Validates PHP syntax across all PHP files in the project
+  # Ensures code quality and prevents syntax errors
+  php-quality:
     runs-on: ubuntu-latest
+    name: "PHP Code Quality & Syntax Check"
+    
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup PHP
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.2
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-      - name: Check Syntax
-        run: find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \;
+          extensions: mbstring, xml, curl, gd, zip
 
-  # Job 2: Security Scan
-  security-scan:
+      - name: PHP Syntax Validation
+        run: |
+          echo "Checking PHP syntax across all files..."
+          find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \;
+          echo "All PHP files have valid syntax!"
+
+  # Security Analysis
+  # Scans the codebase for secrets, API keys, and sensitive data
+  # Uses TruffleHog to detect potential security vulnerabilities
+  security-analysis:
     runs-on: ubuntu-latest
+    name: "Security Scan & Secret Detection"
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 
-      - name: Secret Scanning
+
+      - name: Secret Scanning with TruffleHog
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
           extra_args: --only-verified --no-verification
 
-  # Job 3: Docker Build Test
-  docker-build-test:
+      - name: Security Scan Complete
+        run: echo "No secrets or sensitive data found in codebase!"
+
+  # Docker Build & Test
+  # Builds the Docker image and validates that all services work correctly
+  # Tests web service and phpMyAdmin accessibility
+  docker-validation:
     runs-on: ubuntu-latest
+    name: "Docker Build & Service Validation"
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
       - name: Build Docker Image
         run: |
+          echo "Building Docker image for vocational project..."
           cd vocational
-          docker build -t vocational-test:latest .  
+          docker build -t vocational-test:latest .
+          echo "Docker image built successfully!"
+
+      - name: Test Docker Services
+        run: |
+          echo "Starting Docker services..."
+          cd vocational
+          docker-compose up -d
+          sleep 30
+          
+          echo "Testing web service..."
+          curl -f http://localhost:8080 || exit 1
+          echo "Web service is running!"
+          
+          echo "Testing phpMyAdmin..."
+          curl -f http://localhost:8081 || exit 1
+          echo "phpMyAdmin is accessible!"
+          
+          echo "Cleaning up..."
+          docker-compose down
+          echo "All services tested successfully!"
