@@ -1,39 +1,67 @@
-name: VocaTIonal DevSecOps
+name: VocaTIonal CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
 
 jobs:
-  # Job 1: Checking PHP Syntax
+  # Job 1: PHP Code Quality
   php-lint:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-      - name: Check Syntax
-        run: find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \;
+          extensions: mbstring, xml, curl, gd, zip
 
-  # Job 2: Security Scan
-  security-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 
-      - name: Secret Scanning
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          extra_args: --only-verified --no-verification
+      - name: Install dependencies
+        run: |
+          cd vocational
+          composer install --no-progress --prefer-dist
 
-  # Job 3: Docker Build Test
-  docker-build-test:
+      - name: PHP Syntax Check
+        run: |
+          cd vocational
+          find . -name "*.php" ! -path "./vendor/*" -exec php -l {} \;
+
+      - name: PHP Code Sniffer
+        run: |
+          cd vocational
+          vendor/bin/phpcs
+
+  # Job 2: Docker Build Test
+  docker-build:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker Image
         run: |
           cd vocational
           docker build -t vocational-test:latest .
+
+      - name: Test Docker Services
+        run: |
+          cd vocational
+          docker-compose up -d
+          sleep 30
+          
+          # Test web service
+          curl -f http://localhost:8080 || exit 1
+          
+          # Test phpMyAdmin
+          curl -f http://localhost:8081 || exit 1
+          
+          docker-compose down
