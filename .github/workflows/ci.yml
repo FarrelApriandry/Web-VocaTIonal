@@ -79,10 +79,3 @@ jobs:
           cd vocational
           docker build -t vocational-test:latest .
           echo "Docker image built successfully!"
-
-      - name: Test Docker Services
-        run: |
-          echo "Starting Docker services..."
-          cd vocational
-          docker build -t vocational-test:latest .  
-          echo Docker Services running successfully!"
