@@ -21,10 +21,6 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, xml, curl, gd, zip
 
-      - name: Install dependencies
-        run: |
-          cd vocational
-          composer install --no-progress --prefer-dist
 
       - name: PHP Syntax Check
         run: |
