@@ -67,7 +67,7 @@ jobs:
   # Tests web service and phpMyAdmin accessibility
   docker-validation:
     runs-on: ubuntu-latest
-    name: "Docker Build & Service Validation"
+    name: "Docker Build Validation & Testing"
     
     steps:
       - name: Checkout Code
