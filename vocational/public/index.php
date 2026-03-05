@@ -79,7 +79,7 @@
                 
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
                     <button type="button" class="btn-category active py-3 md:py-4 font-semibold text-sm md:text-base">Akademik</button>
-                    <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Sarpas</button>
+                    <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Sarpr\as</button>
                     <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Layanan</button>
                     <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Lainnya</button>
                 </div>
