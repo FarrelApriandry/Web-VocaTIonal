@@ -232,7 +232,14 @@
         lucide.createIcons();
     </script>
 
-    <?php if (!$isLoggedIn) : ?>
+    <?php 
+
+    $isLoggedIn = false;    
+    if (!$isLoggedIn) 
+    
+    : 
+    
+    ?>
 
     <div id="login-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
         <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-2xl flex flex-col items-center text-center">
@@ -244,16 +251,17 @@
                 Silahkan Masukkan Nomor Pokok Mahasiswa (NPM)<br>Untuk Melanjutkan.
             </p>
         
-            <form action="/proses-login" method="POST" class="w-full">
+            <!-- <form action="/proses-login" method="POST" class="w-full"> -->
+            <div id="" class="w-full">
                 <input type="text" id="npm-input" name="npm" placeholder="XX.X.XX.XX.XXX" maxlength="14"
                     class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 text-center font-medium tracking-widest text-gray-700 focus:outline-none focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A]"
                     required>
             
-                <button type="submit" 
+                <button id="btn-login"  
                         class="w-full bg-[#1E3A8A] text-white rounded-xl px-4 py-3.5 font-semibold hover:bg-blue-900 transition-colors shadow-md text-sm md:text-base">
                     Masuk Ke Dashboard
                 </button>
-            </form>
+            </div>
         
             <p class="text-[10px] md:text-xs text-gray-400 mt-6 font-medium">
                 Data Anda Dienkripsi Secara End-To-End.
@@ -278,6 +286,26 @@
                 if (numbers.length > 7) formatted += '.' + numbers.substring(7, 10); 
 
                 this.value = formatted;
+            });
+        }
+
+        const btnSubmit = document.getElementById('btn-login');
+        const loginModal = document.getElementById('login-modal');
+        if (btnSubmit) {
+            btnSubmit.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent form submission
+                
+                const originalText = this.innerText;
+                this.innerText = 'Memproses...';
+                
+                // Disable the button to prevent multiple clicks
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.innerText = "Masuk Ke Dashboard";
+                    this.disabled = false;
+                    loginModal.style.display = 'none';
+                }, 2000);
             });
         }
     </script>
