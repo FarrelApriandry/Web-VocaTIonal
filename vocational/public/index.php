@@ -231,5 +231,55 @@
 
         lucide.createIcons();
     </script>
+
+    <?php if (!$isLoggedIn) : ?>
+
+    <div id="login-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-2xl flex flex-col items-center text-center">
+        
+            <img src="./assets/img/logo-himatif.svg" alt="Logo Himatif" class="w-16 h-16 object-contain mb-4">
+        
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Akses Terbatas</h2>
+            <p class="text-sm text-gray-600 mb-8 leading-relaxed">
+                Silahkan Masukkan Nomor Pokok Mahasiswa (NPM)<br>Untuk Melanjutkan.
+            </p>
+        
+            <form action="/proses-login" method="POST" class="w-full">
+                <input type="text" id="npm-input" name="npm" placeholder="XX.X.XX.XX.XXX" maxlength="14"
+                    class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 text-center font-medium tracking-widest text-gray-700 focus:outline-none focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A]"
+                    required>
+            
+                <button type="submit" 
+                        class="w-full bg-[#1E3A8A] text-white rounded-xl px-4 py-3.5 font-semibold hover:bg-blue-900 transition-colors shadow-md text-sm md:text-base">
+                    Masuk Ke Dashboard
+                </button>
+            </form>
+        
+            <p class="text-[10px] md:text-xs text-gray-400 mt-6 font-medium">
+                Data Anda Dienkripsi Secara End-To-End.
+            </p>
+        
+        </div>
+    </div>
+
+    <?php endif; ?>
+
+    <script>
+        const npmInput = document.getElementById('npm-input');
+        if (npmInput) {
+            npmInput.addEventListener('input', function(e) {
+                let numbers = this.value.replace(/[^0-9]/g, '');
+
+                let formatted = '';
+                if (numbers.length > 0) formatted += numbers.substring(0, 2);   
+                if (numbers.length > 2) formatted += '.' + numbers.substring(2, 3);  
+                if (numbers.length > 3) formatted += '.' + numbers.substring(3, 5);  
+                if (numbers.length > 5) formatted += '.' + numbers.substring(5, 7);  
+                if (numbers.length > 7) formatted += '.' + numbers.substring(7, 10); 
+
+                this.value = formatted;
+            });
+        }
+    </script>
 </body>
 </html>
