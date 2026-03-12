@@ -2,9 +2,9 @@
 
 **Project Name:** VocaTIonal - Platform Aspirasi Terintegrasi Mahasiswa Teknologi Informasi
 
-**Version:** 0.0.1
+**Version:** 0.0.5
 
-**Stack:** PHP Native, MySQL
+**Stack:** Docker, PHP Native, MySQL
 
 **Architecture:** S5-Layered Modular System
 
