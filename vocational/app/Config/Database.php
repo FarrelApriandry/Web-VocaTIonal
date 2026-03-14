@@ -1,5 +1,7 @@
 <?php
 
+// vocational/app/Config/Database.php
+
 require_once __DIR__ . '/../Core/Env.php';
 Env::load(__DIR__ . '/../../.env');
 
@@ -25,7 +27,7 @@ class Database {
 
                 self::$conn = new PDO($dsn, $user, $pass, $options);
             } catch (PDOException $e) {
-                die("Connection Failed: " . $e->getMessage());
+                die("Connection Failed: " . $e->getMessage() . "\n");
             }
         }
         return self::$conn;
@@ -33,5 +35,5 @@ class Database {
 }
 
 if (Database::getConnection()) {
-    echo "Database connection successful!";
+    echo "Database connection successful!\n";
 }

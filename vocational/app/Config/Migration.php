@@ -1,4 +1,7 @@
 <?php
+
+// vocational/app/Config/Migration.php 
+
 require_once __DIR__ . '/Database.php';
 
 // AMBIL KONEKSI DARI STATIC METHOD
@@ -11,6 +14,7 @@ $migrations = [
         nama VARCHAR(100)
     )",
     
+    // Versi 1.0: Tabel aspirasi
     "CREATE TABLE IF NOT EXISTS aspirasi (
         id_aspirasi INT AUTO_INCREMENT PRIMARY KEY,
         npm_pelapor VARCHAR(15),
