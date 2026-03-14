@@ -19,7 +19,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           script: |
-            cd /path/ke/folder/project/lo
+            # GANTI baris di bawah ini dengan path yang bener!
+            cd ~/Web-VocaTIonal/vocational
+            
             git pull origin main
-            # Rebuild dengan limitasi resource yang udah kita buat tadi
             docker compose up -d --build
