@@ -1,47 +1,12 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/svg+xml" href="./assets/img/logo-himatif.svg">
-    <title>VocaTIonal | Aspirasi Mahasiswa</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #F3F4F6; }
-        .glass-card { background: white; border-radius: 24px; border: 1px solid #E5E7EB; }
-        .btn-category { border: 1px solid #9CA3AF; border-radius: 12px; transition: all 0.3s; }
-        .btn-category.active { background-color: #1E3A8A; color: white; border-color: #1E3A8A; }
-        .info-card { background-color: #1E3A8A; border-radius: 16px; color: white; }
-        
-        input:checked ~ .dot { transform: translateX(1.5rem); background-color: #DBEAFE; }
-        input:checked ~ .block { background-color: #1E3A8A; }
+<?php 
+// 1. Definisikan Props
+$title = "VocaTIonal | Aspirasi Mahasiswa";
+$active = "beranda";
 
-        /* Custom Transition Classes */
-        .fade-out { opacity: 0; transition: opacity 0.5s ease-out; pointer-events: none; }
-        .fade-in { opacity: 1 !important; transform: translateY(0) !important; transition: all 0.6s ease-out; }
-        #main-content { opacity: 0; transform: translateY(10px); }
-    </style>
-</head>
-<body class="min-h-screen">
-
-    <nav class="bg-white border-b border-gray-200 px-6 md:px-16 py-3 flex justify-between items-center shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] sticky top-0 z-50">
-        <div class="flex items-center">
-            <img src="./assets/img/logo-himatif.svg" alt="logo himatif" class="h-10 w-auto object-contain">
-        </div>
-        
-        <div class="hidden md:flex gap-8 text-sm font-medium text-gray-500 uppercase tracking-wider">
-            <a href="#" class="text-blue-900 underline transition-colors duration-200">Beranda</a>
-            <a href="#" class="hover:text-blue-900 transition-colors duration-200">Riwayat</a>
-            <a href="#" class="hover:text-blue-900 transition-colors duration-200">Panduan</a>
-        </div>
-
-        <div class="hover:scale-110 transition-transform duration-200">
-            <i data-lucide="user" class="text-gray-600 w-6 h-6 cursor-pointer"></i>
-        </div>
-    </nav>
-
+// 2. Import Header & Navbar
+include __DIR__ . '/../app/Views/Components/Header.php';
+include __DIR__ . '/../app/Views/Components/Navbar.php';
+?>
     <main class="mx-auto px-6 md:px-16 py-8 md:py-16">
         <header class="mb-8 md:mb-12">
             <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
