@@ -10,7 +10,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
     <main class="mx-auto px-6 md:px-16 py-8 md:py-16">
         <header class="mb-8 md:mb-12">
             <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-                Halo, mahasiswa <span class="text-blue-900">Teknologi Informasi!</span>
+                Halo, Park Ji-soo <span class="text-blue-900">Teknologi Informasi!</span>
             </h1>
             <p class="text-lg md:text-xl text-gray-500">Ada aspirasi atau keluhan? Suarakan di bawah ini.</p>
         </header>
