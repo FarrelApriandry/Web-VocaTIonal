@@ -10,7 +10,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
     <main class="mx-auto px-6 md:px-16 py-8 md:py-16">
         <header class="mb-8 md:mb-12">
             <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-                Halo, Park Ji-soo <span class="text-blue-900">Teknologi Informasi!</span>
+                Halo, Mahasiswa <span class="text-blue-900">Teknologi Informasi!</span>
             </h1>
             <p class="text-lg md:text-xl text-gray-500">Ada aspirasi atau keluhan? Suarakan di bawah ini.</p>
         </header>
@@ -51,9 +51,9 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
 
                 <div class="flex flex-col xl:flex-row gap-3">
                     <div class="flex-1 space-y-6">
-                        <input type="text" placeholder="Subjek Laporan..." class="w-full bg-gray-50 border border-[#64748B] rounded-xl px-4 py-4 focus:outline-none focus:ring-1 focus:ring-[#64748B]">
+                        <input id="aspirasi-subjek" type="text" placeholder="Subjek Laporan..." class="w-full bg-gray-50 border border-[#64748B] rounded-xl px-4 py-4 focus:outline-none focus:ring-1 focus:ring-[#64748B]">
                         <div class="relative">
-                            <textarea rows="6" placeholder="Detail Laporan..." class="w-full h-48 bg-gray-50 border border-[#64748B] rounded-xl px-4 py-4 focus:outline-none focus:ring-1 focus:ring-[#64748B]"></textarea>
+                            <textarea id="aspirasi-detail" rows="6" placeholder="Detail Laporan..." class="w-full h-48 bg-gray-50 border border-[#64748B] rounded-xl px-4 py-4 focus:outline-none focus:ring-1 focus:ring-[#64748B]"></textarea>
                             <span class="absolute bottom-4 right-4 text-xs text-gray-400">0/500 Karakter</span>
                         </div>
                     </div>
@@ -85,7 +85,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                         </div>
                         <span class="ml-3 text-gray-700 font-semibold text-sm md:text-base">Kirim Anonim</span>
                     </label>
-                    <button class="w-full sm:w-auto bg-[#111827] text-white px-10 py-4 rounded-xl font-medium uppercase tracking-widest hover:bg-black transition-all text-sm md:text-base">
+                    <button id="btn-show-confirm" class="w-full sm:w-auto bg-[#111827] text-white px-10 py-4 rounded-xl font-medium uppercase tracking-widest hover:bg-black transition-all text-sm md:text-base">
                         Kirim Aspirasi
                     </button>
                 </div>
@@ -271,6 +271,137 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                     this.disabled = false;
                     loginModal.style.display = 'none';
                 }, 2000);
+            });
+        }
+    </script>
+
+    <?php 
+        include __DIR__ . '/../app/Views/Components/Form-ConfirmationAspirasi.php';
+    ?>
+
+    <script>
+        // MODAL LOGIC
+        const modal = document.getElementById('modal-confirm');
+        const modalBox = document.getElementById('modal-box');
+        const btnKirimAspirasi = document.getElementById('btn-show-confirm'); 
+
+        if (btnKirimAspirasi) {
+            btnKirimAspirasi.addEventListener('click', function(e) {
+                e.preventDefault(); // Mencegah form submit beneran sebelum konfirmasi
+
+                // 1. Ambil Data
+                const kategori = document.getElementById('selected-category').value;
+                const subjek = document.getElementById('aspirasi-subjek').value;
+                const detail = document.getElementById('aspirasi-detail').value;
+                const isAnonim = document.querySelector('input[type="checkbox"]').checked; 
+                
+                const previewImgSrc = document.getElementById('image-preview').src;
+                const hasImage = !document.getElementById('preview-container').classList.contains('hidden');
+
+                // 2. Validasi Form
+                if (!subjek.trim()) {
+                    alert('Mohon isi subjek laporan terlebih dahulu.');
+                    return;
+                }
+
+                if (!detail.trim()) {
+                    alert('Mohon isi detail laporan terlebih dahulu.');
+                    return;
+                }
+
+                // 3. Inject ke Modal
+                document.getElementById('confirm-kategori').innerText = kategori;
+                document.getElementById('confirm-subjek').innerText = subjek || "(Tanpa Subjek)";
+                document.getElementById('confirm-detail').innerText = detail || "(Tanpa Detail)";
+                
+                const imgWrapper = document.getElementById('confirm-img-wrapper');
+                if(hasImage && previewImgSrc !== "#") {
+                    imgWrapper.classList.remove('hidden');
+                    document.getElementById('confirm-preview').src = previewImgSrc;
+                } else {
+                    imgWrapper.classList.add('hidden');
+                }
+
+                document.getElementById('confirm-anonim-status').style.display = isAnonim ? 'flex' : 'none';
+
+                // 4. Tampilkan Modal
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalBox.classList.remove('scale-95', 'opacity-0');
+                    modalBox.classList.add('scale-100', 'opacity-100');
+                }, 10);
+                
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            });
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal() {
+            modalBox.classList.remove('scale-100', 'opacity-100');
+            modalBox.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Event listener untuk tombol close di modal
+        const closeBtn = document.querySelector('#modal-confirm button[onclick="closeModal()"]');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeModal);
+        }
+
+        // Event listener untuk tombol Cek Lagi
+        const cekLagiBtn = document.querySelector('#modal-confirm button:nth-child(1)');
+        if (cekLagiBtn) {
+            cekLagiBtn.addEventListener('click', closeModal);
+        }
+
+        // Event listener untuk background modal
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // Event listener untuk tombol Kirim Sekarang
+        const finalSubmitBtn = document.getElementById('final-submit');
+        if (finalSubmitBtn) {
+            finalSubmitBtn.addEventListener('click', function() {
+                // Simpan data ke FormData atau kirim ke server
+                const formData = new FormData();
+                formData.append('kategori', document.getElementById('selected-category').value);
+                formData.append('subjek', document.getElementById('aspirasi-subjek').value);
+                formData.append('detail', document.getElementById('aspirasi-detail').value);
+                formData.append('anonim', document.querySelector('input[type="checkbox"]').checked ? '1' : '0');
+                
+                // Tambahkan file jika ada
+                const fileInput = document.getElementById('bukti_foto');
+                if (fileInput.files[0]) {
+                    formData.append('bukti_foto', fileInput.files[0]);
+                }
+
+                // Simulasi pengiriman data
+                alert('Aspirasi berhasil dikirim!');
+                closeModal();
+                
+                // Reset form setelah pengiriman
+                document.getElementById('aspirasi-subjek').value = '';
+                document.getElementById('aspirasi-detail').value = '';
+                document.querySelector('input[type="checkbox"]').checked = false;
+                document.getElementById('bukti_foto').value = '';
+                document.getElementById('preview-container').classList.add('hidden');
+                document.getElementById('upload-placeholder').classList.remove('hidden');
+                
+                // Reset kategori ke default
+                const categoryButtons = document.querySelectorAll('.btn-category');
+                categoryButtons.forEach(btn => {
+                    btn.classList.remove('active', 'text-white');
+                    btn.classList.add('text-gray-500');
+                });
+                categoryButtons[0].classList.add('active', 'text-white');
+                categoryButtons[0].classList.remove('text-gray-500');
+                document.getElementById('selected-category').value = 'Akademik';
             });
         }
     </script>
