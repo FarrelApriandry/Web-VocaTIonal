@@ -36,12 +36,15 @@ $migrations = [
         FOREIGN KEY (id_aspirasi) REFERENCES aspirasi(id_aspirasi) ON DELETE CASCADE
     )",
 
+    // Versi 1.2: Tambah tabel admin_web
     "CREATE TABLE IF NOT EXISTS admin_web (
         id_admin INT AUTO_INCREMENT PRIMARY KEY,
         pw_adm VARCHAR(30) NOT NULL,
         role_adm ENUM('Kaprodi','Advokasi','Super_Admin')
-        )"
-]
+    )",
+
+    "INSERT INTO admin_web (pw_adm, role_adm) VALUES ('admin123', 'Super_Admin')"
+];
 
 try {
     echo("\n");
