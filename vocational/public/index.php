@@ -39,7 +39,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         </div>
 
         <div id="main-content" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 glass-card p-6 md:p-10 shadow-sm">
+            <!-- <div class="lg:col-span-2 glass-card p-6 md:p-10 shadow-sm">
                 <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-6">Pilih Kategori Laporan</p>
                 
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
@@ -124,7 +124,143 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                         </li>
                     </ul>
                 </div>
+            </div> -->
+
+            <!-- DELETED USELESS PIECE OF SHIT FORM -->
+            <div class="lg:col-span-2 glass-card p-6 md:p-10 shadow-sm">
+                <form id="submissionForm">
+                    <table class="w-full border-separate border-spacing-y-4">
+                        <tbody>
+                            <tr>
+                                <td colspan="2">
+                                    <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">Pilih Kategori Laporan</p>
+                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                                        <button type="button" class="btn-category active py-3 md:py-4 font-semibold text-sm md:text-base">Akademik</button>
+                                        <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Sarpras</button>
+                                        <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Layanan</button>
+                                        <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Lainnya</button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="hidden xl:table-cell w-[120px] align-middle">
+                                    <label class="text-xs font-bold text-gray-400 uppercase">Subjek</label>
+                                </td>
+                                <td>
+                                    <input id="aspirasi-subjek" type="text" placeholder="Subjek Laporan..." 
+                                        class="w-full bg-gray-50 border border-[#64748B] rounded-xl px-4 py-4 focus:outline-none focus:ring-1 focus:ring-[#64748B]">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="hidden xl:table-cell align-top py-4">
+                                    <label class="text-xs font-bold text-gray-400 uppercase">Konten</label>
+                                </td>
+                                <td>
+                                    <div class="flex flex-col xl:flex-row gap-4">
+                                        <div class="flex-1 relative">
+                                            <textarea id="aspirasi-detail" rows="6" placeholder="Detail Laporan..." 
+                                                    class="w-full h-48 bg-gray-50 border border-[#64748B] rounded-xl px-4 py-4 focus:outline-none focus:ring-1 focus:ring-[#64748B]"></textarea>
+                                            <span class="absolute bottom-4 right-4 text-xs text-gray-400">0/500 Karakter</span>
+                                        </div>
+                                        
+                                        <label class="flex-1 border-2 border-dashed border-[#64748B] rounded-2xl flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-gray-50 transition-all min-h-[200px] relative overflow-hidden text-center">
+                                            <input type="file" id="bukti_foto" name="bukti_foto" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                            <div id="upload-placeholder" class="flex flex-col items-center">
+                                                <i data-lucide="camera" class="text-[#64748B] w-10 h-10 mb-4"></i>
+                                                <p class="font-bold text-[#64748B]">Upload Bukti</p>
+                                            </div>
+                                            <div id="preview-container" class="hidden absolute inset-0 bg-white flex items-center justify-center p-2">
+                                                <img id="image-preview" src="#" class="max-h-full max-w-full rounded-xl object-contain">
+                                                <button type="button" id="remove-img" class="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full shadow-lg z-20">
+                                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                                </button>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" class="pt-6">
+                                    <div class="flex flex-col sm:flex-row justify-between items-center gap-6">
+                                        <label class="flex items-center cursor-pointer group self-start">
+                                            <div class="relative">
+                                                <input type="checkbox" class="sr-only">
+                                                <div class="block bg-gray-300 w-12 h-7 md:w-14 md:h-8 rounded-full transition"></div>
+                                                <div class="dot absolute left-1 top-1 bg-white w-5 h-5 md:w-6 md:h-6 rounded-full transition shadow-sm"></div>
+                                            </div>
+                                            <span class="ml-3 text-gray-700 font-semibold text-sm md:text-base">Kirim Anonim</span>
+                                        </label>
+
+                                        <button id="btn-show-confirm" type="button" 
+                                                class="w-full sm:w-auto bg-[#111827] text-white px-10 py-4 rounded-xl font-medium uppercase tracking-widest hover:bg-black transition-all text-sm md:text-base">
+                                            Kirim Aspirasi
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
             </div>
+            <div class="w-full">
+                <table class="w-full border-separate border-spacing-y-6">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="info-card p-6 md:p-8 shadow-lg">
+                                    <div class="flex items-center gap-2 mb-4">
+                                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                                        <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-white">System Operational</span>
+                                    </div>
+                                    <h3 class="text-base md:text-lg font-bold mb-2 text-white">Network Transparency</h3>
+                                    <p class="text-xs md:text-sm text-blue-100 leading-relaxed">
+                                        Layanan aspirasi berjalan di atas protokol enkripsi satu arah. Data Anda aman dan anonim.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div class="bg-gray-100 border border-gray-200 rounded-2xl p-6 md:p-8">
+                                    <p class="text-xs md:text-sm font-bold text-gray-900 uppercase tracking-widest mb-6">Panduan Anonimitas</p>
+                                    
+                                    <table class="w-full border-separate border-spacing-y-4">
+                                        <tr>
+                                            <td class="align-top w-8"><span class="font-bold text-blue-900 text-sm">01</span></td>
+                                            <td class="text-xs md:text-sm text-gray-600 font-medium leading-relaxed">
+                                                <span class="font-bold text-gray-900">Bersihkan Identitas:</span> Hindari menyebutkan nama atau NIM dalam subjek dan detail laporan.
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-top w-8"><span class="font-bold text-blue-900 text-sm">02</span></td>
+                                            <td class="text-xs md:text-sm text-gray-600 font-medium leading-relaxed">
+                                                <span class="font-bold text-gray-900">Sensor Bukti:</span> Pastikan foto bukti tidak mengandung informasi pribadi yang tidak relevan.
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-top w-8"><span class="font-bold text-blue-900 text-sm">03</span></td>
+                                            <td class="text-xs md:text-sm text-gray-600 font-medium leading-relaxed">
+                                                <span class="font-bold text-gray-900">Metadata Strip:</span> Sistem otomatis menghapus data lokasi (EXIF) pada setiap gambar yang diunggah.
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="align-top w-8"><span class="font-bold text-blue-900 text-sm">04</span></td>
+                                            <td class="text-xs md:text-sm text-gray-600 font-medium leading-relaxed">
+                                                <span class="font-bold text-gray-900">Session Purge:</span> Tutup browser setelah melapor untuk menghapus jejak sesi pada perangkat.
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- DELETED USELESS PIECE OF SHIT FORM -->
         </div>
     </main>
 
