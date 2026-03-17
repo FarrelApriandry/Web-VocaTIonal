@@ -24,7 +24,6 @@ Thumbs.db
 
 # 5. Public Assets & Uploads
 vocational/public/assets/uploads/*
-# Tapi kita simpan folder-nya, abaikan isinya saja
 !vocational/public/assets/uploads/.gitkeep
 
 # 6. Documentation Assets
