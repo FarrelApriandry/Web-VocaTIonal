@@ -6,7 +6,7 @@ services:
     container_name: vocational-web
     restart: always
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
       - ./:/var/www/html
       - ./docker/apache/vhost.conf:/etc/apache2/sites-available/000-default.conf
