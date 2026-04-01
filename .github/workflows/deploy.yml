@@ -20,6 +20,9 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           script: |
             cd ~/Web-VocaTIonal/vocational
+
+            # 0. Reset perubahan lokal (jika ada) untuk menghindari konflik saat pull
+            git checkout .
             
             # 1. Pull kode terbaru dari main
             git pull origin main
