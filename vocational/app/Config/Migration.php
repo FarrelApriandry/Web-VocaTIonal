@@ -7,6 +7,8 @@ require_once __DIR__ . '/Database.php';
 // AMBIL KONEKSI DARI STATIC METHOD
 $pdo = Database::getConnection();
 
+$defaultAdminPass = password_hash('admin123', PASSWORD_BCRYPT);
+
 $migrations = [
     // Versi 1.0: Initial Tables
     "CREATE TABLE IF NOT EXISTS mhs_whitelist (
@@ -43,7 +45,7 @@ $migrations = [
         role_adm ENUM('Kaprodi','Advokasi','Super_Admin')
     )",
 
-    "INSERT IGNORE INTO admin_web (id_admin, pw_adm, role_adm) VALUES (1, 'admin123', 'Super_Admin')",
+    "INSERT IGNORE INTO admin_web (id_admin, pw_adm, role_adm) VALUES (1, '$defaultAdminPass', 'Super_Admin')",
 
     "INSERT IGNORE INTO mhs_whitelist (npm, nama) VALUES 
         ('2430506056', 'Farrel Apriandry Ciu'), 
