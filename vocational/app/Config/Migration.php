@@ -12,8 +12,8 @@ $defaultAdminPass = password_hash('admin123', PASSWORD_BCRYPT);
 $migrations = [
     // Versi 1.0: Initial Tables
     "CREATE TABLE IF NOT EXISTS mhs_whitelist (
-        npm VARCHAR(15) PRIMARY KEY,
-        nama VARCHAR(100)
+        npm CHAR(10) PRIMARY KEY,
+        nama CHAR(100)
     )",
     
     // Versi 1.0: Tabel aspirasi
@@ -45,8 +45,10 @@ $migrations = [
         role_adm ENUM('Kaprodi','Advokasi','Super_Admin')
     )",
 
+    // Versi 1.4: Insert default admin & whitelist with default hashing password php (PASSWORD_BCRYPT)
     "INSERT IGNORE INTO admin_web (id_admin, pw_adm, role_adm) VALUES (1, '$defaultAdminPass', 'Super_Admin')",
 
+    // Versi 1.4: Insert data whitelist
     "INSERT IGNORE INTO mhs_whitelist (npm, nama) VALUES 
         ('2430506056', 'Farrel Apriandry Ciu'), 
         ('2420506026', 'Nofiya Millatina'), 
