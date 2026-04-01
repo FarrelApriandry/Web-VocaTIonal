@@ -19,19 +19,20 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           script: |
+            # 0. Pindah ke direktori proyek
             cd ~/Web-VocaTIonal/vocational
 
-            # 0. Reset perubahan lokal (jika ada) untuk menghindari konflik saat pull
+            # 1. Reset perubahan lokal (jika ada) untuk menghindari konflik saat pull
             git checkout .
             
-            # 1. Pull kode terbaru dari main
+            # 2. Pull kode terbaru dari main
             git pull origin main
             
-            # 2. Rebuild & Restart Container
+            # 3. Rebuild & Restart Container
             docker compose up -d --build
             
-            # 3. Delay 5 detik untuk memastikan container sudah berjalan sebelum migrasi
+            # 4. Delay 5 detik untuk memastikan container sudah berjalan sebelum migrasi
             sleep 5
             
-            # 4. Jalankan Migrasi (@/Config/Migration.php)
+            # 5. Jalankan Migrasi (@/Config/Migration.php)
             docker exec vocational-web php /var/www/html/app/Config/Migration.php
