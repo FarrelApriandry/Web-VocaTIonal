@@ -34,6 +34,7 @@ class Database {
     }
 }
 
-if (Database::getConnection()) {
-    echo "Database connection successful!\n";
+// Hanya output debug jika bukan API request
+if (Database::getConnection() && php_sapi_name() !== 'cli') {
+    // Jangan output apapun untuk API requests
 }

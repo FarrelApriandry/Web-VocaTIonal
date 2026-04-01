@@ -1,4 +1,7 @@
 <?php 
+// START SESSION SEBELUM OUTPUT APAPUN (PENTING!)
+session_start();
+
 // 1. Definisikan Props
 $title = "VocaTIonal | Aspirasi Mahasiswa";
 $active = "beranda";
@@ -334,12 +337,60 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
     </script>
 
     <?php 
-    // Check login status using Auth class
+    // Check login status using Auth class - VALIDASI SESSION KETAT
     require_once __DIR__ . '/../app/Controllers/Auth.php';
     $auth = new Auth();
     $isLoggedIn = $auth->check();
     
-    if (!$isLoggedIn) : 
+    // KALO UDAH LOGIN, LANGSUNG TAMPILIN CONTENT & SKIP MODAL
+    if ($isLoggedIn) :
+        $user = $auth->user();
+        $remainingMinutes = floor($user['remaining_time'] / 60);
+        $remainingSeconds = $user['remaining_time'] % 60;
+    ?>
+    <script>
+        // Force hide skeleton, show content immediately for logged in users
+        document.addEventListener('DOMContentLoaded', function() {
+            const skeleton = document.getElementById('skeleton-loader');
+            const content = document.getElementById('main-content');
+            skeleton.style.display = 'none';
+            content.classList.remove('hidden');
+            content.classList.add('fade-in');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            
+            // Session timeout warning & auto-logout
+            const remainingTime = <?php echo $user['remaining_time']; ?> * 1000; // Convert to milliseconds
+            const warningThreshold = 5 * 60 * 1000; // 5 minutes in milliseconds
+            
+            // Show warning when < 5 minutes remaining
+            if (remainingTime <= warningThreshold && remainingTime > 0) {
+                const minutes = Math.floor(remainingTime / 60000);
+                setTimeout(() => {
+                    alert(`⚠️ Session Anda akan berakhir dalam ${minutes} menit. Silakan simpan pekerjaan Anda!`);
+                }, 500);
+            }
+            
+            // Auto logout when session expires
+            if (remainingTime > 0) {
+                setTimeout(() => {
+                    if (confirm('⏰ Session Anda telah berakhir. Login kembali?')) {
+                        window.location.href = window.location.href; // Reload to show login modal
+                    } else {
+                        window.location.href = './api/logout.php';
+                    }
+                }, remainingTime + 1000); // +1 second buffer
+            }
+            
+            // Update countdown every minute
+            setInterval(() => {
+                // Optional: Show countdown timer in UI
+                // console.log('Session remaining:', Math.floor((<?php echo $user['remaining_time']; ?> - (Date.now() - <?php echo time() * 1000; ?>)) / 1000 / 60), 'minutes');
+            }, 60000);
+        });
+    </script>
+    <?php 
+    else : 
+    // KALO BELUM LOGIN, TAMPILIN MODAL
     ?>
 
     <div id="login-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
@@ -396,18 +447,12 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         const loginModal = document.getElementById('login-modal');
 
         const csrfToken = document.querySelector('input[name="csrf_token"]').value;
-        fetch('./api/submit-aspirasi.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': csrfToken
-            },
-            body: JSON.stringify({...})
-        });
 
         if (btnSubmit) {
             btnSubmit.addEventListener('click', async function(e) {
                 e.preventDefault();
+
+                console.log('Attempting login with NPM:', npmInput.value);
                 
                 const npm = npmInput.value.replace(/\./g, ''); // Hapus format
                 

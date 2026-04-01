@@ -63,12 +63,23 @@ class Auth {
         return ['success' => true, 'message' => 'Logout berhasil'];
     }
     
-    // Cek apakah user sudah login
+    // Cek apakah user sudah login DAN session masih valid
     public function check() {
-        return Session::has('user_npm');
+        // Check if session exists
+        if (!Session::has('user_npm')) {
+            return false;
+        }
+        
+        // Check if session is valid (not expired)
+        if (!Session::isValid()) {
+            $this->logout();
+            return false;
+        }
+        
+        return true;
     }
     
-    // Get current user
+    // Get current user with session info
     public function user() {
         if (!$this->check()) {
             return null;
@@ -77,7 +88,10 @@ class Auth {
         return [
             'npm' => Session::get('user_npm'),
             'nama' => Session::get('user_nama'),
-            'login_time' => Session::get('login_time')
+            'login_time' => Session::get('login_time'),
+            'last_activity' => Session::get('last_activity'),
+            'remaining_time' => Session::getRemainingTime(),
+            'is_about_to_expire' => Session::isAboutToExpire()
         ];
     }
     
