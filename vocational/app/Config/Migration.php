@@ -41,7 +41,7 @@ $migrations = [
     // Versi 1.2: Tambah tabel admin_web
     "CREATE TABLE IF NOT EXISTS admin_web (
         id_admin INT AUTO_INCREMENT PRIMARY KEY,
-        pw_adm VARCHAR(30) NOT NULL,
+        pw_adm VARCHAR(255) NOT NULL,
         role_adm ENUM('Kaprodi','Advokasi','Super_Admin')
     )",
 
@@ -73,7 +73,7 @@ try {
             throw $e;
         }
     }
-    
+
     echo "Database sinkron dengan versi terbaru\n";
 } catch (PDOException $e) {
     die("Gagal migrasi: " . $e->getMessage() . "\n");
