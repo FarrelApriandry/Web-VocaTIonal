@@ -43,8 +43,9 @@ $migrations = [
         role_adm ENUM('Kaprodi','Advokasi','Super_Admin')
     )",
 
-    "INSERT INTO admin_web (pw_adm, role_adm) VALUES ('admin123', 'Super_Admin')",
-    "INSERT INTO mhs_whitelist (npm, nama) VALUES 
+    "INSERT IGNORE INTO admin_web (id_admin, pw_adm, role_adm) VALUES (1, 'admin123', 'Super_Admin')",
+
+    "INSERT IGNORE INTO mhs_whitelist (npm, nama) VALUES 
         ('2430506056', 'Farrel Apriandry Ciu'), 
         ('2420506026', 'Nofiya Millatina'), 
         ('2420506029', 'Hakkan Azrul Suseno'), 
@@ -57,8 +58,16 @@ try {
     echo("\n");
     echo "\n--- Menjalankan Migrasi ---\n";
     
-    foreach ($migrations as $sql) {
-        $pdo->exec($sql);
+    foreach ($migrations as $index => $sql) {
+        try {
+            $pdo->exec($sql);
+        } catch (PDOException $e) {
+            if ($e->getCode() == 23000) { 
+                echo "Step $index skipped (Data sudah ada).\n";
+                continue;
+            }
+            throw $e;
+        }
     }
     echo "Database sinkron dengan versi terbaru\n";
 } catch (PDOException $e) {
