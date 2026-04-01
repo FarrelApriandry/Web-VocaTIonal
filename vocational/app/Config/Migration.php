@@ -43,7 +43,14 @@ $migrations = [
         role_adm ENUM('Kaprodi','Advokasi','Super_Admin')
     )",
 
-    "INSERT INTO admin_web (pw_adm, role_adm) VALUES ('admin123', 'Super_Admin')"
+    "INSERT INTO admin_web (pw_adm, role_adm) VALUES ('admin123', 'Super_Admin')",
+    "INSERT INTO mhs_whitelist (npm, nama) VALUES 
+        ('2430506056', 'Farrel Apriandry Ciu'), 
+        ('2420506026', 'Nofiya Millatina'), 
+        ('2420506029', 'Hakkan Azrul Suseno'), 
+        ('2420506030', 'Yasabuana Athallahaufa Natawijaya'), 
+        ('2430506058', 'Nabila Syafiqah Zahran Firlina')
+    ",
 ];
 
 try {
