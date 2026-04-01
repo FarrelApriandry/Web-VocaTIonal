@@ -7,6 +7,7 @@ require_once __DIR__ . '/Database.php';
 // AMBIL KONEKSI DARI STATIC METHOD
 $pdo = Database::getConnection();
 
+// Hash password default admin menggunakan PASSWORD_BCRYPT
 $defaultAdminPass = password_hash('admin123', PASSWORD_BCRYPT);
 
 $migrations = [
@@ -45,8 +46,18 @@ $migrations = [
         role_adm ENUM('Kaprodi','Advokasi','Super_Admin')
     )",
 
-    // Versi 1.4: Insert default admin & whitelist with default hashing password php (PASSWORD_BCRYPT)
-    "INSERT IGNORE INTO admin_web (id_admin, pw_adm, role_adm) VALUES (1, '$defaultAdminPass', 'Super_Admin')",
+    // Versi 1.5: Tabel user sessions untuk tracking
+    "CREATE TABLE IF NOT EXISTS user_sessions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        npm VARCHAR(10) NOT NULL,
+        session_token VARCHAR(255),
+        ip_address VARCHAR(45),
+        user_agent TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (npm) REFERENCES mhs_whitelist(npm) ON DELETE CASCADE
+    )",
+
 
     // Versi 1.4: Insert data whitelist
     "INSERT IGNORE INTO mhs_whitelist (npm, nama) VALUES 
@@ -73,6 +84,12 @@ try {
             throw $e;
         }
     }
+    
+    // Insert default admin dengan prepared statement (aman dari SQL injection)
+    echo "Step " . count($migrations) . ": Inserting default admin...\n";
+    $stmt = $pdo->prepare("INSERT IGNORE INTO admin_web (id_admin, pw_adm, role_adm) VALUES (1, ?, 'Super_Admin')");
+    $stmt->execute([$defaultAdminPass]);
+    echo "Default admin inserted successfully.\n";
 
     echo "Database sinkron dengan versi terbaru\n";
 } catch (PDOException $e) {

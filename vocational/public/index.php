@@ -334,12 +334,12 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
     </script>
 
     <?php 
-
-    $isLoggedIn = false;    
-    if (!$isLoggedIn) 
+    // Check login status using Auth class
+    require_once __DIR__ . '/../app/Controllers/Auth.php';
+    $auth = new Auth();
+    $isLoggedIn = $auth->check();
     
-    : 
-    
+    if (!$isLoggedIn) : 
     ?>
 
     <div id="login-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
@@ -353,6 +353,8 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
             </p>
         
             <!-- <form action="/proses-login" method="POST" class="w-full"> -->
+            <input type="hidden" name="csrf_token" value="<?php echo Session::generateCSRFToken(); ?>">
+
             <div id="" class="w-full">
                 <input type="text" id="npm-input" name="npm" placeholder="XX.X.XX.XX.XXX" maxlength="14"
                     class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 text-center font-medium tracking-widest text-gray-700 focus:outline-none focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A]"
@@ -392,23 +394,69 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
 
         const btnSubmit = document.getElementById('btn-login');
         const loginModal = document.getElementById('login-modal');
+
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+        fetch('./api/submit-aspirasi.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({...})
+        });
+
         if (btnSubmit) {
-            btnSubmit.addEventListener('click', function(e) {
-                e.preventDefault(); // Prevent form submission
+            btnSubmit.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                const npm = npmInput.value.replace(/\./g, ''); // Hapus format
+                
+                if (npm.length !== 10) {
+                    alert('NPM harus 10 digit angka!');
+                    return;
+                }
                 
                 const originalText = this.innerText;
                 this.innerText = 'Memproses...';
-                
-                // Disable the button to prevent multiple clicks
                 this.disabled = true;
                 
-                setTimeout(() => {
-                    this.innerText = "Masuk Ke Dashboard";
+                try {
+                    const response = await fetch('./api/login.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ npm: npm })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Login berhasil
+                        loginModal.style.display = 'none';
+                        document.getElementById('main-content').classList.remove('hidden');
+                        document.getElementById('skeleton-loader').style.display = 'none';
+                        
+                        // Optional: Redirect atau refresh
+                        // window.location.href = window.location.href;
+                        
+                        alert('Login berhasil! Selamat datang, ' + result.user.nama);
+                    } else {
+                        // Login gagal
+                        alert('Login gagal: ' + result.message);
+                        npmInput.value = '';
+                        npmInput.focus();
+                    }
+                } catch (error) {
+                    alert('Terjadi kesalahan. Silakan coba lagi.');
+                    console.error('Login error:', error);
+                } finally {
+                    this.innerText = originalText;
                     this.disabled = false;
-                    loginModal.style.display = 'none';
-                }, 2000);
+                }
             });
         }
+
     </script>
 
     <?php 
@@ -447,7 +495,20 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
 
                 // 3. Inject ke Modal
                 document.getElementById('confirm-kategori').innerText = kategori;
-                document.getElementById('confirm-subjek').innerText = subjek || "(Tanpa Subjek)";
+                function escapeHtml(text) {
+                    const map = {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#039;'
+                    };
+                    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+                }
+
+                // Lalu pake:
+                document.getElementById('confirm-subjek').textContent = escapeHtml(subjek) || "(Tanpa Subjek)";
+
                 document.getElementById('confirm-detail').innerText = detail || "(Tanpa Detail)";
                 
                 const imgWrapper = document.getElementById('confirm-img-wrapper');
