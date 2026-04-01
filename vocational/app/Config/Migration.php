@@ -73,6 +73,7 @@ try {
             throw $e;
         }
     }
+    
     echo "Database sinkron dengan versi terbaru\n";
 } catch (PDOException $e) {
     die("Gagal migrasi: " . $e->getMessage() . "\n");
