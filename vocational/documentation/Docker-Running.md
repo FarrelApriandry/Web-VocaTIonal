@@ -77,8 +77,8 @@ Setup Docker mencakup tiga layanan utama:
 
 ### 1. Server Web (Apache + PHP 8.2)
 - **Nama Container**: `vocational-web`
-- **Port**: 8080
-- **URL Akses**: http://localhost:8080
+- **Port**: 80
+- **URL Akses**: http://localhost:80
 - **Fitur**:
   - PHP 8.2 dengan ekstensi PDO MySQL
   - Apache dengan mod_rewrite diaktifkan
@@ -112,7 +112,7 @@ DB_PASS=****
 ### Konfigurasi Port
 
 Port default dikonfigurasi sebagai berikut:
-- Aplikasi Web: 8080
+- Aplikasi Web: 80
 - phpMyAdmin: 8081
 - Database: 3306
 
@@ -194,9 +194,9 @@ Jika Anda mendapatkan error tentang Docker tidak berjalan, pastikan Docker Deskt
 ### Port Sudah Digunakan
 Jika Anda mendapatkan error binding port, periksa apakah layanan lain menggunakan port yang sama:
 ```bash
-# Periksa apa yang menggunakan port 8080
-lsof -i :8080  # macOS/Linux
-netstat -ano | findstr :8080  # Windows
+# Periksa apa yang menggunakan port 80
+lsof -i :80  # macOS/Linux
+netstat -ano | findstr :80  # Windows
 ```
 
 ### Masalah Izin (Linux/macOS)
@@ -228,7 +228,7 @@ vocational/
 ## Alur Kerja Pengembangan
 
 1. **Mulai Layanan**: `./docker-start.sh start`
-2. **Akses Aplikasi**: http://localhost:8080
+2. **Akses Aplikasi**: http://localhost:80
 3. **Akses Admin Database**: http://localhost:8081
 4. **Lakukan Perubahan Kode**: File secara otomatis disinkronkan melalui pemetaan volume
 5. **Hentikan Layanan**: `./docker-start.sh stop` (saat selesai)

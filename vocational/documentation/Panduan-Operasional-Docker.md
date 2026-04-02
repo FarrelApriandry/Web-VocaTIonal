@@ -8,9 +8,9 @@ Sebelum menjalankan perintah apa pun, pastikan perangkat Anda memenuhi syarat be
 
 * [**Docker Desktop**](https://www.docker.com/products/docker-desktop/): Wajib terinstal dan dalam status **Running** (ikon paus di taskbar berwarna hijau).
 * [**Mode WSL 2**](https://medium.com/@janinehuang/how-to-upgrade-from-wsl1-to-wsl2-and-wslg-d9bb5f22ccdd): Pastikan Docker menggunakan *WSL 2 Engine* untuk performa terbaik di Windows.
-* [**Bebaskan Port**](https://sentry.io/answers/kill-process-using-port-in-windows/): Pastikan aplikasi seperti XAMPP (Apache & MySQL) atau aplikasi lain yang menggunakan port `8080` dan `8081` sudah **Nonaktif** (Stop) untuk menghindari bentrokan (*port collision*).
+* [**Bebaskan Port**](https://sentry.io/answers/kill-process-using-port-in-windows/): Pastikan aplikasi seperti XAMPP (Apache & MySQL) atau aplikasi lain yang menggunakan port `80` dan `8081` sudah **Nonaktif** (Stop) untuk menghindari bentrokan (*port collision*).
 
-### 1.1. Persiapan Lingkungan Menggunakan Video
+### 1.1. Persiapan Lingkungan Menggunakan Videoa
 
 | Penjelasan | Video |
 | --- | --- |
@@ -33,7 +33,7 @@ Gunakan terminal (CMD, PowerShell, atau Git Bash) tepat di dalam folder `vocatio
 
 Setelah kontainer berstatus **Started**, Anda dapat mengakses layanan melalui browser:
 
-* **Web Utama**: [http://localhost:8080](https://www.google.com/search?q=http://localhost:8080)
+* **Web Utama**: [http://localhost:80](https://www.google.com/search?q=http://localhost:80)
 * Sistem secara otomatis membaca folder `public` sebagai pintu masuk utama aplikasi.
 
 <p align="center">
@@ -60,8 +60,16 @@ Anda tidak perlu memindahkan file ke folder `C:\xampp\htdocs`.
 
 ## 5. Troubleshooting (Solusi Masalah Umum)
 
-* **Error "Port is already allocated"**: Artinya port `8080` sedang digunakan aplikasi lain. Jalankan `netstat -ano | findstr :8080` untuk mencari PID-nya dan matikan aplikasi tersebut.
+* **Error "Port is already allocated"**: Artinya port `80` sedang digunakan aplikasi lain. Jalankan `netstat -ano | findstr :80` untuk mencari PID-nya dan matikan aplikasi tersebut.
 * **Koneksi Database Gagal**: Pastikan `DB_HOST` di file `.env` bernilai `db`.
 * **Perubahan Skrip Tidak Muncul**: Coba bersihkan cache browser atau jalankan kembali `docker-compose up -d --build` jika Anda melakukan perubahan pada `Dockerfile`.
+* **Masalah Access denied for user 'user'@'172.18.0.4'**: Pastikan isi file `.env` sudah sesuai 100%, lalu jika tetap gagal jalankan command ini.
+```bash
+docker compose down -v
+
+docker volume prune -f
+
+docker compose up -d --build
+```
 
 ---
