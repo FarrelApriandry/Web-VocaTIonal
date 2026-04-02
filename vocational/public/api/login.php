@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Start session for rate limiting
 Session::start();
 
-// ==========================================
-// RATE LIMITING - Anti Brute Force
-// ==========================================
+// ==================
+//    RATE LIMITING
+// ==================
 $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 $now = time();
 
@@ -81,9 +81,9 @@ if ($now - $npmData['last'] < 600) { // 10 minutes
 $_SESSION[$ipKey] = ['count' => $ipData['count'] + 1, 'last' => $now];
 $_SESSION[$npmKey] = ['count' => $npmData['count'] + 1, 'last' => $now];
 
-// ==========================================
-// CSRF TOKEN VALIDATION
-// ==========================================
+// ==========================
+//    CSRF TOKEN VALIDATION
+// ==========================
 $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
 if (!empty($csrfToken) && !Session::validateCSRFToken($csrfToken)) {
     http_response_code(403);
@@ -94,9 +94,9 @@ if (!empty($csrfToken) && !Session::validateCSRFToken($csrfToken)) {
     exit();
 }
 
-// ==========================================
-// PROCEED WITH LOGIN
-// ==========================================
+// ==========================
+//     PROCEED WITH LOGIN
+// ==========================
 $auth = new Auth();
 $result = $auth->login($data['npm']);
 

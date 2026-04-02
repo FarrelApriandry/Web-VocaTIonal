@@ -11,6 +11,6 @@
     </div>
 
     <div class="hover:scale-110 transition-transform duration-200">
-        <i data-lucide="user" class="text-gray-600 w-6 h-6 cursor-pointer"></i>
+        <i id="btn-logout-modal" data-lucide="user" class="text-gray-600 w-6 h-6 cursor-pointer"></i>
     </div>
 </nav>

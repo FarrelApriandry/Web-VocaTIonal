@@ -477,25 +477,27 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                     const result = await response.json();
                     
                     if (result.success) {
-                        // Login berhasil
-                        loginModal.style.display = 'none';
-                        document.getElementById('main-content').classList.remove('hidden');
-                        document.getElementById('skeleton-loader').style.display = 'none';
+                        // Update button text to "Mengalihkan halaman..."
+                        this.innerText = 'Mengalihkan halaman...';
                         
-                        // Optional: Redirect atau refresh
-                        // window.location.href = window.location.href;
-                        
+                        // Show success alert
                         alert('Login berhasil! Selamat datang, ' + result.user.nama);
+                        
+                        // Wait 2 seconds then redirect/reload
+                        setTimeout(() => {
+                            window.location.href = window.location.href;
+                        }, 2000);
                     } else {
                         // Login gagal
                         alert('Login gagal: ' + result.message);
                         npmInput.value = '';
                         npmInput.focus();
+                        this.innerText = originalText;
+                        this.disabled = false;
                     }
                 } catch (error) {
                     alert('Terjadi kesalahan. Silakan coba lagi.');
                     console.error('Login error:', error);
-                } finally {
                     this.innerText = originalText;
                     this.disabled = false;
                 }
@@ -505,8 +507,74 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
     </script>
 
     <?php 
+        include __DIR__ . '/../app/Views/Components/ConfirmationModal.php';
         include __DIR__ . '/../app/Views/Components/Form-ConfirmationAspirasi.php';
     ?>
+
+    <script src="./js/confirmation-modal.js"></script>
+    <script>
+        // ==========================================
+        // LOGOUT MODAL HANDLER
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('btn-logout-modal');
+            
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    window.confirmationModal.open({
+                        title: 'Logout',
+                        message: 'Apakah Anda yakin ingin logout dari akun Anda?',
+                        confirmText: 'Ya, Logout',
+                        cancelText: 'Batal',
+                        confirmBtnColor: 'red',
+                        onConfirm: async () => {
+                            try {
+                                const response = await fetch('./api/logout.php', {
+                                    method: 'POST'
+                                });
+                                
+                                if (response.ok) {
+                                    // Show success message in modal
+                                    const modal = document.getElementById('confirmation-modal');
+                                    const modalBox = document.getElementById('confirmation-modal-box');
+                                    const title = document.getElementById('confirmation-title');
+                                    const message = document.getElementById('confirmation-message');
+                                    const buttons = document.querySelector('#confirmation-modal-box > div:last-child');
+                                    
+                                    // Update modal content
+                                    title.textContent = 'Logout Berhasil';
+                                    message.textContent = 'Anda akan segera kembali ke halaman login...';
+                                    buttons.style.display = 'none';
+                                    
+                                    // Add success icon animation
+                                    const successIcon = document.createElement('div');
+                                    successIcon.className = 'flex justify-center mb-6';
+                                    successIcon.innerHTML = '<i data-lucide="check-circle" class="w-16 h-16 text-green-500"></i>';
+                                    
+                                    const messageEl = document.getElementById('confirmation-message');
+                                    messageEl.parentElement.insertBefore(successIcon, messageEl);
+                                    
+                                    if (typeof lucide !== 'undefined') {
+                                        lucide.createIcons();
+                                    }
+                                    
+                                    // Wait 1.5 seconds then reload
+                                    setTimeout(() => {
+                                        window.location.href = window.location.href;
+                                    }, 1500);
+                                } else {
+                                    throw new Error('Logout gagal');
+                                }
+                            } catch (error) {
+                                console.error('Logout error:', error);
+                                alert('Terjadi kesalahan saat logout. Silakan coba lagi.');
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 
     <script>
         // MODAL LOGIC

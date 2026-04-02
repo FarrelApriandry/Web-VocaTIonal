@@ -65,7 +65,8 @@ $migrations = [
         ('2420506026', 'Nofiya Millatina'), 
         ('2420506029', 'Hakkan Azrul Suseno'), 
         ('2420506030', 'Yasabuana Athallahaufa Natawijaya'), 
-        ('2430506058', 'Nabila Syafiqah Zahran Firlina')
+        ('2430506058', 'Nabila Syafiqah Zahran Firlina'),
+        ('2410506016', 'Dzakii Luqman Faid')
     ",
 ];
 
