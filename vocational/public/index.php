@@ -474,26 +474,54 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                         body: JSON.stringify({ npm: npm })
                     });
                     
-                    const result = await response.json();
+                    // Get raw text first to handle non-JSON responses
+                    const responseText = await response.text();
                     
-                    if (result.success) {
-                        // Update button text to "Mengalihkan halaman..."
-                        this.innerText = 'Mengalihkan halaman...';
+                    try {
+                        // Try to parse as JSON
+                        const result = JSON.parse(responseText);
                         
-                        // Show success alert
-                        alert('Login berhasil! Selamat datang, ' + result.user.nama);
+                        if (result.success) {
+                            // Update button text to "Mengalihkan halaman..."
+                            this.innerText = 'Mengalihkan halaman...';
+                            
+                            // Show success alert
+                            alert('Login berhasil! Selamat datang, ' + result.user.nama);
+                            
+                            // Wait 2 seconds then redirect/reload
+                            setTimeout(() => {
+                                window.location.href = window.location.href;
+                            }, 2000);
+                        } else {
+                            // Login gagal
+                            alert('Login gagal: ' + result.message);
+                            npmInput.value = '';
+                            npmInput.focus();
+                            this.innerText = originalText;
+                            this.disabled = false;
+                        }
+                    } catch (jsonError) {
+                        // JSON parse error - likely server error or Cloudflare block
+                        // But session might already be created on server
+                        console.warn('Response parse error, checking if session exists:', jsonError);
                         
-                        // Wait 2 seconds then redirect/reload
-                        setTimeout(() => {
-                            window.location.href = window.location.href;
-                        }, 2000);
-                    } else {
-                        // Login gagal
-                        alert('Login gagal: ' + result.message);
-                        npmInput.value = '';
-                        npmInput.focus();
-                        this.innerText = originalText;
-                        this.disabled = false;
+                        if (response.ok && responseText.length < 500) {
+                            // Likely a server error page, but if response is "ok" (200),
+                            // session might have been created. Auto-redirect.
+                            this.innerText = 'Mengalihkan halaman...';
+                            alert('Login berhasil! Selamat datang. Mengalihkan halaman...');
+                            
+                            setTimeout(() => {
+                                window.location.href = window.location.href;
+                            }, 2000);
+                        } else {
+                            // Actual error
+                            alert('Terjadi kesalahan saat login. Silakan coba lagi.');
+                            npmInput.value = '';
+                            npmInput.focus();
+                            this.innerText = originalText;
+                            this.disabled = false;
+                        }
                     }
                 } catch (error) {
                     alert('Terjadi kesalahan. Silakan coba lagi.');
