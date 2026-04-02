@@ -8,13 +8,13 @@
 # 2. Security Analysis - Scans for secrets and sensitive data
 # 3. Docker Validation - Builds and tests Docker services
 
-name: VocaTIonal CI/CD Pipeline
+name: VocaTIonal Continuous Integration Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
 
 jobs:
   # PHP Code Quality Check

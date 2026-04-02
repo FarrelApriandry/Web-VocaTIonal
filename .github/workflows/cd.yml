@@ -1,4 +1,4 @@
-name: Deployment to DigitalOcean
+name: VocaTIonal Continuous Delivery/Deployment Pipeline
 
 on:
   push:
