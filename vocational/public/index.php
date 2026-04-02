@@ -509,7 +509,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                             // Likely a server error page, but if response is "ok" (200),
                             // session might have been created. Auto-redirect.
                             this.innerText = 'Mengalihkan halaman...';
-                            alert('Login berhasil! Selamat datang. Mengalihkan halaman...');
+                            alert('Login berhasil! Selamat datang. ' + result.user.nama);
                             
                             setTimeout(() => {
                                 window.location.href = window.location.href;
