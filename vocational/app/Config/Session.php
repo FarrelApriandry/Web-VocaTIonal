@@ -59,6 +59,20 @@ class Session {
         session_destroy();
     }
     
+    // Regenerate session ID (prevent session fixation)
+    public static function regenerate() {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+            
+            // Update session fingerprint
+            $_SESSION['user_agent'] = md5($_SERVER['HTTP_USER_AGENT'] ?? 'unknown');
+            $_SESSION['ip_address'] = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+            
+            return true;
+        }
+        return false;
+    }
+    
     // Check if session is valid (not expired)
     public static function isValid() {
         if (!isset($_SESSION['login_time'])) {
