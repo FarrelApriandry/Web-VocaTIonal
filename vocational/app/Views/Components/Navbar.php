@@ -10,7 +10,8 @@
         <a href="#" class="<?= $active == 'panduan' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Panduan</a>
     </div>
 
-    <div class="hover:scale-110 transition-transform duration-200">
-        <i id="btn-logout-modal" data-lucide="user" class="text-gray-600 w-6 h-6 cursor-pointer"></i>
-    </div>
+    <button id="btn-logout-modal" type="button" 
+            class="hover:scale-110 transition-transform duration-200 bg-transparent border-none p-0 cursor-pointer">
+        <i data-lucide="user" class="text-gray-600 w-6 h-6"></i>
+    </button>
 </nav>

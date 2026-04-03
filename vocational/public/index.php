@@ -297,11 +297,11 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         categoryButtons.forEach(button => {
             button.addEventListener('click', () => {
                 categoryButtons.forEach(btn => {
-                    btn.classList.remove('active', 'text-white');
-                    btn.classList.add('text-gray-500');
+                    btn.classList.remove('active', 'text-white', 'bg-blue-900');
+                    btn.classList.add('text-gray-500', 'hover:bg-gray-50');
                 });
-                button.classList.add('active', 'text-white');
-                button.classList.remove('text-gray-500');
+                button.classList.add('active', 'text-white', 'bg-blue-900');
+                button.classList.remove('text-gray-500', 'hover:bg-gray-50');
                 categoryInput.value = button.innerText;
             });
         });
@@ -366,18 +366,36 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
             if (remainingTime <= warningThreshold && remainingTime > 0) {
                 const minutes = Math.floor(remainingTime / 60000);
                 setTimeout(() => {
-                    alert(`⚠️ Session Anda akan berakhir dalam ${minutes} menit. Silakan simpan pekerjaan Anda!`);
+                    window.confirmationModal.open({
+                        title: 'Peringatan: Session Akan Berakhir',
+                        message: `Session Anda akan berakhir dalam ${minutes} menit. Silakan simpan pekerjaan Anda!`,
+                        confirmText: 'Perpanjang Session',
+                        cancelText: 'OK',
+                        confirmBtnColor: 'orange',
+                        onConfirm: async () => {
+                            // Refresh page to extend session
+                            window.location.href = window.location.href;
+                        }
+                    });
                 }, 500);
             }
             
             // Auto logout when session expires
             if (remainingTime > 0) {
                 setTimeout(() => {
-                    if (confirm('⏰ Session Anda telah berakhir. Login kembali?')) {
-                        window.location.href = window.location.href; // Reload to show login modal
-                    } else {
-                        window.location.href = './api/logout.php';
-                    }
+                    window.confirmationModal.open({
+                        title: 'Session Telah Berakhir',
+                        message: 'Session Anda telah kadaluarsa. Silakan login kembali.',
+                        confirmText: 'Login Kembali',
+                        cancelText: 'Logout',
+                        confirmBtnColor: 'blue',
+                        onConfirm: async () => {
+                            window.location.href = window.location.href;
+                        },
+                        onCancel: async () => {
+                            window.location.href = './api/logout.php';
+                        }
+                    });
                 }, remainingTime + 1000); // +1 second buffer
             }
             
