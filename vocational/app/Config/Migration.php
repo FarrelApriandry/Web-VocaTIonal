@@ -23,7 +23,7 @@ $migrations = [
         npm_pelapor VARCHAR(15),
         judul VARCHAR(255),
         deskripsi TEXT,
-        kategori ENUM('Akademik', 'Fasilitas', 'UKT', 'Lainnya'),
+        kategori ENUM('Akademik', 'Fasilitas', 'Sarpras', 'Layanan', 'UKT', 'Lainnya'),
         status ENUM('Pending', 'Proses', 'Selesai') DEFAULT 'Pending',
         anonim BOOLEAN,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -88,7 +88,10 @@ $migrations = [
     )",
 
 
-    // Versi 2.3: Auto-approve aspirasi untuk testing (production: needs manual approval)
+    // Versi 2.3: Modify kategori ENUM - add Sarpras & Layanan
+    "ALTER TABLE aspirasi MODIFY COLUMN kategori ENUM('Akademik', 'Fasilitas', 'Sarpras', 'Layanan', 'UKT', 'Lainnya')",
+
+    // Versi 2.4: Auto-approve aspirasi untuk testing (production: needs manual approval)
     "UPDATE aspirasi SET board_approved = 1 WHERE show_on_board = 1 AND board_approved = 0",
 
     // Versi 1.4: Insert default admin & whitelist with default hashing password php (PASSWORD_BCRYPT)

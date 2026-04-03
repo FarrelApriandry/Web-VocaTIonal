@@ -5,9 +5,9 @@
 header('Content-Type: application/json');
 session_start();
 
-require_once __DIR__ . '/../../app/Config/Database.php';
-require_once __DIR__ . '/../../app/Models/Aspirasi.php';
-require_once __DIR__ . '/../../app/Controllers/Auth.php';
+require_once __DIR__ . '/../../../app/Config/Database.php';
+require_once __DIR__ . '/../../../app/Models/Aspirasi.php';
+require_once __DIR__ . '/../../../app/Controllers/Auth.php';
 
 // Only GET requests allowed
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -28,7 +28,7 @@ try {
     $offset = ($page - 1) * $limit;
 
     // Validate category
-    $validCategories = ['all', 'Akademik', 'Fasilitas', 'UKT', 'Lainnya'];
+    $validCategories = ['all', 'Akademik', 'Fasilitas', 'Sarpras', 'Layanan', 'UKT', 'Lainnya'];
     if (!in_array($category, $validCategories)) {
         $category = 'all';
     }

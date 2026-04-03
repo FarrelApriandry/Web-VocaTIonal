@@ -27,8 +27,7 @@ class Aspirasi
                     a.created_at,
                     (SELECT COUNT(*) FROM aspirasi_reactions WHERE id_aspirasi = a.id_aspirasi) as total_reactions
                   FROM aspirasi a
-                  WHERE a.show_on_board = TRUE AND a.board_approved = TRUE
-                  AND a.anonim = TRUE";
+                  WHERE a.show_on_board = TRUE AND a.board_approved = TRUE";
         
         $params = [];
 
@@ -37,9 +36,7 @@ class Aspirasi
             $params[] = $category;
         }
 
-        $query .= " ORDER BY a.created_at DESC LIMIT ? OFFSET ?";
-        $params[] = $limit;
-        $params[] = $offset;
+        $query .= " ORDER BY a.created_at DESC LIMIT " . ((int)$limit) . " OFFSET " . ((int)$offset);
 
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);

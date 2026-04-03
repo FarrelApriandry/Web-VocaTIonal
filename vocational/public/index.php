@@ -137,10 +137,12 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                             <tr>
                                 <td colspan="2">
                                     <p class="text-sm font-bold text-gray-500 uppercase tracking-widest mb-4">Pilih Kategori Laporan</p>
-                                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                                    <div class="grid grid-cols-2 lg:grid-cols-6 gap-3 md:gap-4">
                                         <button type="button" class="btn-category active py-3 md:py-4 font-semibold text-sm md:text-base">Akademik</button>
+                                        <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Fasilitas</button>
                                         <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Sarpras</button>
                                         <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Layanan</button>
+                                        <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">UKT</button>
                                         <button type="button" class="btn-category py-3 md:py-4 font-semibold text-gray-500 hover:bg-gray-50 text-sm md:text-base">Lainnya</button>
                                     </div>
                                 </td>

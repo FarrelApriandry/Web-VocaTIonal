@@ -50,7 +50,7 @@ try {
     }
 
     // Validate kategori
-    $validCategories = ['Akademik', 'Fasilitas', 'UKT', 'Lainnya'];
+    $validCategories = ['Akademik', 'Fasilitas', 'Sarpras', 'Layanan', 'UKT', 'Lainnya'];
     if (!in_array($kategori, $validCategories)) {
         http_response_code(400);
         die(json_encode(['success' => false, 'message' => 'Kategori tidak valid']));

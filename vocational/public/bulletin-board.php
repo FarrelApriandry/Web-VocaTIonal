@@ -43,6 +43,14 @@ $user = $isLoggedIn ? $auth->user() : null;
             Fasilitas
         </button>
         <button class="category-filter px-6 py-2 bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
+                data-category="Sarpras">
+            Sarpras
+        </button>
+        <button class="category-filter px-6 py-2 bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
+                data-category="Layanan">
+            Layanan
+        </button>
+        <button class="category-filter px-6 py-2 bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
                 data-category="UKT">
             UKT
         </button>
@@ -113,6 +121,8 @@ $user = $isLoggedIn ? $auth->user() : null;
                     const categoryColors = {
                         'Akademik': 'bg-blue-100 border-blue-300 text-blue-900',
                         'Fasilitas': 'bg-orange-100 border-orange-300 text-orange-900',
+                        'Sarpras': 'bg-red-100 border-red-300 text-red-900',
+                        'Layanan': 'bg-cyan-100 border-cyan-300 text-cyan-900',
                         'UKT': 'bg-green-100 border-green-300 text-green-900',
                         'Lainnya': 'bg-purple-100 border-purple-300 text-purple-900'
                     };
