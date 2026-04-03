@@ -293,6 +293,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         // CATEGORY SELECTION
         const categoryButtons = document.querySelectorAll('.btn-category');
         const categoryInput = document.getElementById('selected-category');
+        const showBoardToggle = document.querySelector('input[type="checkbox"][data-show-board]');
 
         categoryButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -574,6 +575,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         include __DIR__ . '/../app/Views/Components/Form-ConfirmationAspirasi.php';
     ?>
 
+    <script src="./js/toast.js"></script>
     <script src="./js/confirmation-modal.js"></script>
     <script>
         // ==========================================
@@ -643,17 +645,23 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         // MODAL LOGIC
         const modal = document.getElementById('modal-confirm');
         const modalBox = document.getElementById('modal-box');
-        const btnKirimAspirasi = document.getElementById('btn-show-confirm'); 
+        const btnKirimAspirasi = document.getElementById('btn-show-confirm');
+        const showBoardCheckbox = document.querySelector('input[data-show-board]');
 
         if (btnKirimAspirasi) {
             btnKirimAspirasi.addEventListener('click', function(e) {
-                e.preventDefault(); // Mencegah form submit beneran sebelum konfirmasi
+                e.preventDefault();
 
                 // 1. Ambil Data
-                const kategori = document.getElementById('selected-category').value;
-                const subjek = document.getElementById('aspirasi-subjek').value;
-                const detail = document.getElementById('aspirasi-detail').value;
-                const isAnonim = document.querySelector('input[type="checkbox"]').checked; 
+                const kategoriEl = document.getElementById('selected-category');
+                const kategori = kategoriEl ? kategoriEl.value : 'Akademik';
+                const subjekEl = document.getElementById('aspirasi-subjek');
+                const subjek = subjekEl ? subjekEl.value : '';
+                const detailEl = document.getElementById('aspirasi-detail');
+                const detail = detailEl ? detailEl.value : '';
+                const anonimCheckboxEl = document.querySelector('input[type="checkbox"]:not([data-show-board])');
+                const isAnonim = anonimCheckboxEl ? anonimCheckboxEl.checked : false;
+                const showOnBoard = showBoardCheckbox ? showBoardCheckbox.checked : false;
                 
                 const previewImgSrc = document.getElementById('image-preview').src;
                 const hasImage = !document.getElementById('preview-container').classList.contains('hidden');
@@ -682,9 +690,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                     return text.replace(/[&<>"']/g, function(m) { return map[m]; });
                 }
 
-                // Lalu pake:
                 document.getElementById('confirm-subjek').textContent = escapeHtml(subjek) || "(Tanpa Subjek)";
-
                 document.getElementById('confirm-detail').innerText = detail || "(Tanpa Detail)";
                 
                 const imgWrapper = document.getElementById('confirm-img-wrapper');
@@ -696,8 +702,12 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                 }
 
                 document.getElementById('confirm-anonim-status').style.display = isAnonim ? 'flex' : 'none';
+                document.getElementById('confirm-board-status').style.display = showOnBoard ? 'flex' : 'none';
 
-                // 4. Tampilkan Modal
+                // 4. Store board status in data attribute for later
+                document.getElementById('final-submit').dataset.showOnBoard = showOnBoard ? '1' : '0';
+
+                // 5. Tampilkan Modal
                 modal.classList.remove('hidden');
                 setTimeout(() => {
                     modalBox.classList.remove('scale-95', 'opacity-0');
@@ -740,41 +750,56 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         // Event listener untuk tombol Kirim Sekarang
         const finalSubmitBtn = document.getElementById('final-submit');
         if (finalSubmitBtn) {
-            finalSubmitBtn.addEventListener('click', function() {
-                // Simpan data ke FormData atau kirim ke server
+            finalSubmitBtn.addEventListener('click', async function() {
                 const formData = new FormData();
                 formData.append('kategori', document.getElementById('selected-category').value);
                 formData.append('subjek', document.getElementById('aspirasi-subjek').value);
                 formData.append('detail', document.getElementById('aspirasi-detail').value);
-                formData.append('anonim', document.querySelector('input[type="checkbox"]').checked ? '1' : '0');
+                formData.append('anonim', document.querySelector('input[type="checkbox"]:not([data-show-board])').checked ? '1' : '0');
+                formData.append('show_on_board', this.dataset.showOnBoard || '0');
                 
-                // Tambahkan file jika ada
                 const fileInput = document.getElementById('bukti_foto');
                 if (fileInput.files[0]) {
                     formData.append('bukti_foto', fileInput.files[0]);
                 }
 
-                // Simulasi pengiriman data
-                alert('Aspirasi berhasil dikirim!');
-                closeModal();
-                
-                // Reset form setelah pengiriman
-                document.getElementById('aspirasi-subjek').value = '';
-                document.getElementById('aspirasi-detail').value = '';
-                document.querySelector('input[type="checkbox"]').checked = false;
-                document.getElementById('bukti_foto').value = '';
-                document.getElementById('preview-container').classList.add('hidden');
-                document.getElementById('upload-placeholder').classList.remove('hidden');
-                
-                // Reset kategori ke default
-                const categoryButtons = document.querySelectorAll('.btn-category');
-                categoryButtons.forEach(btn => {
-                    btn.classList.remove('active', 'text-white');
-                    btn.classList.add('text-gray-500');
-                });
-                categoryButtons[0].classList.add('active', 'text-white');
-                categoryButtons[0].classList.remove('text-gray-500');
-                document.getElementById('selected-category').value = 'Akademik';
+                try {
+                    const response = await fetch('./api/submit-aspirasi.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert('Aspirasi berhasil dikirim!');
+                        closeModal();
+                        
+                        document.getElementById('aspirasi-subjek').value = '';
+                        document.getElementById('aspirasi-detail').value = '';
+                        const anonimCheckbox = document.querySelector('input[type="checkbox"]:not([data-show-board])');
+                        if (anonimCheckbox) anonimCheckbox.checked = false;
+                        const boardToggle = document.querySelector('input[data-show-board]');
+                        if (boardToggle) boardToggle.checked = false;
+                        document.getElementById('bukti_foto').value = '';
+                        document.getElementById('preview-container').classList.add('hidden');
+                        document.getElementById('upload-placeholder').classList.remove('hidden');
+                        
+                        const categoryButtons = document.querySelectorAll('.btn-category');
+                        categoryButtons.forEach(btn => {
+                            btn.classList.remove('active', 'text-white', 'bg-blue-900');
+                            btn.classList.add('text-gray-500', 'hover:bg-gray-50');
+                        });
+                        categoryButtons[0].classList.add('active', 'text-white', 'bg-blue-900');
+                        categoryButtons[0].classList.remove('text-gray-500', 'hover:bg-gray-50');
+                        document.getElementById('selected-category').value = 'Akademik';
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Submit error:', error);
+                    alert('Terjadi kesalahan saat mengirim aspirasi');
+                }
             });
         }
     </script>

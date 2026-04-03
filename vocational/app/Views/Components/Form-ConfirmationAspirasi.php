@@ -28,6 +28,10 @@
                 <i data-lucide="shield-check" class="w-4 h-4"></i>
                 KIRIM SEBAGAI ANONIM
             </div>
+            <div id="confirm-board-status" class="flex items-center gap-2 text-xs font-bold text-purple-600">
+                <i data-lucide="message-square" class="w-4 h-4"></i>
+                TAMPIL DI PAPAN BULETIN
+            </div>
         </div>
 
         <div class="flex gap-3">

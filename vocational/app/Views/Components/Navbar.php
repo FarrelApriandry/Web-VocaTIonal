@@ -5,7 +5,8 @@
     </div>
     
     <div class="hidden md:flex gap-8 text-sm font-medium text-gray-500 uppercase tracking-wider">
-        <a href="#" class="<?= $active == 'beranda' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Beranda</a>
+        <a href="./" class="<?= $active == 'beranda' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Beranda</a>
+        <a href="./bulletin-board.php" class="<?= $active == 'papan-buletin' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Papan Buletin</a>
         <a href="#" class="<?= $active == 'riwayat' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Riwayat</a>
         <a href="#" class="<?= $active == 'panduan' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Panduan</a>
     </div>
