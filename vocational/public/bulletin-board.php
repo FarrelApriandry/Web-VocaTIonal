@@ -1,4 +1,5 @@
 <?php 
+
 // START SESSION
 session_start();
 
@@ -19,6 +20,7 @@ require_once __DIR__ . '/../app/Controllers/Auth.php';
 $auth = new Auth();
 $isLoggedIn = $auth->check();
 $user = $isLoggedIn ? $auth->user() : null;
+
 ?>
 
 <main class="mx-auto px-6 md:px-16 py-8 md:py-16">
@@ -34,31 +36,31 @@ $user = $isLoggedIn ? $auth->user() : null;
 
     <!-- Category Filter -->
     <div class="mb-8 flex flex-wrap gap-3 md:gap-4">
-        <button class="category-filter px-6 py-2 bg-blue-900 text-white rounded-full font-semibold transition-all active"
+        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-blue-900 text-white rounded-full font-semibold transition-all active"
                 data-category="all">
             Semua
         </button>
-        <button class="category-filter px-6 py-2 bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
+        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
                 data-category="Akademik">
             Akademik
         </button>
-        <button class="category-filter px-6 py-2 bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
+        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
                 data-category="Fasilitas">
             Fasilitas
         </button>
-        <button class="category-filter px-6 py-2 bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
+        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
                 data-category="Sarpras">
             Sarpras
         </button>
-        <button class="category-filter px-6 py-2 bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
+        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
                 data-category="Layanan">
             Layanan
         </button>
-        <button class="category-filter px-6 py-2 bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
+        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
                 data-category="UKT">
             UKT
         </button>
-        <button class="category-filter px-6 py-2 bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
+        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
                 data-category="Lainnya">
             Lainnya
         </button>
@@ -261,10 +263,10 @@ $user = $isLoggedIn ? $auth->user() : null;
         btn.addEventListener('click', function() {
             document.querySelectorAll('.category-filter').forEach(b => {
                 b.classList.remove('bg-blue-900', 'text-white');
-                b.classList.add('bg-gray-100', 'text-gray-900', 'hover:bg-gray-200');
+                b.classList.add('bg-gray-100', 'text-gray-900', 'hover:bg-gray-200', 'border-gray-300');
             });
             this.classList.add('bg-blue-900', 'text-white');
-            this.classList.remove('bg-gray-100', 'text-gray-900', 'hover:bg-gray-200');
+            this.classList.remove('bg-gray-100', 'text-gray-900', 'hover:bg-gray-200', 'border-gray-300');
             
             currentCategory = this.dataset.category;
             currentPage = 1;
