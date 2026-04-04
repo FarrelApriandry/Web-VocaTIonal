@@ -263,10 +263,10 @@ $user = $isLoggedIn ? $auth->user() : null;
         btn.addEventListener('click', function() {
             document.querySelectorAll('.category-filter').forEach(b => {
                 b.classList.remove('bg-blue-900', 'text-white');
-                b.classList.add('bg-gray-100', 'text-gray-900', 'hover:bg-gray-200', 'border-gray-300');
+                b.classList.add('bg-gray-100', 'text-gray-900', 'hover:bg-gray-200', 'border-gray-200');
             });
             this.classList.add('bg-blue-900', 'text-white');
-            this.classList.remove('bg-gray-100', 'text-gray-900', 'hover:bg-gray-200', 'border-gray-300');
+            this.classList.remove('bg-gray-100', 'text-gray-900', 'hover:bg-gray-200', 'border-gray-200');
             
             currentCategory = this.dataset.category;
             currentPage = 1;
