@@ -182,6 +182,13 @@ include $appDir . '/Views/Components/Navbar.php';
     </div>
 </main>
 
+<?php 
+    // Include confirmation modal
+    include $appDir . '/Views/Components/ConfirmationModal.php';
+?>
+
+<script src="/js/confirmation-modal.js"></script>
+
 <script>
     // Session timer
     function updateSessionTimer() {
@@ -202,12 +209,5 @@ include $appDir . '/Views/Components/Navbar.php';
         lucide.createIcons();
     }
 </script>
-
-<?php 
-    // Include confirmation modal
-    include $appDir . '/Views/Components/ConfirmationModal.php';
-?>
-
-<script src="/js/confirmation-modal.js"></script>
 </body>
 </html>
