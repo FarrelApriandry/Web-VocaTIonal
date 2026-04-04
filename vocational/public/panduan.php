@@ -62,8 +62,8 @@ include $appDir . '/Views/Components/Navbar.php';
                             </div>
                         </div>
                         <div class="flex-1">
-                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Buat Akun & Login</h3>
-                            <p class="text-gray-600 mb-4">Kamu perlu login terlebih dahulu menggunakan NPM dan password yang telah ditetapkan. Setiap mahasiswa dari prodi Teknologi Informasi memiliki akses otomatis ke platform ini.</p>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-3">Login Menggunakan NPM</h3>
+                            <p class="text-gray-600 mb-4">Kamu perlu login terlebih dahulu menggunakan NPM yang telah terdaftar. Setiap mahasiswa dari prodi Teknologi Informasi memiliki akses otomatis ke platform ini.</p>
                             <ul class="space-y-2 text-gray-600">
                                 <li class="flex items-center gap-2">
                                     <span class="text-blue-900">✓</span>
@@ -71,11 +71,11 @@ include $appDir . '/Views/Components/Navbar.php';
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-blue-900">✓</span>
-                                    Gunakan password default yang diberikan
+                                    Jangan simpan password di browser untuk keamanan ekstra
                                 </li>
                                 <li class="flex items-center gap-2">
                                     <span class="text-blue-900">✓</span>
-                                    Ganti password di halaman Settings untuk keamanan
+                                    Gunakan Incognito Mode jika login di komputer umum
                                 </li>
                             </ul>
                         </div>
@@ -124,11 +124,11 @@ include $appDir . '/Views/Components/Navbar.php';
                                 </div>
                                 <div class="bg-gray-50 rounded-lg p-3 text-center">
                                     <p class="font-semibold text-gray-900">Sarpras</p>
-                                    <p class="text-xs text-gray-500 mt-1">Ruangan, lab, etc</p>
+                                    <p class="text-xs text-gray-500 mt-1">Proyektor, Komputer, etc</p>
                                 </div>
                                 <div class="bg-gray-50 rounded-lg p-3 text-center">
                                     <p class="font-semibold text-gray-900">Layanan</p>
-                                    <p class="text-xs text-gray-500 mt-1">Ruangan, lab, etc</p>
+                                    <p class="text-xs text-gray-500 mt-1">Pengaduan, Sistem Informasi, etc</p>
                                 </div>
                                 <div class="bg-gray-50 rounded-lg p-3 text-center">
                                     <p class="font-semibold text-gray-900">UKT</p>

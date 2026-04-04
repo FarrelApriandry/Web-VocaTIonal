@@ -750,60 +750,77 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         });
 
         // Event listener untuk tombol Kirim Sekarang
-        const finalSubmitBtn = document.getElementById('final-submit');
-        if (finalSubmitBtn) {
-            finalSubmitBtn.addEventListener('click', async function() {
-                const formData = new FormData();
-                formData.append('kategori', document.getElementById('selected-category').value);
-                formData.append('subjek', document.getElementById('aspirasi-subjek').value);
-                formData.append('detail', document.getElementById('aspirasi-detail').value);
-                formData.append('anonim', document.querySelector('input[type="checkbox"]:not([data-show-board])').checked ? '1' : '0');
-                formData.append('show_on_board', this.dataset.showOnBoard || '0');
-                
-                const fileInput = document.getElementById('bukti_foto');
-                if (fileInput.files[0]) {
-                    formData.append('bukti_foto', fileInput.files[0]);
-                }
+         const finalSubmitBtn = document.getElementById('final-submit');
+         if (finalSubmitBtn) {
+             finalSubmitBtn.addEventListener('click', async function() {
+                 try {
+                     // Get all form elements safely
+                     const kategoriEl = document.getElementById('selected-category');
+                     const subjekEl = document.getElementById('aspirasi-subjek');
+                     const detailEl = document.getElementById('aspirasi-detail');
+                     const anonimCheckboxEl = document.querySelector('input[type="checkbox"]:not([data-show-board])');
+                     const fileInput = document.getElementById('bukti_foto');
+                     
+                     // Validate all elements exist
+                     if (!kategoriEl || !subjekEl || !detailEl || !anonimCheckboxEl) {
+                         console.error('Form elements not found');
+                         alert('Terjadi kesalahan: Form tidak lengkap');
+                         return;
+                     }
+                     
+                     const formData = new FormData();
+                     formData.append('kategori', kategoriEl.value || 'Akademik');
+                     formData.append('subjek', subjekEl.value);
+                     formData.append('detail', detailEl.value);
+                     formData.append('anonim', anonimCheckboxEl.checked ? '1' : '0');
+                     formData.append('show_on_board', this.dataset.showOnBoard || '0');
+                     
+                     if (fileInput && fileInput.files[0]) {
+                         formData.append('bukti_foto', fileInput.files[0]);
+                     }
 
-                try {
-                    const response = await fetch('./api/submit-aspirasi.php', {
-                        method: 'POST',
-                        body: formData
-                    });
+                     const response = await fetch('./api/submit-aspirasi.php', {
+                         method: 'POST',
+                         body: formData
+                     });
 
-                    const result = await response.json();
+                     const result = await response.json();
 
-                    if (result.success) {
-                        alert('Aspirasi berhasil dikirim!');
-                        closeModal();
-                        
-                        document.getElementById('aspirasi-subjek').value = '';
-                        document.getElementById('aspirasi-detail').value = '';
-                        const anonimCheckbox = document.querySelector('input[type="checkbox"]:not([data-show-board])');
-                        if (anonimCheckbox) anonimCheckbox.checked = false;
-                        const boardToggle = document.querySelector('input[data-show-board]');
-                        if (boardToggle) boardToggle.checked = false;
-                        document.getElementById('bukti_foto').value = '';
-                        document.getElementById('preview-container').classList.add('hidden');
-                        document.getElementById('upload-placeholder').classList.remove('hidden');
-                        
-                        const categoryButtons = document.querySelectorAll('.btn-category');
-                        categoryButtons.forEach(btn => {
-                            btn.classList.remove('active', 'text-white', 'bg-blue-900');
-                            btn.classList.add('text-gray-500', 'hover:bg-gray-50');
-                        });
-                        categoryButtons[0].classList.add('active', 'text-white', 'bg-blue-900');
-                        categoryButtons[0].classList.remove('text-gray-500', 'hover:bg-gray-50');
-                        document.getElementById('selected-category').value = 'Akademik';
-                    } else {
-                        alert('Error: ' + result.message);
-                    }
-                } catch (error) {
-                    console.error('Submit error:', error);
-                    alert('Terjadi kesalahan saat mengirim aspirasi');
-                }
-            });
-        }
+                     if (result.success) {
+                         alert('Aspirasi berhasil dikirim!');
+                         closeModal();
+                         
+                         // Reset form
+                         subjekEl.value = '';
+                         detailEl.value = '';
+                         if (anonimCheckboxEl) anonimCheckboxEl.checked = false;
+                         const boardToggle = document.querySelector('input[data-show-board]');
+                         if (boardToggle) boardToggle.checked = false;
+                         if (fileInput) fileInput.value = '';
+                         const previewContainer = document.getElementById('preview-container');
+                         const uploadPlaceholder = document.getElementById('upload-placeholder');
+                         if (previewContainer) previewContainer.classList.add('hidden');
+                         if (uploadPlaceholder) uploadPlaceholder.classList.remove('hidden');
+                         
+                         const categoryButtons = document.querySelectorAll('.btn-category');
+                         categoryButtons.forEach(btn => {
+                             btn.classList.remove('active', 'text-white', 'bg-blue-900');
+                             btn.classList.add('text-gray-500', 'hover:bg-gray-50');
+                         });
+                         if (categoryButtons[0]) {
+                             categoryButtons[0].classList.add('active', 'text-white', 'bg-blue-900');
+                             categoryButtons[0].classList.remove('text-gray-500', 'hover:bg-gray-50');
+                         }
+                         kategoriEl.value = 'Akademik';
+                     } else {
+                         alert('Error: ' + (result.message || 'Gagal mengirim aspirasi'));
+                     }
+                 } catch (error) {
+                     console.error('Submit error:', error);
+                     alert('Terjadi kesalahan saat mengirim aspirasi: ' + error.message);
+                 }
+             });
+         }
     </script>
 </body>
 </html>

@@ -13,14 +13,14 @@ $defaultAdminPass = password_hash('admin123', PASSWORD_BCRYPT);
 $migrations = [
     // Versi 1.0: Initial Tables
     "CREATE TABLE IF NOT EXISTS mhs_whitelist (
-        npm CHAR(10) PRIMARY KEY,
-        nama CHAR(100)
+        npm VARCHAR(10) PRIMARY KEY,
+        nama VARCHAR(100)
     )",
     
     // Versi 1.0: Tabel aspirasi
     "CREATE TABLE IF NOT EXISTS aspirasi (
         id_aspirasi INT AUTO_INCREMENT PRIMARY KEY,
-        npm_pelapor VARCHAR(15),
+        npm_pelapor VARCHAR(10),
         judul VARCHAR(255),
         deskripsi TEXT,
         kategori ENUM('Akademik', 'Fasilitas', 'Sarpras', 'Layanan', 'UKT', 'Lainnya'),
@@ -107,6 +107,9 @@ $migrations = [
         ('2410506016', 'Dzakii Luqman Faid'),
         ('2420506047', 'Muhammad Asyrof')
     ",
+
+    // Versi 2.5: Insert anonim record for anonymized aspirations
+    "INSERT IGNORE INTO mhs_whitelist (npm, nama) VALUES ('anonim', 'anonim')",
 ];
 
 try {

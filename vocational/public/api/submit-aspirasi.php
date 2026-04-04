@@ -33,22 +33,27 @@ try {
     $anonim = isset($_POST['anonim']) && $_POST['anonim'] === '1' ? true : false;
     $showOnBoard = isset($_POST['show_on_board']) && $_POST['show_on_board'] === '1' ? true : false;
 
+    
     // Validation
     if (!$judul || !trim($judul)) {
-        http_response_code(400);
-        die(json_encode(['success' => false, 'message' => 'Judul tidak boleh kosong']));
-    }
-
-    if (!$deskripsi || !trim($deskripsi)) {
+            http_response_code(400);
+            die(json_encode(['success' => false, 'message' => 'Judul tidak boleh kosong']));
+        }
+        
+        if (!$deskripsi || !trim($deskripsi)) {
         http_response_code(400);
         die(json_encode(['success' => false, 'message' => 'Deskripsi tidak boleh kosong']));
     }
-
+    
     if (!$kategori) {
         http_response_code(400);
         die(json_encode(['success' => false, 'message' => 'Kategori harus dipilih']));
+        }
+        
+    // If anonim is true, set npm_pelapor to "anonim" for privacy
+    if ($anonim) {
+        $npm = "anonim";
     }
-
     // Validate kategori
     $validCategories = ['Akademik', 'Fasilitas', 'Sarpras', 'Layanan', 'UKT', 'Lainnya'];
     if (!in_array($kategori, $validCategories)) {
