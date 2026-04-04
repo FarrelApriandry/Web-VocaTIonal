@@ -1,8 +1,11 @@
 <!-- @Views/Components/Navbar.php -->
 <nav class="bg-white border-b border-gray-200 px-6 md:px-16 py-3 flex justify-between items-center shadow-[0_4px_4px_0_rgba(0,0,0,0.25)] sticky top-0 z-50">
-    <div class="flex items-center">
-        <img src="/assets/img/logo-himatif.svg" alt="logo himatif" class="h-10 w-auto object-contain">
-    </div>
+    <button id="logo-button" type="button" 
+            class="hover:scale-110 transition-transform duration-200 bg-transparent border-none p-0 cursor-pointer">
+        <div class="flex items-center">
+            <img src="/assets/img/logo-himatif.svg" alt="logo himatif" class="h-10 w-auto object-contain">
+        </div>
+    </button>
     
     <!-- Desktop Navigation -->
     <div class="hidden md:flex gap-8 text-sm font-medium text-gray-500 uppercase tracking-wider">
@@ -61,7 +64,7 @@
             <a href="#" class="py-3 px-4 text-sm font-medium rounded-lg transition-colors <?= $active == 'riwayat' ? 'bg-blue-50 text-blue-900' : 'text-gray-600 hover:bg-gray-50' ?>">
                 Riwayat
             </a>
-            <a href="#" class="py-3 px-4 text-sm font-medium rounded-lg transition-colors <?= $active == 'panduan' ? 'bg-blue-50 text-blue-900' : 'text-gray-600 hover:bg-gray-50' ?>">
+            <a href="/panduan.php" class="py-3 px-4 text-sm font-medium rounded-lg transition-colors <?= $active == 'panduan' ? 'bg-blue-50 text-blue-900' : 'text-gray-600 hover:bg-gray-50' ?>">
                 Panduan
             </a>
         </div>
@@ -105,6 +108,13 @@
                 if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
                     mobileMenu.classList.add('hidden');
                 }
+            });
+        }
+
+        const logoButton = document.getElementById('logo-button');
+        if (logoButton) {
+            logoButton.addEventListener('click', function() {
+                window.location.href = '/';
             });
         }
 
