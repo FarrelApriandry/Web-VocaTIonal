@@ -22,13 +22,16 @@ jobs:
           key: ${{ secrets.SSHKEY }}
           script: |
             # 0. Pindah ke direktori proyek
-            cd ~/Web-VocaTIonal/vocational
+            cd ~/Web-VocaTIonal/
 
             # 1. Reset perubahan lokal (jika ada) untuk menghindari konflik saat pull
             git checkout .
             
             # 2. Pull kode terbaru dari main
             git pull origin main
+
+            # 3. Pindah ke direktori aplikasi
+            cd ~/Web-VocaTIonal/vocational/
             
             # 3. Rebuild & Restart Container
             docker compose up -d --build
