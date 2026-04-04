@@ -6,9 +6,13 @@ session_start();
 $title = "VocaTIonal | Papan Buletin";
 $active = "papan-buletin";
 
-// Import components
-include __DIR__ . '/../app/Views/Components/Header.php';
-include __DIR__ . '/../app/Views/Components/Navbar.php';
+// Determine base paths
+$publicDir = dirname(__FILE__); // /var/www/html/public
+$appDir = dirname($publicDir) . '/app'; // /var/www/html/app
+
+// Import header & navbar
+include $appDir . '/Views/Components/Header.php';
+include $appDir . '/Views/Components/Navbar.php';
 
 // Check auth
 require_once __DIR__ . '/../app/Controllers/Auth.php';
