@@ -10,6 +10,8 @@ services:
     volumes:
       - ./:/var/www/html
       - ./docker/apache/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     networks:
       - vocational-network
     depends_on:
@@ -22,8 +24,11 @@ services:
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      TZ: Asia/Jakarta
     volumes:
       - db_data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     networks:
       - vocational-network
 
@@ -34,6 +39,7 @@ services:
       PMA_HOST: db
       PMA_ARBITRARY: 1
       MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      TZ: Asia/Jakarta
     ports:
       - "127.0.0.1:8081:80"
     networks:
