@@ -184,24 +184,73 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
 
     <script>
         // SKELETON TO CONTENT TRANSITION LOGIC
+        // Check login status from PHP
+        const isLoggedInUser = <?= $isLoggedIn ? 'true' : 'false' ?>;
+        
         window.addEventListener('DOMContentLoaded', () => {
             const skeleton = document.getElementById('skeleton-loader');
             const content = document.getElementById('main-content');
 
-            setTimeout(() => {
-                skeleton.classList.add('fade-out');
-
+            // JIKA SUDAH LOGIN, LANGSUNG FADE OUT SKELETON
+            if (isLoggedInUser) {
                 setTimeout(() => {
-                    skeleton.style.display = 'none';
-                    content.classList.remove('hidden');
+                    skeleton.classList.add('fade-out');
+
+                    setTimeout(() => {
+                        skeleton.style.display = 'none';
+                        content.classList.remove('hidden');
+                        
+                        setTimeout(() => {
+                            content.classList.add('fade-in');
+                            lucide.createIcons();
+                        }, 50);
+                    }, 500); 
+                }, 1500);
+            } else {
+                // JIKA BELUM LOGIN, SKELETON TETAP VISIBLE DI BACKGROUND MODAL
+                // Jangan hide skeleton, let it stay behind modal
+                // Modal akan tampil di atas skeleton
+            }
+        });
+        
+        // HANDLE SUCCESSFUL LOGIN - HIDE SKELETON & SHOW CONTENT
+        function handleLoginSuccess() {
+            try {
+                const skeleton = document.getElementById('skeleton-loader');
+                const content = document.getElementById('main-content');
+                const modal = document.getElementById('login-modal');
+                
+                // Hide modal
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+                
+                // Fade out skeleton
+                if (skeleton) {
+                    skeleton.classList.add('fade-out');
+                }
+                
+                setTimeout(() => {
+                    if (skeleton) {
+                        skeleton.style.display = 'none';
+                    }
+                    if (content) {
+                        content.classList.remove('hidden');
+                    }
                     
                     setTimeout(() => {
-                        content.classList.add('fade-in');
-                        lucide.createIcons();
+                        if (content) {
+                            content.classList.add('fade-in');
+                        }
+                        if (typeof lucide !== 'undefined') {
+                            lucide.createIcons();
+                        }
                     }, 50);
-                }, 500); 
-            }, 1500);
-        });
+                }, 500);
+            } catch (e) {
+                console.error('Error in handleLoginSuccess:', e);
+            }
+        }
         
         // CATEGORY SELECTION
         const categoryButtons = document.querySelectorAll('.btn-category');
@@ -422,8 +471,18 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                             // Update button text to "Mengalihkan halaman..."
                             this.innerText = 'Mengalihkan halaman...';
                             
-                            // Show success alert
-                            alert('Login berhasil! Selamat datang, ' + result.user.nama);
+                            // Try to get nama dari result jika parsing error
+                            let displayName = 'Pengguna';
+                            try {
+                                const fallbackResult = JSON.parse(responseText);
+                                displayName = fallbackResult.user?.nama || 'Pengguna';
+                                console.log('Fallback nama:', displayName);
+                            } catch(e) {
+                                console.warn('Fallback parse error:', e);
+                                displayName = 'Pengguna'; // Fallback ke generic
+                            }
+                            
+                            alert(`Login berhasil! Selamat datang, ${displayName}.`);
                             
                             // Wait 2 seconds then redirect/reload
                             setTimeout(() => {
@@ -448,18 +507,10 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                             // session might have been created. Auto-redirect.
                             this.innerText = 'Mengalihkan halaman...';
                             
-                            // Try to get nama dari result jika parsing error
-                            let displayName = 'Pengguna';
-                            try {
-                                const fallbackResult = JSON.parse(responseText);
-                                displayName = fallbackResult.user?.nama || 'Pengguna';
-                                console.log('Fallback nama:', displayName);
-                            } catch(e) {
-                                console.warn('Fallback parse error:', e);
-                                displayName = 'Pengguna'; // Fallback ke generic
-                            }
+                            // Call handleLoginSuccess to hide skeleton & show content
+                            handleLoginSuccess();
                             
-                            alert(`Login berhasil! Selamat datang, ${displayName}. Mengalihkan halaman...`);
+                            // Then reload after 2 seconds
                             setTimeout(() => {
                                 window.location.href = window.location.href;
                             }, 2000);
