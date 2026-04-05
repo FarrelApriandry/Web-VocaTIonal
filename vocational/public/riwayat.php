@@ -161,78 +161,33 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                 if (filters.kategori) params.append('kategori', filters.kategori);
                 if (filters.status) params.append('status', filters.status);
 
-                console.log('🔍 DEBUG: Fetching riwayat with params:', Object.fromEntries(params));
                 const response = await fetch('./api/get-riwayat.php?' + params.toString());
                 const result = await response.json();
-                
-                console.log('📊 DEBUG: API Response:', result);
-                console.log('  - Success:', result.success);
-                console.log('  - Data count:', result.data?.length || 0);
-                console.log('  - Total:', result.total);
-                if (result._debug) {
-                    console.log('  - User NPM:', result._debug.user_npm);
-                    console.log('  - Filters:', result._debug.filters);
-                    console.log('  - Raw count:', result._debug.raw_count);
-                    console.log('  - Formatted count:', result._debug.formatted_count);
-                }
 
                 if (!result.success) {
-                    console.error('❌ ERROR:', result.message);
                     alert('Error: ' + result.message);
                     return;
                 }
 
                 // Hide skeleton, show content
-                console.log('🔄 VISIBILITY DEBUG: Before changes');
-                console.log('  - skeleton classList:', skeleton.className);
-                console.log('  - content classList:', content.className);
-                
                 skeleton.classList.add('hidden');
                 content.classList.remove('hidden');
-                content.style.opacity = '1'; // FIX: Ensure content is fully visible
-                
-                console.log('🔄 VISIBILITY DEBUG: After changes');
-                console.log('  - skeleton classList:', skeleton.className);
-                console.log('  - content classList:', content.className);
-                console.log('  - content has "hidden" class:', content.classList.contains('hidden'));
-                console.log('  - content.style.opacity:', content.style.opacity);
-                
-                // Check computed styles
-                const contentComputed = window.getComputedStyle(content);
-                console.log('🔍 COMPUTED STYLES:');
-                console.log('  - display:', contentComputed.display);
-                console.log('  - visibility:', contentComputed.visibility);
-                console.log('  - opacity:', contentComputed.opacity);
-                console.log('  - height:', contentComputed.height);
-                console.log('  - width:', contentComputed.width);
-                
-                // Check parent visibility
-                const mainComputed = window.getComputedStyle(content.parentElement);
-                console.log('🔍 PARENT (<main>) COMPUTED:');
-                console.log('  - display:', mainComputed.display);
-                console.log('  - visibility:', mainComputed.visibility);
+                content.style.opacity = '1';
 
                 // Clear table
                 tableBody.innerHTML = '';
 
                 if (result.data.length === 0) {
-                    console.warn('⚠️ DEBUG: No data returned, showing empty state');
                     emptyState.classList.remove('hidden');
                     tableBody.parentElement.parentElement.style.display = 'none';
                     return;
                 }
 
-                console.log('✅ SUCCESS: Found', result.data.length, 'aspirations');
                 emptyState.classList.add('hidden');
                 tableBody.parentElement.parentElement.style.display = 'block';
 
                 // Populate table
-                console.log('📋 TABLE DEBUG: tableBody element:', tableBody);
-                console.log('📋 TABLE DEBUG: tableBody parent (table):', tableBody.parentElement);
-                console.log('📋 TABLE DEBUG: tableBody grandparent (overflow-x-auto):', tableBody.parentElement.parentElement);
-                
-                result.data.forEach((item, index) => {
-                    console.log(`  [${index}] ID: ${item.id_aspirasi}, Judul: ${item.judul}`);
+                result.data.forEach((item) => {
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-gray-50 transition-colors';
                     row.innerHTML = `
@@ -255,25 +210,13 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                             </button>
                         </td>
                     `;
-                    console.log('📝 Row created:', row);
                     tableBody.appendChild(row);
-                    console.log('✅ Row appended, tableBody children count:', tableBody.children.length);
                 });
 
-                console.log('🎨 Calling lucide.createIcons()...');
-                try {
-                    if (typeof lucide !== 'undefined') {
-                        lucide.createIcons();
-                        console.log('✅ Lucide icons created');
-                    } else {
-                        console.warn('⚠️ Lucide not defined');
-                    }
-                } catch (err) {
-                    console.error('❌ Lucide error:', err);
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
                 }
-                console.log('✨ Table population complete');
             } catch (error) {
-                console.error('Load error:', error);
                 alert('Terjadi kesalahan saat memuat data');
             }
         }

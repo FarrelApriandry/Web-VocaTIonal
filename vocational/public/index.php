@@ -252,7 +252,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                     }, 50);
                 }, 500);
             } catch (e) {
-                console.error('Error in handleLoginSuccess:', e);
+                // Silent error handling
             }
         }
         
@@ -437,8 +437,6 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
             btnSubmit.addEventListener('click', async function(e) {
                 e.preventDefault();
 
-                console.log('Attempting login with NPM:', npmInput.value);
-                
                 const npm = npmInput.value.replace(/\./g, ''); // Hapus format
                 
                 if (npm.length !== 10) {
@@ -467,10 +465,6 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                         // Try to parse as JSON
                         const result = JSON.parse(responseText);
                         
-                        console.log('Full response:', JSON.stringify(result));
-                        console.log('User object:', result.user);
-                        console.log('User nama:', result.user?.nama);
-                        
                         if (result.success) {
                             // Update button text to "Mengalihkan halaman..."
                             this.innerText = 'Mengalihkan halaman...';
@@ -480,9 +474,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                             try {
                                 const fallbackResult = JSON.parse(responseText);
                                 displayName = fallbackResult.user?.nama || 'Pengguna';
-                                console.log('Fallback nama:', displayName);
                             } catch(e) {
-                                console.warn('Fallback parse error:', e);
                                 displayName = 'Pengguna'; // Fallback ke generic
                             }
                             
@@ -503,9 +495,6 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                     } catch (jsonError) {
                         // JSON parse error - likely server error or Cloudflare block
                         // But session might already be created on server
-                        console.warn('Response parse error:', jsonError);
-                        console.log('Raw response:', responseText);
-                        
                         if (response.ok && responseText.length < 500) {
                             // Likely a server error page, but if response is "ok" (200),
                             // session might have been created. Auto-redirect.
@@ -529,7 +518,6 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                     }
                 } catch (error) {
                     alert('Terjadi kesalahan. Silakan coba lagi.');
-                    console.error('Login error:', error);
                     this.innerText = originalText;
                     this.disabled = false;
                 }
@@ -599,7 +587,6 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                                     throw new Error('Logout gagal');
                                 }
                             } catch (error) {
-                                console.error('Logout error:', error);
                                 alert('Terjadi kesalahan saat logout. Silakan coba lagi.');
                             }
                         }
@@ -729,7 +716,6 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                      
                      // Validate all elements exist
                      if (!kategoriEl || !subjekEl || !detailEl || !anonimCheckboxEl) {
-                         console.error('Form elements not found');
                          alert('Terjadi kesalahan: Form tidak lengkap');
                          return;
                      }
@@ -782,7 +768,6 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                          alert('Error: ' + (result.message || 'Gagal mengirim aspirasi'));
                      }
                  } catch (error) {
-                     console.error('Submit error:', error);
                      alert('Terjadi kesalahan saat mengirim aspirasi: ' + error.message);
                  }
              });
