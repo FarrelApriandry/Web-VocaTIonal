@@ -1,6 +1,6 @@
 <?php 
 
-// START SESSION
+// Session start for auth check
 session_start();
 
 // Props
@@ -11,15 +11,22 @@ $active = "papan-buletin";
 $publicDir = dirname(__FILE__); // /var/www/html/public
 $appDir = dirname($publicDir) . '/app'; // /var/www/html/app
 
-// Import header & navbar
-include $appDir . '/Views/Components/Header.php';
-include $appDir . '/Views/Components/Navbar.php';
-
-// Check auth
-require_once __DIR__ . '/../app/Controllers/Auth.php';
+// Check login status using Auth class
+require_once $appDir . '/Controllers/Auth.php';
 $auth = new Auth();
 $isLoggedIn = $auth->check();
-$user = $isLoggedIn ? $auth->user() : null;
+
+// if Not LoggedIn, redirect to home page
+if (!$isLoggedIn) {
+    header('Location: ./');
+    exit;
+}
+
+$user = $auth->user();
+
+// Import header & navbar (SETELAH AUTH CHECK)
+include $appDir . '/Views/Components/Header.php';
+include $appDir . '/Views/Components/Navbar.php';
 
 ?>
 

@@ -1,5 +1,5 @@
 <?php
-// START SESSION
+// START SESSION SEBELUM OUTPUT APAPUN (PENTING!)
 session_start();
 
 // Props
@@ -10,7 +10,20 @@ $active = "panduan";
 $publicDir = dirname(__FILE__); // /var/www/html/public
 $appDir = dirname($publicDir) . '/app'; // /var/www/html/app
 
-// Import header & navbar
+// Check login status using Auth class SEBELUM OUTPUT - VALIDASI SESSION KETAT
+require_once $appDir . '/Controllers/Auth.php';
+$auth = new Auth();
+$isLoggedIn = $auth->check();
+
+// KALO BELUM LOGIN, REDIRECT KE HOME (HARUS SEBELUM INCLUDE HEADER)
+if (!$isLoggedIn) {
+    header('Location: ./');
+    exit;
+}
+
+$user = $auth->user();
+
+// Import header & navbar (SETELAH AUTH CHECK)
 include $appDir . '/Views/Components/Header.php';
 include $appDir . '/Views/Components/Navbar.php';
 ?>
