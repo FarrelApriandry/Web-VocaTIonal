@@ -24,7 +24,7 @@ if (!$isLoggedIn) {
 
 $user = $auth->user();
 
-// Import header & navbar (SETELAH AUTH CHECK)
+// Import header & navbar
 include $appDir . '/Views/Components/Header.php';
 include $appDir . '/Views/Components/Navbar.php';
 
@@ -295,14 +295,14 @@ include $appDir . '/Views/Components/Navbar.php';
 <style>
     .line-clamp-2 {
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
 
     .line-clamp-3 {
         display: -webkit-box;
-        -webkit-line-clamp: 3;
+        line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
