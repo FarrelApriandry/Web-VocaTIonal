@@ -11,7 +11,7 @@
     <div class="hidden md:flex gap-8 text-sm font-medium text-gray-500 uppercase tracking-wider">
         <a href="/" class="<?= $active == 'beranda' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Beranda</a>
         <a href="/bulletin-board.php" class="<?= $active == 'papan-buletin' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Papan Buletin</a>
-        <a href="#" class="<?= $active == 'riwayat' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Riwayat</a>
+        <a href="/riwayat.php" class="<?= $active == 'riwayat' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Riwayat</a>
         <a href="/panduan.php" class="<?= $active == 'panduan' ? 'text-blue-900 underline' : 'hover:text-blue-900' ?> transition-colors duration-200">Panduan</a>
     </div>
 
@@ -61,9 +61,9 @@
             <a href="/bulletin-board.php" class="py-3 px-4 text-sm font-medium rounded-lg transition-colors <?= $active == 'papan-buletin' ? 'bg-blue-50 text-blue-900' : 'text-gray-600 hover:bg-gray-50' ?>">
                 Papan Buletin
             </a>
-            <a href="#" class="py-3 px-4 text-sm font-medium rounded-lg transition-colors <?= $active == 'riwayat' ? 'bg-blue-50 text-blue-900' : 'text-gray-600 hover:bg-gray-50' ?>">
-                Riwayat
-            </a>
+             <a href="/riwayat.php" class="py-3 px-4 text-sm font-medium rounded-lg transition-colors <?= $active == 'riwayat' ? 'bg-blue-50 text-blue-900' : 'text-gray-600 hover:bg-gray-50' ?>">
+                 Riwayat
+             </a>
             <a href="/panduan.php" class="py-3 px-4 text-sm font-medium rounded-lg transition-colors <?= $active == 'panduan' ? 'bg-blue-50 text-blue-900' : 'text-gray-600 hover:bg-gray-50' ?>">
                 Panduan
             </a>

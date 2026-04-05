@@ -86,11 +86,74 @@ class Aspirasi
      */
     public function getByNpm($npm, $limit = 50, $offset = 0)
     {
-        $query = "SELECT * FROM aspirasi WHERE npm_pelapor = ? ORDER BY created_at DESC LIMIT ? OFFSET ?";
+        $query = "SELECT * FROM aspirasi WHERE npm_pelapor = ? ORDER BY created_at DESC LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute([$npm, $limit, $offset]);
+        $stmt->execute([$npm]);
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get aspirasi by npm_pelapor with kategori filter
+     */
+    public function getByNpmAndKategori($npm, $kategori, $limit = 50, $offset = 0)
+    {
+        $query = "SELECT * FROM aspirasi WHERE npm_pelapor = ? AND kategori = ? ORDER BY created_at DESC LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$npm, $kategori]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get aspirasi by npm_pelapor with status filter
+     */
+    public function getByNpmAndStatus($npm, $status, $limit = 50, $offset = 0)
+    {
+        $query = "SELECT * FROM aspirasi WHERE npm_pelapor = ? AND status = ? ORDER BY created_at DESC LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$npm, $status]);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get aspirasi by npm_pelapor with multiple filters
+     */
+    public function getByNpmWithFilters($npm, $filters = [], $limit = 50, $offset = 0)
+    {
+        $query = "SELECT * FROM aspirasi WHERE npm_pelapor = ?";
+        $params = [$npm];
+
+        if (!empty($filters['kategori'])) {
+            $query .= " AND kategori = ?";
+            $params[] = $filters['kategori'];
+        }
+
+        if (!empty($filters['status'])) {
+            $query .= " AND status = ?";
+            $params[] = $filters['status'];
+        }
+
+        $query .= " ORDER BY created_at DESC LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($params);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Count aspirasi by npm_pelapor
+     */
+    public function countByNpm($npm)
+    {
+        $query = "SELECT COUNT(*) as count FROM aspirasi WHERE npm_pelapor = ?";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([$npm]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $result['count'] ?? 0;
     }
 
     /**
