@@ -351,9 +351,34 @@ $title = "VocaTIonal | Kelola Aspirasi";
                 return;
             }
 
-            // Here you would typically make an AJAX call to update the status
-            alert(`Status aspirasi #${currentAspirationId} akan diupdate menjadi "${newStatus}"\n\n(Update endpoint belum diimplementasikan)`);
-            closeDetailModal();
+            // Send update request
+            fetch('./api/update-aspirasi-status.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id_aspirasi: currentAspirationId,
+                    status: newStatus
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Status berhasil diupdate!');
+                    closeDetailModal();
+                    // Refresh page to show updated data
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                } else {
+                    alert('Error: ' + (data.message || 'Gagal update status'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat update status');
+            });
         }
 
         // Initialize lucide icons
