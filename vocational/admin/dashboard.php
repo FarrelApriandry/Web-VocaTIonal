@@ -24,19 +24,23 @@ $pdo = Database::getConnection();
 try {
     // Total aspirations
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM aspirasi");
-    $totalAspirations = $stmt->fetch(\PDO::FETCH_ASSOC)['total'];
+    $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+    $totalAspirations = $result['total'] ?? 0;
 
     // Pending aspirations
     $stmt = $pdo->query("SELECT COUNT(*) as pending FROM aspirasi WHERE status = 'Pending'");
-    $pendingAspirations = $stmt->fetch(\PDO::FETCH_ASSOC)['pending'];
+    $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+    $pendingAspirations = $result['pending'] ?? 0;
 
     // On board
     $stmt = $pdo->query("SELECT COUNT(*) as on_board FROM aspirasi WHERE show_on_board = 1 AND board_approved = 1");
-    $onBoard = $stmt->fetch(\PDO::FETCH_ASSOC)['on_board'];
+    $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+    $onBoard = $result['on_board'] ?? 0;
 
     // Pending reports
     $stmt = $pdo->query("SELECT COUNT(*) as pending FROM aspirasi_reports WHERE status = 'pending'");
-    $pendingReports = $stmt->fetch(\PDO::FETCH_ASSOC)['pending'];
+    $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+    $pendingReports = $result['pending'] ?? 0;
 
     // Most reported aspirations
     $stmt = $pdo->query("
@@ -51,7 +55,7 @@ try {
         ORDER BY report_count DESC
         LIMIT 5
     ");
-    $mostReported = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    $mostReported = $stmt->fetchAll(\PDO::FETCH_ASSOC) ?: [];
 
 } catch (\Exception $e) {
     error_log('Dashboard stats error: ' . $e->getMessage());

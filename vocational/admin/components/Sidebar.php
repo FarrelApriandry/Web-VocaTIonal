@@ -1,8 +1,8 @@
 <?php
 // vocational/admin/components/Sidebar.php
 
-// Get current page from parameter
-$currentPage = $currentPage ?? 'dashboard';
+// Get current page from parameter with defensive check
+$currentPage = isset($currentPage) && !empty($currentPage) ? $currentPage : 'dashboard';
 ?>
 
 <!-- Sidebar -->
