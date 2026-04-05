@@ -41,9 +41,10 @@ $migrations = [
 
     // Versi 1.2: Tambah tabel admin_web
     "CREATE TABLE IF NOT EXISTS admin_web (
-        id_admin INT AUTO_INCREMENT PRIMARY KEY,
+        admin_id INT AUTO_INCREMENT PRIMARY KEY,
+        usn_adm VARCHAR(50) NOT NULL UNIQUE,
         pw_adm VARCHAR(255) NOT NULL,
-        role_adm ENUM('Kaprodi','Advokasi','Super_Admin')
+        role_adm ENUM('Kaprodi','Advokasi','Admin')
     )",
 
     // Versi 1.5: Tabel user sessions untuk tracking
@@ -95,7 +96,7 @@ $migrations = [
     "UPDATE aspirasi SET board_approved = 1 WHERE show_on_board = 1 AND board_approved = 0",
 
     // Versi 1.4: Insert default admin & whitelist with default hashing password php (PASSWORD_BCRYPT)
-    "INSERT IGNORE INTO admin_web (id_admin, pw_adm, role_adm) VALUES (1, '" . $defaultAdminPass . "', 'Super_Admin')",
+    "INSERT IGNORE INTO admin_web (id_admin, usn_adm, pw_adm, role_adm) VALUES (1, 'admin-prod', '" . $defaultAdminPass . "', 'Super_Admin')",
 
     // Versi 1.4: Insert data whitelist
     "INSERT IGNORE INTO mhs_whitelist (npm, nama) VALUES 
