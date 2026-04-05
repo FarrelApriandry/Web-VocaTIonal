@@ -96,7 +96,7 @@ $migrations = [
     "UPDATE aspirasi SET board_approved = 1 WHERE show_on_board = 1 AND board_approved = 0",
 
     // Versi 1.4: Insert default admin & whitelist with default hashing password php (PASSWORD_BCRYPT)
-    "INSERT IGNORE INTO admin_web (admin_id, usn_adm, pw_adm, role_adm) VALUES (1, 'admin-prod', '" . $defaultAdminPass . "', 'Super_Admin')",
+    "INSERT IGNORE INTO admin_web (admin_id, usn_adm, pw_adm, role_adm) VALUES (1, 'admin-prod', '" . $defaultAdminPass . "', 'Admin')",
 
     // Versi 1.4: Insert data whitelist
     "INSERT IGNORE INTO mhs_whitelist (npm, nama) VALUES 

@@ -28,7 +28,7 @@ class AdminAuth
             self::init();
 
             // Query admin dari database
-            $query = "SELECT id_admin, usn_adm, pw_adm, role_adm FROM admin_web WHERE usn_adm = ?";
+            $query = "SELECT admin_id, usn_adm, pw_adm, role_adm FROM admin_web WHERE usn_adm = ?";
             $stmt = self::$pdo->prepare($query);
             $stmt->execute([$usn_adm]);
             $admin = $stmt->fetch(\PDO::FETCH_ASSOC);
@@ -59,7 +59,7 @@ class AdminAuth
                 'success' => true,
                 'message' => 'Login berhasil',
                 'admin' => [
-                    'id' => $admin['id_admin'],
+                    'id' => $admin['admin_id'],
                     'username' => $admin['usn_adm'],
                     'role' => $admin['role_adm']
                 ]
@@ -131,7 +131,7 @@ class AdminAuth
                 return null;
             }
 
-            $query = "SELECT id_admin, usn_adm, role_adm FROM admin_web WHERE id_admin = ?";
+            $query = "SELECT admin_id, usn_adm, role_adm FROM admin_web WHERE admin_id = ?";
             $stmt = self::$pdo->prepare($query);
             $stmt->execute([$admin['id']]);
 
