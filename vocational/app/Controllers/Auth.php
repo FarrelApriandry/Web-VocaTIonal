@@ -98,11 +98,13 @@ class Auth {
         $logFile = __DIR__ . '/../Logs/security_' . date('Y-m-d') . '.log';
         $logDir = dirname($logFile);
         
+        // Suppress errors dengan @ operator - jika folder creation gagal, tetap lanjut
         if (!is_dir($logDir)) {
-            mkdir($logDir, 0755, true);
+            @mkdir($logDir, 0755, true);
         }
         
-        file_put_contents($logFile, json_encode($logEntry) . PHP_EOL, FILE_APPEND);
+        // Suppress file write errors - jika write gagal, tidak perlu crash
+        @file_put_contents($logFile, json_encode($logEntry) . PHP_EOL, FILE_APPEND);
     }
     
     // Logout

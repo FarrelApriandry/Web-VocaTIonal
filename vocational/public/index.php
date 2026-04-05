@@ -1,4 +1,8 @@
 <?php 
+// SUPPRESS ERRORS DI PRODUCTION - PREVENT HTML WARNINGS MIXED WITH JSON
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
+
 // START SESSION SEBELUM OUTPUT APAPUN (PENTING!)
 session_start();
 
