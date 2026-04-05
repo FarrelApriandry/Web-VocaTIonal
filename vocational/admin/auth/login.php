@@ -76,7 +76,7 @@ $title = "VocaTIonal | Admin Login";
                     <button 
                         type="submit" 
                         id="btn-login"
-                        class="w-full bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 transition-colors duration-200 mt-6"
+                        class="w-full bg-blue-900 text-white font-medium py-2.5 rounded-lg hover:bg-blue-800 transition-colors duration-200 mt-6"
                     >
                         <span id="btn-text">Login</span>
                     </button>
@@ -177,7 +177,6 @@ $title = "VocaTIonal | Admin Login";
                     btnText.textContent = 'Login';
                 }
             } catch (error) {
-                console.error('Login error:', error);
                 showAlert('Terjadi kesalahan. Coba lagi.', 'error');
                 btnLogin.disabled = false;
                 btnText.textContent = 'Login';

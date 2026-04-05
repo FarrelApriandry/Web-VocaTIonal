@@ -51,7 +51,7 @@ class AdminAuth
 
             // Set session
             Session::start();
-            Session::set('admin_id', $admin['id_admin']);
+            Session::set('admin_id', $admin['admin_id']);
             Session::set('admin_username', $admin['usn_adm']);
             Session::set('admin_role', $admin['role_adm']);
 
