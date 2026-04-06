@@ -12,9 +12,9 @@ name: VocaTIonal Continuous Integration Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, development ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, development ]
 
 jobs:
   # PHP Code Quality Check
