@@ -6,16 +6,16 @@ error_reporting(E_ALL);
 
 session_start();
 
-// Jika sudah login, redirect ke dashboard
+// Jika sudah login, redirect ke dashboard via MVC router
 require_once __DIR__ . '/../../app/Controllers/AdminAuth.php';
 if (AdminAuth::check()) {
-    header('Location: ../dashboard.php');
+    header('Location: ../index.php?action=dashboard');
     exit;
 }
 
 $title = "VocaTIonal | Admin Login";
 ?>
-<?php include __DIR__ . '/../components/Header.php'; ?>
+<?php include __DIR__ . '/../../app/Views/Layouts/Header.php'; ?>
 <body class="bg-gray-50">
     <div class="min-h-screen flex items-center justify-center px-4 py-12">
         <div class="w-full max-w-md">
@@ -137,7 +137,7 @@ $title = "VocaTIonal | Admin Login";
 
             if (type === 'success') {
                 setTimeout(() => {
-                    window.location.href = '../dashboard.php';
+                    window.location.href = '../index.php?action=dashboard';
                 }, 1500);
             }
         }

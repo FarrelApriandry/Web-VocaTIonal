@@ -1,5 +1,4 @@
 <?php
-// vocational/admin/components/Sidebar.php
 
 // Get current page from parameter with defensive check
 $currentPage = isset($currentPage) && !empty($currentPage) ? $currentPage : 'dashboard';
@@ -10,7 +9,7 @@ $currentPage = isset($currentPage) && !empty($currentPage) ? $currentPage : 'das
     <!-- Sidebar Header -->
     <div class="h-16 flex items-center justify-between px-6 border-b border-gray-200">
         <div class="flex items-center gap-2">
-            <img src="./assets/img/logo-himatif.svg" alt="Logo" class="h-6 w-auto">
+            <img src="/assets/img/logo-himatif.svg" alt="Logo" class="h-6 w-auto">
             <span class="font-bold text-gray-900 text-sm">Admin Panel</span>
         </div>
         <button 
@@ -26,7 +25,7 @@ $currentPage = isset($currentPage) && !empty($currentPage) ? $currentPage : 'das
     <nav class="px-4 py-6 space-y-2">
         <!-- Dashboard -->
         <a 
-            href="./dashboard.php" 
+            href="./index.php?action=dashboard" 
             class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors <?php echo $currentPage === 'dashboard' ? 'bg-blue-50 text-blue-900' : 'text-gray-700 hover:bg-gray-100'; ?>"
         >
             <i data-lucide="layout-grid" class="w-5 h-5"></i>
@@ -38,7 +37,7 @@ $currentPage = isset($currentPage) && !empty($currentPage) ? $currentPage : 'das
 
         <!-- Aspirasi -->
         <a 
-            href="./aspirations.php" 
+            href="./index.php?action=aspirations" 
             class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors <?php echo $currentPage === 'aspirations' ? 'bg-blue-50 text-blue-900' : 'text-gray-700 hover:bg-gray-100'; ?>"
         >
             <i data-lucide="list" class="w-5 h-5"></i>
@@ -50,7 +49,7 @@ $currentPage = isset($currentPage) && !empty($currentPage) ? $currentPage : 'das
 
         <!-- Laporan -->
         <a 
-            href="./reports.php" 
+            href="./index.php?action=reports" 
             class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors <?php echo $currentPage === 'reports' ? 'bg-blue-50 text-blue-900' : 'text-gray-700 hover:bg-gray-100'; ?>"
         >
             <i data-lucide="flag" class="w-5 h-5"></i>
@@ -62,7 +61,7 @@ $currentPage = isset($currentPage) && !empty($currentPage) ? $currentPage : 'das
 
         <!-- Board -->
         <a 
-            href="./board.php" 
+            href="./index.php?action=board" 
             class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors <?php echo $currentPage === 'board' ? 'bg-blue-50 text-blue-900' : 'text-gray-700 hover:bg-gray-100'; ?>"
         >
             <i data-lucide="layout" class="w-5 h-5"></i>
