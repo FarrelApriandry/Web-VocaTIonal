@@ -29,3 +29,7 @@ vocational/public/assets/uploads/*
 # 6. Documentation Assets
 documentation/*.pdf
 documentation/*.docx
+
+# 7. IDE & Editor Configurations
+*.pem
+*.key
