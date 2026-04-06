@@ -15,6 +15,7 @@
 | **HTTPS/SSL** | ✅ Complete | Production-ready SSL configuration |
 | **Docker Setup** | ✅ Complete | Multi-container orchestration |
 | **Dual VirtualHost** | ✅ Complete | Development & production configurations |
+| **Public Access** | ✅ Complete | Accessible anywhere using [vocational.info](https://vocational.info) |
 
 ---
 
@@ -159,7 +160,8 @@ Web-VocaTIonal/
 | **Web Server** | Apache | 2.4+ |
 | **Container** | Docker | 20.10+ |
 | **Orchestration** | Docker Compose | 1.29+ |
-| **SSL/TLS** | Self-signed & Let's Encrypt | For production |
+| **SSL/TLS** | Cloudflare | 1.3 |
+| **Server** | Digital Ocean Droplet | 2 GB Memory / 1 Intel vCPU / 70 GB Disk / SGP1 | 
 
 ---
 
@@ -231,7 +233,7 @@ docker exec vocational-db mysql -u vocational_user -p vocational_db -e "SHOW TAB
 - **Password Hashing**: `PASSWORD_BCRYPT` for secure storage
 - **Session Management**: 60-minute timeout with configurable extension
 - **Role-Based Access Control**:
-  - `Super_Admin`: Full system access
+  - `Admin`: Full system access
   - `Kaprodi`: Program lead management
   - `Advokasi`: Advocacy officer functions
 - **CSRF Protection**: Token validation on state-changing requests
