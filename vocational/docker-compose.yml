@@ -7,9 +7,12 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./:/var/www/html
       - ./docker/apache/vhost.conf:/etc/apache2/sites-available/000-default.conf
+      - ./vocational.pem:/etc/apache2/ssl/vocational.pem
+      - ./vocational.key:/etc/apache2/ssl/vocational.key
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     networks:
