@@ -24,20 +24,34 @@ jobs:
             # 0. Pindah ke direktori proyek
             cd ~/Web-VocaTIonal/
 
-            # 1. Reset perubahan lokal (jika ada) untuk menghindari konflik saat pull
+            # 1. Pull kode terbaru
             git checkout .
-            
-            # 2. Pull kode terbaru dari main
             git pull origin main
 
             # 3. Pindah ke direktori aplikasi
             cd ~/Web-VocaTIonal/vocational/
             
-            # 3. Rebuild & Restart Container
-            docker compose up -d --build
-            
-            # 4. Delay 5 detik untuk memastikan container sudah berjalan sebelum migrasi
+            # 2. Matikan container yang lama secara total
+            docker compose down
+
+            # 3. Delay 5 Detik untuk memastikan container sudah mati sebelum build ulang
             sleep 5
             
-            # 5. Jalankan Migrasi (@/Config/Migration.php)
+            # 4. Rebuild & Restart Container
+            docker compose up -d --build
+            
+            # 5. Delay 5 detik untuk memastikan container sudah berjalan sebelum migrasi
+            sleep 5
+            
+            # 6. Jalankan Migrasi (@/Config/Migration.php)
             docker exec vocational-web php /var/www/html/app/Config/Migration.php
+
+            # 7. Delay 5 detik untuk memastikan migrasi sudah selesai sebelum cache clear
+            sleep 5
+
+            # 8. Bersihkan cache (Jika ada)
+            docker exec vocational-web php /var/www/html/app/Config/CacheClear.php
+
+            # 9. Cek status container dan modul SSL
+            docker ps
+            docker exec vocational-web apache2ctl -M | grep ssl
