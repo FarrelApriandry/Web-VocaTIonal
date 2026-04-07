@@ -452,7 +452,7 @@ This project is proprietary and designed for Universitas Tidar's IT Student Asso
 
 ## 👤 Author
 
-**Farrel Apriandry Ciu**  
+**Information Technology'24**  
 Student Developer, Universitas Tidar  
 | Name | GitHub Account | 
 |--------|--------|
