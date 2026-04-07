@@ -141,7 +141,7 @@ include $appDir . '/Views/Components/Navbar.php';
                     };
 
                     const color = categoryColors[aspiration.kategori] || 'bg-gray-100 border-gray-300 text-gray-900';
-                    const rotation = Math.random() * 4 - 2;
+                    const rotation = Math.random() * 20 - 10;
 
                     html += `
                         <div class="board-card rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
@@ -193,6 +193,13 @@ include $appDir . '/Views/Components/Navbar.php';
                                                     title="Like">
                                                 ${aspiration.userHasReacted ? '👍' : '🤍'}
                                             </button>
+                                            <button class="btn-report px-2 py-1 bg-white bg-opacity-70 hover:bg-opacity-100 rounded text-xs font-bold transition-all"
+                                                    data-aspiration-id="${aspiration.id_aspirasi}"
+                                                    data-aspiration-title="${aspiration.judul.replace(/"/g, '&quot;')}"
+                                                    data-aspiration-description="${aspiration.deskripsi.replace(/"/g, '&quot;')}"
+                                                    title="Laporkan">
+                                                🚨
+                                            </button>
                                         ` : ''}
                                     </div>
                                 </div>
@@ -235,7 +242,7 @@ include $appDir . '/Views/Components/Navbar.php';
 
     // Attach event listeners
     function attachEventListeners() {
-        // Like button
+        // React button
         document.querySelectorAll('.btn-react').forEach(btn => {
             btn.addEventListener('click', async function() {
                 const id = this.dataset.aspirationId;
@@ -259,8 +266,16 @@ include $appDir . '/Views/Components/Navbar.php';
             });
         });
 
-        // Report button (if logged in)
-        // Will be added in detail modal
+        // Report button
+        document.querySelectorAll('.btn-report').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.aspirationId;
+                const title = this.dataset.aspirationTitle;
+                const description = this.dataset.aspirationDescription;
+                
+                openReportModal(id, title, description);
+            });
+        });
 
         lucide.createIcons();
     }

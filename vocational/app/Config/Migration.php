@@ -88,12 +88,17 @@ $migrations = [
         FOREIGN KEY (npm_reporter) REFERENCES mhs_whitelist(npm) ON DELETE CASCADE
     )",
 
-
     // Versi 2.3: Modify kategori ENUM - add Sarpras & Layanan
     "ALTER TABLE aspirasi MODIFY COLUMN kategori ENUM('Akademik', 'Fasilitas', 'Sarpras', 'Layanan', 'UKT', 'Lainnya')",
 
     // Versi 2.4: Auto-approve aspirasi untuk testing (production: needs manual approval)
     "UPDATE aspirasi SET board_approved = 1 WHERE show_on_board = 1 AND board_approved = 0",
+
+    // Versi 3.0: Update aspirasi_reports status ENUM untuk reporting system
+    "ALTER TABLE aspirasi_reports MODIFY COLUMN status ENUM('pending', 'confirmed', 'processing', 'resolved', 'dismissed') DEFAULT 'pending'",
+
+    // Versi 3.1: Add timestamps untuk tracking status changes
+    "ALTER TABLE aspirasi_reports ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
 
     // Versi 1.4: Insert default admin & whitelist with default hashing password php (PASSWORD_BCRYPT)
     "INSERT IGNORE INTO admin_web (admin_id, usn_adm, pw_adm, role_adm) VALUES (1, 'admin-prod', '" . $defaultAdminPass . "', 'Admin')",

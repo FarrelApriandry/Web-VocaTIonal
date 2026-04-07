@@ -1,138 +1,183 @@
 <?php
-
 // vocational/app/Views/Components/ReportModal.php
-// Reusable report modal component
-
+// Report Modal Component for bulletin board aspiration reporting
 ?>
 
-<div id="report-modal" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
-    <div id="report-modal-box" class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-2xl scale-95 opacity-0 transition-all duration-300">
-        
-        <!-- Close button -->
-        <button id="report-modal-close" type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
-            <i data-lucide="x" class="w-6 h-6"></i>
-        </button>
+<!-- Report Modal -->
+<div id="report-modal" class="fixed inset-0 z-[110] hidden flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-3xl p-6 md:p-8 w-full max-w-lg shadow-2xl transform transition-all scale-95 opacity-0 duration-300" id="report-modal-box">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-900">Laporkan Aspirasi</h3>
+            <button type="button" onclick="closeReportModal()" class="text-gray-400 hover:text-gray-600">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
 
-        <!-- Title -->
-        <h2 class="text-2xl font-bold text-gray-900 mb-2">Laporkan Aspirasi</h2>
-        <p class="text-sm text-gray-600 mb-6">Membantu kami menjaga kelayakan konten di papan buletin</p>
+        <!-- Content -->
+        <div class="space-y-4 text-left mb-8">
+            <!-- Aspiration Title (Display only) -->
+            <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                <p class="text-[10px] uppercase tracking-widest font-bold text-blue-900 mb-1">Judul Aspirasi</p>
+                <p id="report-aspiration-title" class="font-semibold text-gray-800">-</p>
+            </div>
 
-        <!-- Report form -->
-        <form id="report-form">
-            
-            <!-- Reason select -->
-            <div class="mb-6">
-                <label for="report-reason" class="block text-sm font-semibold text-gray-900 mb-2">
-                    Alasan Pelaporan *
-                </label>
-                <select id="report-reason" name="reason" required
-                        class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
-                    <option value="">Pilih alasan...</option>
-                    <option value="inappropriate">Konten tidak pantas</option>
-                    <option value="spam">Spam atau duplikat</option>
-                    <option value="offensive">Konten menyinggung/menghina</option>
+            <!-- Aspiration Description (Display only) -->
+            <div>
+                <p class="text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-2">Detail Aspirasi</p>
+                <p id="report-aspiration-description" class="text-sm text-gray-600 leading-relaxed italic p-3 bg-gray-50 rounded-xl border border-gray-200">-</p>
+            </div>
+
+            <!-- Reason Dropdown -->
+            <div>
+                <label class="text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-2 block">Alasan Laporan <span class="text-red-500">*</span></label>
+                <select id="report-reason" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium">
+                    <option value="">-- Pilih Alasan --</option>
+                    <option value="inappropriate">Konten Tidak Pantas (Inappropriate)</option>
+                    <option value="spam">Spam</option>
+                    <option value="offensive">Menyerang/Kasar (Offensive)</option>
                 </select>
+                <p id="report-reason-error" class="hidden text-xs text-red-500 mt-1"></p>
             </div>
 
-            <!-- Message textarea -->
-            <div class="mb-6">
-                <label for="report-message" class="block text-sm font-semibold text-gray-900 mb-2">
-                    Deskripsi (Opsional)
-                </label>
-                <textarea id="report-message" name="message" rows="4"
-                          placeholder="Jelaskan mengapa Anda melaporkan aspirasi ini..."
-                          class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-none"></textarea>
-                <span class="text-xs text-gray-500 mt-1 block">Max 500 karakter</span>
+            <!-- Message (Optional) -->
+            <div>
+                <label class="text-[10px] uppercase tracking-widest font-bold text-gray-500 mb-2 block">Pesan Tambahan (Opsional)</label>
+                <textarea 
+                    id="report-message"
+                    placeholder="Jelaskan alasan laporan Anda..."
+                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    rows="4"
+                    maxlength="500"
+                ></textarea>
+                <p class="text-xs text-gray-500 mt-2">
+                    <span id="report-message-count">0</span>/500 karakter
+                </p>
             </div>
 
-            <!-- Error message -->
-            <div id="report-error" class="hidden mb-4 p-3 bg-red-100 border border-red-300 rounded-lg text-sm text-red-700"></div>
-
-            <!-- Buttons -->
-            <div class="flex gap-3">
-                <button type="button" id="report-cancel"
-                        class="flex-1 px-4 py-3 border border-gray-300 rounded-lg font-semibold text-gray-900 hover:bg-gray-50 transition-colors text-sm">
-                    Batal
-                </button>
-                <button type="submit" id="report-submit"
-                        class="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors text-sm">
-                    Lapor
-                </button>
+            <!-- Info Box -->
+            <div class="flex items-start gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-100">
+                <i data-lucide="alert-circle" class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"></i>
+                <div>
+                    <p class="text-xs font-bold text-amber-900 uppercase tracking-widest mb-1">Informasi Penting</p>
+                    <p class="text-xs text-amber-800 leading-relaxed">
+                        Laporan Anda akan membantu kami menjaga kualitas papan buletin. Data pelapor disimpan untuk verifikasi admin.
+                    </p>
+                </div>
             </div>
-        </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex gap-3">
+            <button 
+                onclick="closeReportModal()"
+                class="flex-1 py-4 rounded-xl font-bold text-gray-500 hover:bg-gray-100 transition-all uppercase tracking-widest text-xs"
+            >
+                Cek Lagi
+            </button>
+            <button 
+                onclick="submitReport()"
+                id="report-submit-btn"
+                class="flex-1 bg-[#111827] text-white py-4 rounded-xl font-bold hover:bg-black transition-all uppercase tracking-widest text-xs shadow-lg shadow-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                Kirim Laporan
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="report-loading" class="hidden absolute inset-0 bg-black/20 flex items-center justify-center rounded-3xl">
+            <div class="bg-white rounded-full p-3">
+                <div class="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-    // Report modal management
-    const reportModal = document.getElementById('report-modal');
-    const reportModalBox = document.getElementById('report-modal-box');
-    const reportForm = document.getElementById('report-form');
-    const reportError = document.getElementById('report-error');
-    let currentAspirationId = null;
+    // Track current aspiration being reported
+    let currentReportAspirationId = null;
 
-    // Open report modal
-    function openReportModal(id_aspirasi) {
-        currentAspirationId = id_aspirasi;
-        reportForm.reset();
-        reportError.classList.add('hidden');
-        reportModal.classList.remove('hidden');
+    /**
+     * Open report modal for specific aspiration
+     */
+    function openReportModal(aspirationId, aspirationTitle, aspirationDescription = '-') {
+        currentReportAspirationId = aspirationId;
+        document.getElementById('report-aspiration-title').textContent = aspirationTitle;
+        document.getElementById('report-aspiration-description').textContent = aspirationDescription;
+        document.getElementById('report-reason').value = '';
+        document.getElementById('report-message').value = '';
+        document.getElementById('report-message-count').textContent = '0';
+        document.getElementById('report-reason-error').classList.add('hidden');
         
+        const modal = document.getElementById('report-modal');
+        const modalBox = document.getElementById('report-modal-box');
+        modal.classList.remove('hidden');
+        
+        // Trigger animation
         setTimeout(() => {
-            reportModalBox.classList.remove('scale-95', 'opacity-0');
-            reportModalBox.classList.add('scale-100', 'opacity-100');
+            modalBox.classList.remove('scale-95', 'opacity-0');
+            modalBox.classList.add('scale-100', 'opacity-100');
         }, 10);
     }
 
-    // Close report modal
+    /**
+     * Close report modal
+     */
     function closeReportModal() {
-        reportModalBox.classList.remove('scale-100', 'opacity-100');
-        reportModalBox.classList.add('scale-95', 'opacity-0');
+        const modal = document.getElementById('report-modal');
+        const modalBox = document.getElementById('report-modal-box');
+        
+        modalBox.classList.add('scale-95', 'opacity-0');
+        modalBox.classList.remove('scale-100', 'opacity-100');
         
         setTimeout(() => {
-            reportModal.classList.add('hidden');
-            currentAspirationId = null;
+            modal.classList.add('hidden');
+            currentReportAspirationId = null;
         }, 300);
     }
 
-    // Close button handlers
-    document.getElementById('report-modal-close').addEventListener('click', closeReportModal);
-    document.getElementById('report-cancel').addEventListener('click', closeReportModal);
-
-    // Background click to close
-    reportModal.addEventListener('click', function(e) {
-        if (e.target === reportModal) {
-            closeReportModal();
-        }
+    /**
+     * Character counter for message textarea
+     */
+    document.getElementById('report-message').addEventListener('input', function() {
+        document.getElementById('report-message-count').textContent = this.value.length;
     });
 
-    // Submit report
-    reportForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        if (!currentAspirationId) {
-            reportError.textContent = 'Error: Aspiration ID not found';
-            reportError.classList.remove('hidden');
-            return;
-        }
-
+    /**
+     * Submit report
+     */
+    async function submitReport() {
         const reason = document.getElementById('report-reason').value;
         const message = document.getElementById('report-message').value;
+        const reasonError = document.getElementById('report-reason-error');
+        const submitBtn = document.getElementById('report-submit-btn');
+        const loading = document.getElementById('report-loading');
 
+        // Validate
         if (!reason) {
-            reportError.textContent = 'Mohon pilih alasan pelaporan';
-            reportError.classList.remove('hidden');
+            reasonError.classList.remove('hidden');
+            reasonError.textContent = 'Pilih alasan laporan';
+            return;
+        }
+        reasonError.classList.add('hidden');
+
+        if (!currentReportAspirationId) {
+            alert('Error: Aspiration ID not found');
             return;
         }
 
+        // Show loading state
+        submitBtn.disabled = true;
+        loading.classList.remove('hidden');
+
         try {
-            const response = await fetch('./api/board/report.php', {
+            const response = await fetch('./api/submit-report.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    id_aspirasi: currentAspirationId,
+                    id_aspirasi: currentReportAspirationId,
                     reason: reason,
                     message: message || null
                 })
@@ -142,28 +187,32 @@
 
             if (result.success) {
                 // Show success message
-                reportError.classList.add('hidden');
-                reportForm.innerHTML = '<div class="text-center py-6"><i data-lucide="check-circle" class="w-12 h-12 text-green-500 mx-auto mb-4"></i><p class="text-green-700 font-semibold">Laporan berhasil dikirim!</p><p class="text-sm text-gray-600 mt-2">Terima kasih telah membantu menjaga kelayakan konten.</p></div>';
-                
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-
-                setTimeout(() => {
-                    closeReportModal();
-                    reportForm.innerHTML = reportForm.innerHTML; // Reset form
-                }, 2000);
+                alert('✅ Laporan berhasil dikirim! Terima kasih telah membantu kami.');
+                closeReportModal();
             } else {
-                reportError.textContent = result.message || 'Gagal mengirim laporan';
-                reportError.classList.remove('hidden');
+                // Show error message
+                alert('❌ Error: ' + (result.message || 'Gagal mengirim laporan'));
             }
         } catch (error) {
-            console.error('Report error:', error);
-            reportError.textContent = 'Terjadi kesalahan saat mengirim laporan';
-            reportError.classList.remove('hidden');
+            console.error('Report submission error:', error);
+            alert('❌ Terjadi kesalahan saat mengirim laporan. Silakan coba lagi.');
+        } finally {
+            submitBtn.disabled = false;
+            loading.classList.add('hidden');
+        }
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('report-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeReportModal();
         }
     });
 
-    // Expose function globally for buttons to call
-    window.openReportModal = openReportModal;
+    // Initialize lucide icons when modal opens
+    const originalOpenModal = openReportModal;
+    window.openReportModal = function(id, title, description) {
+        originalOpenModal(id, title, description);
+        lucide.createIcons();
+    };
 </script>
