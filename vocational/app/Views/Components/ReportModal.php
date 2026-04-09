@@ -171,7 +171,7 @@
         loading.classList.remove('hidden');
 
         try {
-            const response = await fetch('./api/submit-report.php', {
+            const response = await fetch('./api/board/report.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

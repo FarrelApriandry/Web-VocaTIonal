@@ -9,8 +9,8 @@
 
     <title><?= $title ?? 'VocaTIonal' ?> | Wadah Aspirasi Mahasiswa TI Untidar</title>
     <meta name="title" content="<?= $title ?? 'VocaTIonal' ?> - Suara Mahasiswa TI">
-    <meta name="description" content="Platform resmi aspirasi mahasiswa Teknik Informatika UNTIDAR. Sampaikan keluhan, saran, dan ide lo untuk prodi yang lebih baik.">
-    <meta name="keywords" content="VocaTIonal, Himatif Untidar, Aspirasi Mahasiswa, Teknik Informatika, Tidar University">
+    <meta name="description" content="Platform resmi aspirasi mahasiswa Teknologi Informasi UNTIDAR. Sampaikan keluhan, saran, dan ide lo untuk prodi yang lebih baik.">
+    <meta name="keywords" content="VocaTIonal, Himatif Untidar, Aspirasi Mahasiswa, Teknologi Informasi, Tidar University">
     <meta name="author" content="Tim VocaTIonal">
 
     <meta property="og:type" content="website">
@@ -20,7 +20,7 @@
     <meta property="og:image" content="https://vocational.info/assets/img/og-preview.png"> <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://vocational.info/">
     <meta property="twitter:title" content="<?= $title ?? 'VocaTIonal' ?> - Suara Mahasiswa TI">
-    <meta property="twitter:description" content="Wadah aspirasi terintegrasi mahasiswa Teknik Informatika. Aman, transparan, dan Zero Trust.">
+    <meta property="twitter:description" content="Wadah aspirasi terintegrasi mahasiswa Teknologi Informasi. Aman, transparan, dan Zero Trust.">
     <meta property="twitter:image" content="https://vocational.info/assets/img/og-preview.png">
 
     <link rel="icon" type="image/svg+xml" href="./assets/img/logo-himatif.svg">

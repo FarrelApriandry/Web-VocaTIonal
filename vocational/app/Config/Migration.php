@@ -111,7 +111,8 @@ $migrations = [
         ('2420506030', 'Yasabuana Athallahaufa Natawijaya'), 
         ('2430506058', 'Nabila Syafiqah Zahran Firlina'),
         ('2410506016', 'Dzakii Luqman Faid'),
-        ('2420506047', 'Muhammad Asyrof')
+        ('2420506047', 'Muhammad Asyrof'),
+        ('2410506001', 'Julioez Candita Haga Figo Latupeirissa')
     ",
 
     // Versi 2.5: Insert anonim record for anonymized aspirations

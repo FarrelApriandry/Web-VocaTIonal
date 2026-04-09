@@ -3,6 +3,15 @@
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
 
+// ============================================
+// SECURITY: Add essential security headers
+// ============================================
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+
 // START SESSION SEBELUM OUTPUT APAPUN (PENTING!)
 session_start();
 
@@ -48,6 +57,9 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         <div id="main-content" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 glass-card p-6 md:p-10 shadow-sm">
                 <form id="submissionForm">
+                    <!-- SECURITY: Add CSRF token field -->
+                    <input type="hidden" name="csrf_token" id="csrf-token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                    
                     <table class="w-full border-separate border-spacing-y-4">
                         <tbody>
                             <tr>
@@ -69,7 +81,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                                     <label class="text-xs font-bold text-gray-400 uppercase">Subjek</label>
                                 </td>
                                 <td>
-                                    <input id="aspirasi-subjek" type="text" placeholder="Subjek Laporan..." 
+                                    <input id="aspirasi-subjek" type="text" placeholder="Subjek Laporan..." maxlength="100"
                                         class="w-full bg-gray-50 border border-[#64748B] rounded-xl px-4 py-4 focus:outline-none focus:ring-1 focus:ring-[#64748B]">
                                 </td>
                             </tr>
@@ -81,9 +93,9 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                                 <td>
                                     <div class="flex flex-col xl:flex-row gap-4">
                                         <div class="flex-1 relative">
-                                            <textarea id="aspirasi-detail" rows="6" placeholder="Detail Laporan..." 
+                                            <textarea id="aspirasi-detail" rows="6" placeholder="Detail Laporan..." maxlength="500"
                                                     class="w-full h-48 bg-gray-50 border border-[#64748B] rounded-xl px-4 py-4 focus:outline-none focus:ring-1 focus:ring-[#64748B]"></textarea>
-                                            <span class="absolute bottom-4 right-4 text-xs text-gray-400">0/500 Karakter</span>
+                                            <span class="absolute bottom-4 right-4 text-xs text-gray-400"><span id="char-count">0</span>/500 Karakter</span>
                                         </div>
                                         
                                         <label class="flex-1 border-2 border-dashed border-[#64748B] rounded-2xl flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-gray-50 transition-all min-h-[200px] relative overflow-hidden text-center">
@@ -187,7 +199,51 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
     <input type="hidden" name="kategori" id="selected-category" value="Akademik">
 
     <script>
+        // ============================================
+        // SECURITY: Input Validation Helper Functions
+        // ============================================
+        
+        // XSS Prevention: Escape HTML entities
+        function sanitizeHTML(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        // Validate npm format: XX.X.XX.XX.XXX (10 digits total)
+        function validateNPM(npm) {
+            const cleanNpm = npm.replace(/\./g, '');
+            return /^\d{10}$/.test(cleanNpm);
+        }
+
+        // Validate file type and size
+        function validateFile(file) {
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            
+            if (!file) return { valid: true, message: '' };
+            if (!allowedTypes.includes(file.type)) {
+                return { valid: false, message: 'Hanya file gambar (JPEG, PNG, GIF, WebP) yang diperbolehkan' };
+            }
+            if (file.size > maxSize) {
+                return { valid: false, message: 'Ukuran file maksimal 5MB' };
+            }
+            return { valid: true, message: '' };
+        }
+
+        // Request origin validation
+        function getCSRFToken() {
+            return document.getElementById('csrf-token')?.value || '';
+        }
+
+        // ============================================
         // SKELETON TO CONTENT TRANSITION LOGIC
+        // ============================================
         // Check login status from PHP
         const isLoggedInUser = <?= $isLoggedIn ? 'true' : 'false' ?>;
         
@@ -273,7 +329,9 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
             });
         });
 
-        // IMAGE PREVIEW LOGIC
+        // ============================================
+        // IMAGE PREVIEW LOGIC WITH VALIDATION
+        // ============================================
         const fileInput = document.getElementById('bukti_foto');
         const previewContainer = document.getElementById('preview-container');
         const previewImage = document.getElementById('image-preview');
@@ -282,7 +340,16 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
 
         fileInput.addEventListener('change', function() {
             const file = this.files[0];
+            
             if (file) {
+                // SECURITY: Validate file
+                const validation = validateFile(file);
+                if (!validation.valid) {
+                    alert(validation.message);
+                    this.value = '';
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     previewImage.src = e.target.result;
@@ -299,6 +366,15 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
             previewContainer.classList.add('hidden');
             placeholder.classList.remove('hidden');
         });
+
+        // Character counter for detail
+        const detailTextarea = document.getElementById('aspirasi-detail');
+        const charCount = document.getElementById('char-count');
+        if (detailTextarea && charCount) {
+            detailTextarea.addEventListener('input', function() {
+                charCount.textContent = this.value.length;
+            });
+        }
 
         lucide.createIcons();
     </script>
@@ -388,16 +464,17 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                 Silahkan Masukkan Nomor Pokok Mahasiswa (NPM)<br>Untuk Melanjutkan.
             </p>
         
-            <!-- <form action="/proses-login" method="POST" class="w-full"> -->
-            <input type="hidden" name="csrf_token" value="<?php echo Session::generateCSRFToken(); ?>">
+            <div class="w-full">
+                <!-- SECURITY: CSRF token in login form -->
+                <input type="hidden" name="csrf_token" id="login-csrf-token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
 
-            <div id="" class="w-full">
                 <input type="text" id="npm-input" name="npm" placeholder="XX.X.XX.XX.XXX" maxlength="14"
                     class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 text-center font-medium tracking-widest text-gray-700 focus:outline-none focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A]"
                     required>
             
                 <button id="btn-login"  
-                        class="w-full bg-[#1E3A8A] text-white rounded-xl px-4 py-3.5 font-semibold hover:bg-blue-900 transition-colors shadow-md text-sm md:text-base">
+                        class="w-full bg-[#1E3A8A] text-white rounded-xl px-4 py-3.5 font-semibold hover:bg-blue-900 transition-colors shadow-md text-sm md:text-base"
+                        type="button">
                     Masuk Ke Dashboard
                 </button>
             </div>
@@ -412,6 +489,9 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
     <?php endif; ?>
 
     <script>
+        // ============================================
+        // LOGIN FORM SECURITY & VALIDATION
+        // ============================================
         const npmInput = document.getElementById('npm-input');
         if (npmInput) {
             npmInput.addEventListener('input', function(e) {
@@ -431,16 +511,22 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         const btnSubmit = document.getElementById('btn-login');
         const loginModal = document.getElementById('login-modal');
 
-        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
-
         if (btnSubmit) {
             btnSubmit.addEventListener('click', async function(e) {
                 e.preventDefault();
 
-                const npm = npmInput.value.replace(/\./g, ''); // Hapus format
+                const npm = npmInput.value.replace(/\./g, '');
                 
-                if (npm.length !== 10) {
-                    alert('NPM harus 10 digit angka!');
+                // SECURITY: Validate NPM format
+                if (!validateNPM(npmInput.value)) {
+                    alert('NPM harus 10 digit angka! Format: XX.X.XX.XX.XXX');
+                    return;
+                }
+                
+                // SECURITY: Get CSRF token
+                const csrfToken = document.getElementById('login-csrf-token')?.value;
+                if (!csrfToken) {
+                    alert('Security Error: CSRF token tidak ditemukan');
                     return;
                 }
                 
@@ -453,8 +539,12 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
                         },
-                        body: JSON.stringify({ npm: npm })
+                        body: JSON.stringify({ 
+                            npm: npm,
+                            csrf_token: csrfToken
+                        })
                     });
 
                     
@@ -478,7 +568,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                                 displayName = 'Pengguna'; // Fallback ke generic
                             }
                             
-                            alert(`Login berhasil! Selamat datang, ${displayName}.`);
+                            alert(`Login berhasil! Selamat datang, ${sanitizeHTML(displayName)}.`);
                             
                             // Wait 2 seconds then redirect/reload
                             setTimeout(() => {
@@ -486,7 +576,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                             }, 2000);
                         } else {
                             // Login gagal
-                            alert('Login gagal: ' + result.message);
+                            alert('Login gagal: ' + (result.message || 'NPM tidak valid'));
                             npmInput.value = '';
                             npmInput.focus();
                             this.innerText = originalText;
@@ -621,32 +711,31 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                 const previewImgSrc = document.getElementById('image-preview').src;
                 const hasImage = !document.getElementById('preview-container').classList.contains('hidden');
 
-                // 2. Validasi Form
-                if (!subjek.trim()) {
+                // 2. SECURITY: Validasi Form dengan strict checks
+                if (!subjek.trim() || subjek.trim().length === 0) {
                     alert('Mohon isi subjek laporan terlebih dahulu.');
                     return;
                 }
 
-                if (!detail.trim()) {
+                if (subjek.trim().length > 100) {
+                    alert('Subjek maksimal 100 karakter.');
+                    return;
+                }
+
+                if (!detail.trim() || detail.trim().length === 0) {
                     alert('Mohon isi detail laporan terlebih dahulu.');
                     return;
                 }
 
-                // 3. Inject ke Modal
-                document.getElementById('confirm-kategori').innerText = kategori;
-                function escapeHtml(text) {
-                    const map = {
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        '"': '&quot;',
-                        "'": '&#039;'
-                    };
-                    return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+                if (detail.trim().length > 500) {
+                    alert('Detail maksimal 500 karakter.');
+                    return;
                 }
 
-                document.getElementById('confirm-subjek').textContent = escapeHtml(subjek) || "(Tanpa Subjek)";
-                document.getElementById('confirm-detail').innerText = detail || "(Tanpa Detail)";
+                // 3. SECURITY: Sanitize untuk display di modal (bukan server)
+                document.getElementById('confirm-kategori').textContent = sanitizeHTML(kategori);
+                document.getElementById('confirm-subjek').textContent = sanitizeHTML(subjek) || "(Tanpa Subjek)";
+                document.getElementById('confirm-detail').textContent = sanitizeHTML(detail) || "(Tanpa Detail)";
                 
                 const imgWrapper = document.getElementById('confirm-img-wrapper');
                 if(hasImage && previewImgSrc !== "#") {
@@ -713,19 +802,30 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                      const detailEl = document.getElementById('aspirasi-detail');
                      const anonimCheckboxEl = document.querySelector('input[type="checkbox"]:not([data-show-board])');
                      const fileInput = document.getElementById('bukti_foto');
+                     const csrfEl = document.getElementById('csrf-token');
                      
                      // Validate all elements exist
-                     if (!kategoriEl || !subjekEl || !detailEl || !anonimCheckboxEl) {
+                     if (!kategoriEl || !subjekEl || !detailEl || !anonimCheckboxEl || !csrfEl) {
                          alert('Terjadi kesalahan: Form tidak lengkap');
                          return;
                      }
                      
+                     // SECURITY: Perform final validation before sending
+                     if (fileInput && fileInput.files[0]) {
+                         const validation = validateFile(fileInput.files[0]);
+                         if (!validation.valid) {
+                             alert(validation.message);
+                             return;
+                         }
+                     }
+
                      const formData = new FormData();
                      formData.append('kategori', kategoriEl.value || 'Akademik');
                      formData.append('subjek', subjekEl.value);
                      formData.append('detail', detailEl.value);
                      formData.append('anonim', anonimCheckboxEl.checked ? '1' : '0');
                      formData.append('show_on_board', this.dataset.showOnBoard || '0');
+                     formData.append('csrf_token', csrfEl.value);
                      
                      if (fileInput && fileInput.files[0]) {
                          formData.append('bukti_foto', fileInput.files[0]);
@@ -733,7 +833,10 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
 
                      const response = await fetch('./api/submit-aspirasi.php', {
                          method: 'POST',
-                         body: formData
+                         body: formData,
+                         headers: {
+                             'X-Requested-With': 'XMLHttpRequest'
+                         }
                      });
 
                      const result = await response.json();
@@ -742,19 +845,20 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                          alert('Aspirasi berhasil dikirim!');
                          closeModal();
                          
-                         // Reset form
-                         subjekEl.value = '';
-                         detailEl.value = '';
-                         if (anonimCheckboxEl) anonimCheckboxEl.checked = false;
-                         const boardToggle = document.querySelector('input[data-show-board]');
-                         if (boardToggle) boardToggle.checked = false;
-                         if (fileInput) fileInput.value = '';
-                         const previewContainer = document.getElementById('preview-container');
-                         const uploadPlaceholder = document.getElementById('upload-placeholder');
-                         if (previewContainer) previewContainer.classList.add('hidden');
-                         if (uploadPlaceholder) uploadPlaceholder.classList.remove('hidden');
-                         
-                         const categoryButtons = document.querySelectorAll('.btn-category');
+                          // Reset form
+                          subjekEl.value = '';
+                          detailEl.value = '';
+                          if (anonimCheckboxEl) anonimCheckboxEl.checked = false;
+                          const boardToggle = document.querySelector('input[data-show-board]');
+                          if (boardToggle) boardToggle.checked = false;
+                          if (fileInput) fileInput.value = '';
+                          const previewContainer = document.getElementById('preview-container');
+                          const uploadPlaceholder = document.getElementById('upload-placeholder');
+                          if (previewContainer) previewContainer.classList.add('hidden');
+                          if (uploadPlaceholder) uploadPlaceholder.classList.remove('hidden');
+                          if (charCount) charCount.textContent = '0';
+                          
+                          const categoryButtons = document.querySelectorAll('.btn-category');
                          categoryButtons.forEach(btn => {
                              btn.classList.remove('active', 'text-white', 'bg-blue-900');
                              btn.classList.add('text-gray-500', 'hover:bg-gray-50');

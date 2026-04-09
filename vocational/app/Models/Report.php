@@ -200,7 +200,9 @@ class Report
     public function getReportDetail($id_report)
     {
         try {
-            $stmt = $this->pdo->prepare("
+            error_log('[MODEL] getReportDetail called with id: ' . $id_report);
+            
+            $query = "
                 SELECT 
                     ar.id_report,
                     ar.id_aspirasi,
@@ -223,20 +225,31 @@ class Report
                 JOIN mhs_whitelist mhs_reporter ON ar.npm_reporter = mhs_reporter.npm
                 JOIN mhs_whitelist mhs_author ON asp.npm_pelapor = mhs_author.npm
                 WHERE ar.id_report = ?
-            ");
+            ";
+            error_log('[MODEL] SQL Query prepared');
+            
+            $stmt = $this->pdo->prepare($query);
+            error_log('[MODEL] Query executed with id: ' . $id_report);
             
             $stmt->execute([$id_report]);
+            error_log('[MODEL] Execute successful');
+            
             $report = $stmt->fetch(\PDO::FETCH_ASSOC);
+            error_log('[MODEL] Fetch result: ' . ($report ? 'FOUND' : 'NOT FOUND'));
+            error_log('[MODEL] Report data: ' . json_encode($report));
             
             if (!$report) {
+                error_log('[MODEL] No report found for id: ' . $id_report);
                 return false;
             }
             
-            // Get status history if needed
-            // (Can be expanded if we add status_log table)
-            
+            error_log('[MODEL] Returning report successfully');
             return $report;
         } catch (\PDOException $e) {
+            error_log('❌ [MODEL] PDOException in getReportDetail: ' . $e->getMessage());
+            error_log('❌ [MODEL] Error Code: ' . $e->getCode());
+            error_log('❌ [MODEL] File: ' . $e->getFile() . ' Line: ' . $e->getLine());
+            error_log('❌ [MODEL] Stack: ' . $e->getTraceAsString());
             return false;
         }
     }
