@@ -17,7 +17,8 @@
     <meta property="og:url" content="https://vocational.info/">
     <meta property="og:title" content="<?= $title ?? 'VocaTIonal' ?> - Suara Mahasiswa TI">
     <meta property="og:description" content="Punya keluhan soal fasilitas atau kurikulum? Sampaikan lewat VocaTIonal. Dari mahasiswa, untuk prodi.">
-    <meta property="og:image" content="https://vocational.info/assets/img/og-preview.png"> <meta property="twitter:card" content="summary_large_image">
+    <meta property="og:image" content="https://vocational.info/assets/img/og-preview.png">
+    <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://vocational.info/">
     <meta property="twitter:title" content="<?= $title ?? 'VocaTIonal' ?> - Suara Mahasiswa TI">
     <meta property="twitter:description" content="Wadah aspirasi terintegrasi mahasiswa Teknologi Informasi. Aman, transparan, dan Zero Trust.">
@@ -41,7 +42,13 @@
         input:checked ~ .block { background-color: #1E3A8A; }
         .fade-out { opacity: 0; transition: opacity 0.5s ease-out; pointer-events: none; }
         .fade-in { opacity: 1 !important; transform: translateY(0) !important; transition: all 0.6s ease-out; }
-        #main-content { opacity: 0; transform: translateY(10px); }
+        #aspiration-content { opacity: 0; transform: translateY(10px); }
+        /* Skip link */
+        .skip-link { position: absolute; top: -100%; left: 50%; transform: translateX(-50%); z-index: 9999; }
+        .skip-link:focus { top: 0.5rem; }
     </style>
 </head>
 <body class="min-h-screen">
+    <a href="#main-content" class="skip-link bg-blue-900 text-white px-4 py-2 rounded-b-lg font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2">
+        Langsung ke konten utama
+    </a>

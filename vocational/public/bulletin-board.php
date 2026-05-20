@@ -1,22 +1,16 @@
 <?php 
-
-// Session start for auth check
 session_start();
 
-// Props
 $title = "VocaTIonal | Papan Buletin";
 $active = "papan-buletin";
 
-// Determine base paths
-$publicDir = dirname(__FILE__); // /var/www/html/public
-$appDir = dirname($publicDir) . '/app'; // /var/www/html/app
+$publicDir = dirname(__FILE__);
+$appDir = dirname($publicDir) . '/app';
 
-// Check login status using Auth class
 require_once $appDir . '/Controllers/Auth.php';
 $auth = new Auth();
 $isLoggedIn = $auth->check();
 
-// if Not LoggedIn, redirect to home page
 if (!$isLoggedIn) {
     header('Location: ./');
     exit;
@@ -24,82 +18,81 @@ if (!$isLoggedIn) {
 
 $user = $auth->user();
 
-// Import header & navbar
 include $appDir . '/Views/Components/Header.php';
 include $appDir . '/Views/Components/Navbar.php';
-
 ?>
 
-<main class="mx-auto px-6 md:px-16 py-8 md:py-16">
-    <!-- Header -->
+<main id="main-content" class="mx-auto px-6 md:px-16 py-8 md:py-16">
     <header class="mb-12">
         <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Papan <span class="text-blue-900">Buletin</span>
         </h1>
-        <p class="text-lg md:text-xl text-gray-500">
+        <p class="text-lg md:text-xl text-gray-600">
             Aspirasi dari sesama mahasiswa yang telah disetujui untuk ditampilkan
         </p>
     </header>
 
     <!-- Category Filter -->
-    <div class="mb-8 flex flex-wrap gap-3 md:gap-4">
-        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-blue-900 text-white rounded-full font-semibold transition-all active"
-                data-category="all">
-            Semua
-        </button>
-        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
-                data-category="Akademik">
-            Akademik
-        </button>
-        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
-                data-category="Fasilitas">
-            Fasilitas
-        </button>
-        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
-                data-category="Sarpras">
-            Sarpras
-        </button>
-        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
-                data-category="Layanan">
-            Layanan
-        </button>
-        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
-                data-category="UKT">
-            UKT
-        </button>
-        <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all"
-                data-category="Lainnya">
-            Lainnya
-        </button>
-    </div>
+    <nav aria-label="Filter kategori" class="mb-8">
+        <div class="flex flex-wrap gap-3 md:gap-4" role="radiogroup" aria-label="Pilih kategori">
+            <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-blue-900 text-white rounded-full font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2"
+                    data-category="all" role="radio" aria-checked="true">
+                Semua
+            </button>
+            <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2"
+                    data-category="Akademik" role="radio" aria-checked="false">
+                Akademik
+            </button>
+            <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2"
+                    data-category="Fasilitas" role="radio" aria-checked="false">
+                Fasilitas
+            </button>
+            <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2"
+                    data-category="Sarpras" role="radio" aria-checked="false">
+                Sarpras
+            </button>
+            <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2"
+                    data-category="Layanan" role="radio" aria-checked="false">
+                Layanan
+            </button>
+            <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2"
+                    data-category="UKT" role="radio" aria-checked="false">
+                UKT
+            </button>
+            <button class="category-filter px-6 py-2 border-gray-200 border-2 border-solid bg-gray-100 text-gray-900 hover:bg-gray-200 rounded-full font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2"
+                    data-category="Lainnya" role="radio" aria-checked="false">
+                Lainnya
+            </button>
+        </div>
+    </nav>
 
-    <!-- Board Container (Masonry Grid) -->
-    <div id="board-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <!-- Skeleton loaders -->
+    <!-- Status announcement for screen readers -->
+    <div id="board-status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+    <!-- Board Container -->
+    <section aria-label="Daftar aspirasi" id="board-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <?php for ($i = 0; $i < 9; $i++): ?>
-            <div class="h-64 bg-gray-200 rounded-lg animate-pulse"></div>
+            <div class="h-64 bg-gray-200 rounded-lg animate-pulse" aria-hidden="true"></div>
         <?php endfor; ?>
-    </div>
+    </section>
 
-    <!-- Load more button -->
+    <!-- Load more -->
     <div class="flex justify-center">
-        <button id="load-more-btn" class="px-8 py-3 bg-blue-900 text-white rounded-lg font-semibold hover:bg-blue-800 transition-colors hidden">
+        <button id="load-more-btn" class="px-8 py-3 bg-blue-900 text-white rounded-lg font-semibold hover:bg-blue-800 transition-colors hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2">
             Muat Selengkapnya
         </button>
     </div>
 
     <!-- Empty state -->
-    <div id="empty-state" class="hidden text-center py-16">
-        <i data-lucide="inbox" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
-        <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum Ada Aspirasi</h3>
+    <div id="empty-state" class="hidden text-center py-16" role="status">
+        <i data-lucide="inbox" aria-hidden="true" class="w-16 h-16 text-gray-400 mx-auto mb-4"></i>
+        <h2 class="text-xl font-semibold text-gray-900 mb-2">Belum Ada Aspirasi</h2>
         <p class="text-gray-600">Belum ada aspirasi yang ditampilkan di papan buletin untuk kategori ini</p>
     </div>
 </main>
 
-<?php 
-    // Include components
-    include __DIR__ . '/../app/Views/Components/ReportModal.php';
-?>
+<?php include __DIR__ . '/../app/Views/Components/ReportModal.php'; ?>
+
 
 <script>
     let currentCategory = 'all';
@@ -107,20 +100,21 @@ include $appDir . '/Views/Components/Navbar.php';
     const limit = 12;
     let isLoading = false;
 
-    // Load aspirations
     async function loadAspirations(category = 'all', page = 1, append = false) {
         if (isLoading) return;
-        
         isLoading = true;
+
         const boardContainer = document.getElementById('board-container');
         const emptyState = document.getElementById('empty-state');
         const loadMoreBtn = document.getElementById('load-more-btn');
+        const statusEl = document.getElementById('board-status');
 
         if (page === 1 && !append) {
             boardContainer.innerHTML = '';
             for (let i = 0; i < 9; i++) {
-                boardContainer.innerHTML += '<div class="h-64 bg-gray-200 rounded-lg animate-pulse"></div>';
+                boardContainer.innerHTML += '<div class="h-64 bg-gray-200 rounded-lg animate-pulse" aria-hidden="true"></div>';
             }
+            statusEl.textContent = 'Memuat aspirasi...';
         }
 
         try {
@@ -129,7 +123,6 @@ include $appDir . '/Views/Components/Navbar.php';
 
             if (result.success && result.data.length > 0) {
                 let html = '';
-                
                 result.data.forEach(aspiration => {
                     const categoryColors = {
                         'Akademik': 'bg-blue-100 border-blue-300 text-blue-900',
@@ -139,110 +132,84 @@ include $appDir . '/Views/Components/Navbar.php';
                         'UKT': 'bg-green-100 border-green-300 text-green-900',
                         'Lainnya': 'bg-purple-100 border-purple-300 text-purple-900'
                     };
-
                     const color = categoryColors[aspiration.kategori] || 'bg-gray-100 border-gray-300 text-gray-900';
-                    const rotation = Math.random() * 20 - 10;
 
                     html += `
-                        <div class="board-card rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
-                             style="transform: rotate(${rotation}deg); animation: fadeInScale 0.5s ease-out forwards;"
-                             data-aspiration-id="${aspiration.id_aspirasi}">
-                            
-                            <!-- Sticky tape -->
-                            <div class="absolute top-0 left-1/4 w-12 h-3 bg-yellow-100 border border-yellow-200 rounded opacity-60 shadow-sm"></div>
-                            <div class="absolute top-0 right-1/3 w-12 h-3 bg-yellow-100 border border-yellow-200 rounded opacity-60 shadow-sm"></div>
-
-                            <!-- Content -->
+                        <article class="board-card rounded-lg shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
+                                 data-aspiration-id="${aspiration.id_aspirasi}"
+                                 aria-label="Aspirasi: ${aspiration.judul.replace(/"/g, '&quot;')}">
                             <div class="${color} p-6 min-h-[240px] flex flex-col justify-between border-2 relative">
-                                
-                                <!-- Category & Date -->
                                 <div class="flex items-center justify-between mb-3">
                                     <span class="inline-block px-3 py-1 bg-white bg-opacity-70 rounded-full text-xs font-bold uppercase tracking-wider">
                                         ${aspiration.kategori}
                                     </span>
-                                    <span class="text-xs text-gray-600">
+                                    <time class="text-xs text-gray-700" datetime="${aspiration.created_at}">
                                         ${new Date(aspiration.created_at).toLocaleDateString('id-ID')}
-                                    </span>
+                                    </time>
                                 </div>
-
-                                <!-- Title -->
                                 <div class="mb-3">
-                                    <h3 class="font-bold text-base leading-tight line-clamp-2">
-                                        ${aspiration.judul}
-                                    </h3>
+                                    <h3 class="font-bold text-base leading-tight line-clamp-2">${aspiration.judul}</h3>
                                 </div>
-
-                                <!-- Excerpt -->
-                                <p class="text-sm leading-relaxed mb-4 line-clamp-3 opacity-90">
-                                    ${aspiration.excerpt}
-                                </p>
-
-                                <!-- Footer -->
+                                <p class="text-sm leading-relaxed mb-4 line-clamp-3 opacity-90">${aspiration.excerpt}</p>
                                 <div class="flex items-center justify-between pt-3 border-t border-current border-opacity-20">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-sm font-semibold">👍 ${aspiration.total_reactions}</span>
-                                    </div>
+                                    <span class="text-sm font-semibold" aria-label="${aspiration.total_reactions} reaksi">
+                                        <span aria-hidden="true">👍</span> ${aspiration.total_reactions}
+                                    </span>
                                     <div class="flex gap-2">
-                                        <button class="btn-view-detail px-3 py-1 bg-white bg-opacity-70 hover:bg-opacity-100 rounded text-xs font-bold transition-all"
-                                                data-aspiration-id="${aspiration.id_aspirasi}">
+                                        <button class="btn-view-detail px-3 py-1 bg-white bg-opacity-70 hover:bg-opacity-100 rounded text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900"
+                                                data-aspiration-id="${aspiration.id_aspirasi}"
+                                                aria-label="Lihat detail aspirasi: ${aspiration.judul.replace(/"/g, '&quot;')}">
                                             Selengkapnya
                                         </button>
                                         ${window.isLoggedIn ? `
-                                            <button class="btn-react px-2 py-1 bg-white bg-opacity-70 hover:bg-opacity-100 rounded text-xs font-bold transition-all"
+                                            <button class="btn-react px-2 py-1 bg-white bg-opacity-70 hover:bg-opacity-100 rounded text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900"
                                                     data-aspiration-id="${aspiration.id_aspirasi}"
-                                                    title="Like">
+                                                    aria-pressed="${aspiration.userHasReacted ? 'true' : 'false'}"
+                                                    aria-label="Suka aspirasi ini">
                                                 ${aspiration.userHasReacted ? '👍' : '🤍'}
                                             </button>
-                                            <button class="btn-report px-2 py-1 bg-white bg-opacity-70 hover:bg-opacity-100 rounded text-xs font-bold transition-all"
+                                            <button class="btn-report px-2 py-1 bg-white bg-opacity-70 hover:bg-opacity-100 rounded text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                                                     data-aspiration-id="${aspiration.id_aspirasi}"
                                                     data-aspiration-title="${aspiration.judul.replace(/"/g, '&quot;')}"
                                                     data-aspiration-description="${aspiration.deskripsi.replace(/"/g, '&quot;')}"
-                                                    title="Laporkan">
-                                                🚨
+                                                    aria-label="Laporkan aspirasi ini">
+                                                <span aria-hidden="true">🚨</span>
                                             </button>
                                         ` : ''}
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </article>
                     `;
                 });
 
-                if (page === 1) {
-                    boardContainer.innerHTML = html;
-                } else {
-                    boardContainer.innerHTML += html;
-                }
+                if (page === 1) { boardContainer.innerHTML = html; }
+                else { boardContainer.innerHTML += html; }
 
-                // Attach event listeners
                 attachEventListeners();
+                statusEl.textContent = `${result.data.length} aspirasi dimuat`;
 
-                // Show/hide load more button
-                if (result.pagination.hasNextPage) {
-                    loadMoreBtn.classList.remove('hidden');
-                } else {
-                    loadMoreBtn.classList.add('hidden');
-                }
+                if (result.pagination.hasNextPage) { loadMoreBtn.classList.remove('hidden'); }
+                else { loadMoreBtn.classList.add('hidden'); }
 
                 emptyState.classList.add('hidden');
             } else if (page === 1) {
                 boardContainer.innerHTML = '';
                 emptyState.classList.remove('hidden');
                 loadMoreBtn.classList.add('hidden');
+                statusEl.textContent = 'Tidak ada aspirasi ditemukan';
             }
         } catch (error) {
             console.error('Error loading aspirations:', error);
             if (page === 1) {
-                boardContainer.innerHTML = '<p class="col-span-full text-center text-red-600">Error memuat aspirasi</p>';
+                boardContainer.innerHTML = '<p class="col-span-full text-center text-red-600" role="alert">Error memuat aspirasi. Silakan coba lagi.</p>';
             }
+            statusEl.textContent = 'Gagal memuat aspirasi';
         }
-
         isLoading = false;
     }
 
-    // Attach event listeners
     function attachEventListeners() {
-        // React button
         document.querySelectorAll('.btn-react').forEach(btn => {
             btn.addEventListener('click', async function() {
                 const id = this.dataset.aspirationId;
@@ -254,41 +221,38 @@ include $appDir . '/Views/Components/Navbar.php';
                     });
                     const result = await response.json();
                     if (result.success) {
-                        this.textContent = result.data.userHasReacted ? '👍' : '🤍';
-                        // Find reaction count and update
-                        const card = this.closest('.board-card');
-                        const countSpan = card.querySelector('.text-sm.font-semibold');
-                        countSpan.textContent = `👍 ${result.data.totalReactions}`;
+                        const hasReacted = result.data.userHasReacted;
+                        this.textContent = hasReacted ? '👍' : '🤍';
+                        this.setAttribute('aria-pressed', String(hasReacted));
+                        const card = this.closest('article');
+                        const countSpan = card.querySelector('[aria-label$="reaksi"]');
+                        countSpan.innerHTML = `<span aria-hidden="true">👍</span> ${result.data.totalReactions}`;
+                        countSpan.setAttribute('aria-label', `${result.data.totalReactions} reaksi`);
                     }
-                } catch (error) {
-                    console.error('React error:', error);
-                }
+                } catch (error) { console.error('React error:', error); }
             });
         });
 
-        // Report button
         document.querySelectorAll('.btn-report').forEach(btn => {
             btn.addEventListener('click', function() {
-                const id = this.dataset.aspirationId;
-                const title = this.dataset.aspirationTitle;
-                const description = this.dataset.aspirationDescription;
-                
-                openReportModal(id, title, description);
+                openReportModal(this.dataset.aspirationId, this.dataset.aspirationTitle, this.dataset.aspirationDescription);
             });
         });
 
         lucide.createIcons();
     }
 
-    // Category filter
+    // Category filter with aria-checked
     document.querySelectorAll('.category-filter').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.category-filter').forEach(b => {
                 b.classList.remove('bg-blue-900', 'text-white');
                 b.classList.add('bg-gray-100', 'text-gray-900', 'hover:bg-gray-200', 'border-gray-200');
+                b.setAttribute('aria-checked', 'false');
             });
             this.classList.add('bg-blue-900', 'text-white');
             this.classList.remove('bg-gray-100', 'text-gray-900', 'hover:bg-gray-200', 'border-gray-200');
+            this.setAttribute('aria-checked', 'true');
             
             currentCategory = this.dataset.category;
             currentPage = 1;
@@ -296,43 +260,20 @@ include $appDir . '/Views/Components/Navbar.php';
         });
     });
 
-    // Load more button
     document.getElementById('load-more-btn').addEventListener('click', function() {
         currentPage++;
         loadAspirations(currentCategory, currentPage, true);
     });
 
-    // Initial load
     window.isLoggedIn = <?= $isLoggedIn ? 'true' : 'false' ?>;
     loadAspirations();
 </script>
 
 <style>
-    .line-clamp-2 {
-        display: -webkit-box;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .line-clamp-3 {
-        display: -webkit-box;
-        line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    @keyframes fadeInScale {
-        from {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    .board-card { animation: fadeInScale 0.5s ease-out forwards; }
 </style>
-
 </body>
 </html>
