@@ -15,6 +15,11 @@ header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
 // START SESSION SEBELUM OUTPUT APAPUN (PENTING!)
 session_start();
 
+// Generate CSRF token if not exists (needed for login form)
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // 1. Definisikan Props
 $title = "VocaTIonal | Aspirasi Mahasiswa";
 $active = "beranda";
@@ -461,7 +466,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         
             <h2 class="text-2xl font-bold text-gray-900 mb-2">Akses Terbatas</h2>
             <p class="text-sm text-gray-600 mb-8 leading-relaxed">
-                Silahkan Masukkan Nomor Pokok Mahasiswa (NPM)<br>Untuk Melanjutkan.
+                Silahkan Masukkan NPM dan Password<br>Untuk Melanjutkan.
             </p>
         
             <div class="w-full">
@@ -470,6 +475,10 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
 
                 <input type="text" id="npm-input" name="npm" placeholder="XX.X.XX.XX.XXX" maxlength="14"
                     class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 text-center font-medium tracking-widest text-gray-700 focus:outline-none focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A]"
+                    required>
+
+                <input type="password" id="password-input" name="password" placeholder="Password"
+                    class="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 text-center font-medium text-gray-700 focus:outline-none focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A]"
                     required>
             
                 <button id="btn-login"  
@@ -516,10 +525,17 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                 e.preventDefault();
 
                 const npm = npmInput.value.replace(/\./g, '');
+                const passwordInput = document.getElementById('password-input');
+                const password = passwordInput ? passwordInput.value : '';
                 
                 // SECURITY: Validate NPM format
                 if (!validateNPM(npmInput.value)) {
                     alert('NPM harus 10 digit angka! Format: XX.X.XX.XX.XXX');
+                    return;
+                }
+
+                if (!password) {
+                    alert('Password harus diisi');
                     return;
                 }
                 
@@ -543,6 +559,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                         },
                         body: JSON.stringify({ 
                             npm: npm,
+                            password: password,
                             csrf_token: csrfToken
                         })
                     });

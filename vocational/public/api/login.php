@@ -57,6 +57,12 @@ if (!isset($data['npm']) || empty($data['npm'])) {
     exit();
 }
 
+if (!isset($data['password']) || empty($data['password'])) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Password harus diisi']);
+    exit();
+}
+
 // NPM-based rate limit: max 3 attempts per 10 minutes per NPM
 $npm = preg_replace('/[^0-9]/', '', $data['npm']);
 $npmKey = "login_attempts_npm_$npm";
@@ -98,7 +104,7 @@ if (!empty($csrfToken) && !Session::validateCSRFToken($csrfToken)) {
 //     PROCEED WITH LOGIN
 // ==========================
 $auth = new Auth();
-$result = $auth->login($data['npm']);
+$result = $auth->login($data['npm'], $data['password']);
 
 if ($result['success']) {
     // Reset rate limits on successful login

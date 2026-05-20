@@ -10,43 +10,46 @@ class Auth {
         Session::start();
     }
     
-    // Login dengan NPM - Enhanced Security
-    public function login($npm) {
+    // Login dengan NPM + Password
+    public function login($npm, $password) {
         // 1. Sanitize input - remove ALL non-numeric characters
         $npm = preg_replace('/[^0-9]/', '', $npm);
         
         // 2. Validate NPM length (exactly 10 digits)
         if (strlen($npm) !== 10) {
             $this->logSecurityEvent('invalid_npm_format', "Invalid NPM format: " . substr($npm, 0, 4) . "...", $_SERVER['REMOTE_ADDR']);
-            return ['success' => false, 'message' => 'Format NPM tidak valid. NPM harus 10 digit angka.'];
+            return ['success' => false, 'message' => 'NPM atau Password salah.'];
         }
         
-        // 3. Validate NPM pattern - first 2 digits should be valid year (20-24)
-        $year = (int) substr($npm, 0, 2);
-        if ($year < 20 || $year > 24) {
-            $this->logSecurityEvent('invalid_npm_year', "Invalid NPM year: $year from IP " . $_SERVER['REMOTE_ADDR'], $_SERVER['REMOTE_ADDR']);
-            return ['success' => false, 'message' => 'NPM tidak terdaftar. Pastikan NPM benar.'];
+        // 3. Validate password not empty
+        if (empty($password)) {
+            return ['success' => false, 'message' => 'NPM atau Password salah.'];
         }
         
         // 4. Check for suspicious patterns (e.g., all same digits)
         if (count(array_unique(str_split($npm))) === 1) {
-            $this->logSecurityEvent('suspicious_npm', "Suspicious NPM pattern (all same digits): $npm", $_SERVER['REMOTE_ADDR']);
-            return ['success' => false, 'message' => 'NPM tidak valid.'];
+            $this->logSecurityEvent('suspicious_npm', "Suspicious NPM pattern: $npm", $_SERVER['REMOTE_ADDR']);
+            return ['success' => false, 'message' => 'NPM atau Password salah.'];
         }
         
         try {
-            // 5. Check NPM in whitelist using prepared statement (anti SQL injection)
-            $stmt = $this->pdo->prepare("SELECT npm, nama FROM mhs_whitelist WHERE npm = ?");
+            // 5. Check NPM in whitelist
+            $stmt = $this->pdo->prepare("SELECT npm, nama, password FROM mhs_whitelist WHERE npm = ?");
             $stmt->execute([$npm]);
             $user = $stmt->fetch();
             
             if (!$user) {
-                // Log failed attempt
-                $this->logSecurityEvent('login_failed', "Failed login attempt for NPM: " . substr($npm, 0, 4) . "...", $_SERVER['REMOTE_ADDR']);
-                return ['success' => false, 'message' => 'NPM tidak terdaftar dalam whitelist.'];
+                $this->logSecurityEvent('login_failed', "Failed login for NPM: " . substr($npm, 0, 4) . "...", $_SERVER['REMOTE_ADDR']);
+                return ['success' => false, 'message' => 'NPM atau Password salah.'];
             }
             
-            // 6. Check if already logged in
+            // 6. Verify password
+            if (!$user['password'] || !password_verify($password, $user['password'])) {
+                $this->logSecurityEvent('login_failed', "Wrong password for NPM: " . substr($npm, 0, 4) . "...", $_SERVER['REMOTE_ADDR']);
+                return ['success' => false, 'message' => 'NPM atau Password salah.'];
+            }
+            
+            // 7. Check if already logged in
             if (Session::has('user_npm')) {
                 return ['success' => false, 'message' => 'Anda sudah login. Silakan logout terlebih dahulu.'];
             }

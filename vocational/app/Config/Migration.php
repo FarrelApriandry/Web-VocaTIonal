@@ -117,6 +117,9 @@ $migrations = [
 
     // Versi 2.5: Insert anonim record for anonymized aspirations
     "INSERT IGNORE INTO mhs_whitelist (npm, nama) VALUES ('anonim', 'anonim')",
+
+    // Versi 4.0: Add password column to mhs_whitelist
+    "ALTER TABLE mhs_whitelist ADD COLUMN password VARCHAR(255) DEFAULT NULL",
 ];
 
 try {
@@ -142,6 +145,17 @@ try {
     }
 
     echo "Database sinkron dengan versi terbaru\n";
+
+    // Versi 4.0: Seed default passwords (NPM hashed) for users without password
+    $stmt = $pdo->query("SELECT npm FROM mhs_whitelist WHERE password IS NULL AND npm != 'anonim'");
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (count($users) > 0) {
+        $update = $pdo->prepare("UPDATE mhs_whitelist SET password = ? WHERE npm = ?");
+        foreach ($users as $u) {
+            $update->execute([password_hash($u['npm'], PASSWORD_BCRYPT), $u['npm']]);
+        }
+        echo "Seeded default passwords for " . count($users) . " users.\n";
+    }
 } catch (PDOException $e) {
     die("Gagal migrasi: " . $e->getMessage() . "\n");
 }
