@@ -4,8 +4,8 @@
 ?>
 
 <!-- Report Modal -->
-<div id="report-modal" class="fixed inset-0 z-[110] hidden flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4">
-    <div class="bg-white rounded-3xl p-6 md:p-8 w-full max-w-lg shadow-2xl transform transition-all scale-95 opacity-0 duration-300" id="report-modal-box">
+<div id="report-modal" class="fixed inset-0 z-[110] hidden flex items-start justify-center bg-gray-900/60 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl p-6 md:p-8 w-full max-w-lg shadow-2xl transform transition-all scale-95 opacity-0 duration-300 my-auto" id="report-modal-box">
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-bold text-gray-900">Laporkan Aspirasi</h3>
