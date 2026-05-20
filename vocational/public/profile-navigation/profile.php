@@ -23,7 +23,8 @@ include $appDir . '/Views/Components/Header.php';
 include $appDir . '/Views/Components/Navbar.php';
 ?>
 
-<main id="main-content" class="mx-auto px-6 md:px-16 py-8 md:py-16 max-w-3xl">
+<main id="main-content" class="mx-auto px-4 md:px-8 py-8 md:py-16 max-w-7xl">
+    <div class="max-w-2xl">
     <header class="mb-8 md:mb-12">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-tight">
             Selamat Datang, <span class="text-blue-900"><?= htmlspecialchars(explode(' ', $user['nama'])[0]) ?></span>
@@ -78,6 +79,7 @@ include $appDir . '/Views/Components/Navbar.php';
     <a href="/" class="inline-flex items-center gap-2 mt-6 text-xs font-semibold text-gray-700 hover:text-blue-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2 rounded">
         ← Kembali ke Beranda
     </a>
+    </div>
 </main>
 
 <?php include $appDir . '/Views/Components/ConfirmationModal.php'; ?>

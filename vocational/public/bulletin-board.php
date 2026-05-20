@@ -22,7 +22,7 @@ include $appDir . '/Views/Components/Header.php';
 include $appDir . '/Views/Components/Navbar.php';
 ?>
 
-<main id="main-content" class="mx-auto px-6 md:px-16 py-8 md:py-16">
+<main id="main-content" class="mx-auto px-4 md:px-8 py-8 md:py-16 max-w-7xl">
     <header class="mb-12">
         <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Papan <span class="text-blue-900">Buletin</span>
@@ -92,6 +92,26 @@ include $appDir . '/Views/Components/Navbar.php';
 </main>
 
 <?php include __DIR__ . '/../app/Views/Components/ReportModal.php'; ?>
+<?php include __DIR__ . '/../app/Views/Components/ConfirmationModal.php'; ?>
+<script src="./js/confirmation-modal.js"></script>
+
+<!-- Detail Modal -->
+<div id="detail-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm hidden" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
+    <div class="bg-white rounded-2xl p-6 md:p-8 w-[90%] max-w-lg shadow-2xl max-h-[80vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-4">
+            <span id="detail-modal-kategori" class="inline-block px-3 py-1 bg-blue-100 text-blue-900 rounded-full text-xs font-bold uppercase tracking-wider"></span>
+            <button id="detail-modal-close" type="button" aria-label="Tutup detail" class="text-gray-500 hover:text-gray-900 p-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900">
+                ✕
+            </button>
+        </div>
+        <h2 id="detail-modal-title" class="text-lg font-bold text-gray-900 mb-2"></h2>
+        <time id="detail-modal-date" class="text-xs text-gray-600 block mb-4"></time>
+        <p id="detail-modal-desc" class="text-sm text-gray-700 leading-relaxed whitespace-pre-line"></p>
+        <div class="mt-6 pt-4 border-t border-gray-200 flex items-center gap-2">
+            <span id="detail-modal-reactions" class="text-sm font-semibold text-gray-700"></span>
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -99,6 +119,30 @@ include $appDir . '/Views/Components/Navbar.php';
     let currentPage = 1;
     const limit = 12;
     let isLoading = false;
+    let loadedAspirations = [];
+
+    // Detail modal logic
+    function openDetailModal(aspiration) {
+        const modal = document.getElementById('detail-modal');
+        document.getElementById('detail-modal-title').textContent = aspiration.judul;
+        document.getElementById('detail-modal-kategori').textContent = aspiration.kategori;
+        document.getElementById('detail-modal-date').textContent = new Date(aspiration.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('detail-modal-desc').textContent = aspiration.deskripsi;
+        document.getElementById('detail-modal-reactions').textContent = '👍 ' + aspiration.total_reactions + ' reaksi';
+        modal.classList.remove('hidden');
+    }
+
+    document.getElementById('detail-modal-close').addEventListener('click', function() {
+        document.getElementById('detail-modal').classList.add('hidden');
+    });
+    document.getElementById('detail-modal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.add('hidden');
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !document.getElementById('detail-modal').classList.contains('hidden')) {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+    });
 
     async function loadAspirations(category = 'all', page = 1, append = false) {
         if (isLoading) return;
@@ -122,6 +166,8 @@ include $appDir . '/Views/Components/Navbar.php';
             const result = await response.json();
 
             if (result.success && result.data.length > 0) {
+                if (page === 1) { loadedAspirations = result.data; }
+                else { loadedAspirations = loadedAspirations.concat(result.data); }
                 let html = '';
                 result.data.forEach(aspiration => {
                     const categoryColors = {
@@ -210,6 +256,16 @@ include $appDir . '/Views/Components/Navbar.php';
     }
 
     function attachEventListeners() {
+        // Detail button
+        document.querySelectorAll('.btn-view-detail').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('article');
+                const id = this.dataset.aspirationId;
+                const aspData = loadedAspirations.find(a => a.id_aspirasi == id);
+                if (aspData) openDetailModal(aspData);
+            });
+        });
+
         document.querySelectorAll('.btn-react').forEach(btn => {
             btn.addEventListener('click', async function() {
                 const id = this.dataset.aspirationId;

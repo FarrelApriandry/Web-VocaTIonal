@@ -34,7 +34,7 @@ $user = $isLoggedIn ? $auth->user() : null;
 include __DIR__ . '/../app/Views/Components/Header.php';
 include __DIR__ . '/../app/Views/Components/Navbar.php';
 ?>
-    <main id="main-content" class="mx-auto px-6 md:px-16 py-8 md:py-16">
+    <main id="main-content" class="mx-auto px-4 md:px-8 py-8 md:py-16 max-w-7xl">
         <header class="mb-8 md:mb-12">
             <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
                 Halo, Mahasiswa <span class="text-blue-900">Teknologi Informasi!</span>
@@ -67,6 +67,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         </div>
 
         <!-- Main Content (aspiration form) -->
+        <?php if ($isLoggedIn) : ?>
         <div id="aspiration-content" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
             <section class="lg:col-span-2 glass-card p-6 md:p-10 shadow-sm" aria-labelledby="form-heading">
                 <h2 id="form-heading" class="sr-only">Form Aspirasi</h2>
@@ -185,6 +186,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                 </section>
             </aside>
         </div>
+        <?php endif; ?>
     </main>
 
     <input type="hidden" name="kategori" id="selected-category" value="Akademik">
@@ -241,19 +243,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         });
         
         function handleLoginSuccess() {
-            const skeleton = document.getElementById('skeleton-loader');
-            const content = document.getElementById('aspiration-content');
-            const modal = document.getElementById('login-modal');
-            if (modal) modal.style.display = 'none';
-            if (skeleton) skeleton.classList.add('fade-out');
-            setTimeout(() => {
-                if (skeleton) skeleton.style.display = 'none';
-                if (content) content.classList.remove('hidden');
-                setTimeout(() => {
-                    if (content) content.classList.add('fade-in');
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
-                }, 50);
-            }, 500);
+            setTimeout(() => { window.location.href = window.location.href; }, 1000);
         }
         
         // ============================================
@@ -386,50 +376,103 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
     </script>
     <?php else : ?>
 
-    <!-- Login Modal -->
-    <div id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-heading" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl p-8 w-[90%] max-w-md shadow-2xl flex flex-col items-center text-center">
-        
-            <img src="./assets/img/logo-himatif.svg" alt="" aria-hidden="true" class="w-16 h-16 object-contain mb-4">
-        
-            <h2 id="login-heading" class="text-2xl font-bold text-gray-900 mb-2">Akses Terbatas</h2>
-            <p class="text-sm text-gray-700 mb-8 leading-relaxed">
-                Silahkan masukkan NPM dan Password untuk melanjutkan.
-            </p>
-        
-            <form id="login-form" class="w-full" novalidate>
-                <input type="hidden" name="csrf_token" id="login-csrf-token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
-
-                <div class="mb-4">
-                    <label for="npm-input" class="block text-xs font-bold text-gray-700 uppercase tracking-widest mb-2 text-left">NPM</label>
-                    <input type="text" id="npm-input" name="npm" placeholder="XX.X.XX.XX.XXX" maxlength="14"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-center font-medium tracking-widest text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
-                        autocomplete="username"
-                        aria-required="true"
-                        required>
-                </div>
-
-                <div class="mb-4">
-                    <label for="password-input" class="block text-xs font-bold text-gray-700 uppercase tracking-widest mb-2 text-left">Password</label>
-                    <input type="password" id="password-input" name="password" placeholder="Masukkan password"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-center font-medium text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
-                        autocomplete="current-password"
-                        aria-required="true"
-                        required>
-                </div>
-
-                <!-- Live error region -->
-                <div id="login-error" role="alert" aria-live="assertive" class="text-sm text-red-600 mb-4 hidden font-medium"></div>
+    <!-- Login Modal Overlay -->
+    <div id="login-modal" role="dialog" aria-modal="true" aria-labelledby="login-heading" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-950/40 backdrop-blur-md">
+        <div class="w-[95%] max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 grid grid-cols-1 lg:grid-cols-12">
             
-                <button id="btn-login" type="submit"
-                        class="w-full bg-[#1E3A8A] text-white rounded-xl px-4 py-3.5 font-semibold hover:bg-blue-900 transition-colors shadow-md text-sm md:text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2">
-                    Masuk Ke Dashboard
-                </button>
-            </form>
-        
-            <p class="text-xs text-gray-600 mt-6 font-medium">
-                Data Anda Dienkripsi Secara End-To-End.
-            </p>
+            <!-- Column A: Login Form -->
+            <div class="lg:col-span-5 p-10 md:p-12 flex flex-col justify-center">
+                <div class="flex items-center gap-3 mb-8">
+                    <img src="./assets/img/logo-himatif.svg" alt="" aria-hidden="true" class="w-10 h-10 object-contain">
+                    <span class="text-lg font-bold text-gray-900">VocaTIonal</span>
+                </div>
+
+                <h2 id="login-heading" class="text-xl font-bold text-gray-900 mb-1">Masuk ke Akun</h2>
+                <p class="text-sm text-gray-600 mb-8">Gunakan NPM dan password untuk melanjutkan.</p>
+
+                <form id="login-form" novalidate>
+                    <input type="hidden" name="csrf_token" id="login-csrf-token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+
+                    <div class="mb-5">
+                        <label for="npm-input" class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1.5">NPM</label>
+                        <input type="text" id="npm-input" name="npm" placeholder="XX.X.XX.XX.XXX" maxlength="14"
+                            class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3.5 text-sm font-medium tracking-widest text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
+                            autocomplete="username" aria-required="true" required>
+                    </div>
+
+                    <div class="mb-5">
+                        <label for="password-input" class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1.5">Password</label>
+                        <input type="password" id="password-input" name="password" placeholder="Masukkan password"
+                            class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3.5 text-sm font-medium text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
+                            autocomplete="current-password" aria-required="true" required>
+                    </div>
+
+                    <div id="login-error" role="alert" aria-live="assertive" class="text-xs text-red-600 mb-4 hidden font-medium"></div>
+
+                    <button id="btn-login" type="submit"
+                            class="w-full bg-[#111827] text-white rounded-lg px-4 py-3.5 font-medium text-sm hover:bg-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2">
+                        Masuk
+                    </button>
+                </form>
+
+                <p class="text-[11px] text-gray-500 mt-8">Data dienkripsi secara end-to-end.</p>
+            </div>
+
+            <!-- Column B: Quick Guide Hub -->
+            <div class="lg:col-span-7 bg-slate-50 p-10 md:p-12 border-t lg:border-t-0 lg:border-l border-gray-100">
+                <h3 class="text-xs font-bold text-gray-700 uppercase tracking-widest mb-6">Panduan Cepat</h3>
+
+                <!-- First Login Notice -->
+                <div class="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-xl">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="key-round" aria-hidden="true" class="w-5 h-5 text-blue-900 flex-shrink-0 mt-0.5"></i>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900 mb-1">Akses Pertama Kamu?</p>
+                            <p class="text-xs text-gray-700 leading-relaxed">Password default adalah <strong>10 digit NPM</strong> kamu (tanpa titik). Kamu bisa mengubahnya di halaman Pengaturan setelah login.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="mb-6">
+                    <p class="text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-3">FAQ Singkat</p>
+                    <div class="space-y-2">
+                        <details class="group bg-white border border-gray-200 rounded-lg">
+                            <summary class="flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-900 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1 rounded-lg">
+                                Apakah data saya aman?
+                                <i data-lucide="chevron-down" aria-hidden="true" class="w-4 h-4 text-gray-500 group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <p class="px-4 pb-3 text-xs text-gray-600 leading-relaxed">Ya. Semua data dienkripsi dan aspirasi anonim tidak dapat dilacak ke identitas pengirim. Sistem menggunakan session terenkripsi dengan timeout 60 menit.</p>
+                        </details>
+                        <details class="group bg-white border border-gray-200 rounded-lg">
+                            <summary class="flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-900 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1 rounded-lg">
+                                NPM saya belum terdaftar?
+                                <i data-lucide="chevron-down" aria-hidden="true" class="w-4 h-4 text-gray-500 group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <p class="px-4 pb-3 text-xs text-gray-600 leading-relaxed">Hubungi pengurus HIMATIF atau admin sistem untuk mendaftarkan NPM kamu ke dalam whitelist. Hanya mahasiswa TI aktif yang dapat mengakses platform.</p>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- Community Policy -->
+                <div>
+                    <p class="text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-3">Kebijakan Komunitas</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" aria-hidden="true" class="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-xs text-gray-700">Sampaikan aspirasi dengan bahasa yang sopan dan konstruktif.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" aria-hidden="true" class="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-xs text-gray-700">Jangan sertakan data pribadi orang lain tanpa izin.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i data-lucide="check" aria-hidden="true" class="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5"></i>
+                            <span class="text-xs text-gray-700">Aspirasi yang melanggar akan ditinjau dan dapat dihapus oleh admin.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -500,9 +543,8 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                     try {
                         const result = JSON.parse(responseText);
                         if (result.success) {
-                            btn.innerText = 'Mengalihkan halaman...';
-                            handleLoginSuccess();
-                            setTimeout(() => { window.location.href = window.location.href; }, 1500);
+                            btn.innerText = 'Mengalihkan...';
+                            setTimeout(() => { window.location.href = window.location.href; }, 1000);
                         } else {
                             errorEl.textContent = result.message || 'Login gagal';
                             errorEl.classList.remove('hidden');
@@ -512,9 +554,8 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                         }
                     } catch (jsonError) {
                         if (response.ok) {
-                            btn.innerText = 'Mengalihkan halaman...';
-                            handleLoginSuccess();
-                            setTimeout(() => { window.location.href = window.location.href; }, 1500);
+                            btn.innerText = 'Mengalihkan...';
+                            setTimeout(() => { window.location.href = window.location.href; }, 1000);
                         } else {
                             errorEl.textContent = 'Terjadi kesalahan saat login. Silakan coba lagi.';
                             errorEl.classList.remove('hidden');
@@ -539,34 +580,6 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
 
     <script src="./js/toast.js"></script>
     <script src="./js/confirmation-modal.js"></script>
-
-    <script>
-        // ==========================================
-        // LOGOUT HANDLER
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', function() {
-            const logoutBtn = document.getElementById('btn-logout-modal');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function() {
-                    window.confirmationModal.open({
-                        title: 'Logout',
-                        message: 'Apakah Anda yakin ingin logout dari akun Anda?',
-                        confirmText: 'Ya, Logout',
-                        cancelText: 'Batal',
-                        confirmBtnColor: 'red',
-                        onConfirm: async () => {
-                            try {
-                                const response = await fetch('./api/logout.php', { method: 'POST' });
-                                if (response.ok) {
-                                    setTimeout(() => { window.location.href = window.location.href; }, 1000);
-                                } else { throw new Error('Logout gagal'); }
-                            } catch (error) { alert('Terjadi kesalahan saat logout.'); }
-                        }
-                    });
-                });
-            }
-        });
-    </script>
 
     <script>
         // ==========================================

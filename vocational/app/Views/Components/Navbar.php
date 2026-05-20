@@ -32,7 +32,7 @@
             aria-expanded="false"
             aria-haspopup="true"
             aria-controls="profile-dropdown"
-            class="hidden md:block transition-transform duration-200 bg-transparent border-none p-2 cursor-pointer relative rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2">
+            class="transition-transform duration-200 bg-transparent border-none p-2 cursor-pointer relative rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2">
         <i data-lucide="user" aria-hidden="true" class="text-gray-700 w-6 h-6"></i>
     </button>
 </nav>
@@ -90,6 +90,9 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Render Lucide icons in navbar
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
         // ===== MOBILE MENU LOGIC =====
         const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
         const mobileMenu = document.getElementById('mobile-menu');
@@ -185,6 +188,37 @@
                 }
             }
         });
+        // ===== LOGOUT HANDLER (global) =====
+        const logoutBtn = document.getElementById('btn-logout-modal');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function() {
+                if (window.confirmationModal) {
+                    window.confirmationModal.open({
+                        title: 'Logout',
+                        message: 'Apakah Anda yakin ingin logout dari akun Anda?',
+                        confirmText: 'Ya, Logout',
+                        cancelText: 'Batal',
+                        confirmBtnColor: 'red',
+                        onConfirm: async () => {
+                            try {
+                                const basePath = document.querySelector('link[rel="icon"]')?.href?.includes('/assets/') ? './' : '../';
+                                const logoutUrl = (window.location.pathname.includes('profile-navigation')) ? '../api/logout.php' : './api/logout.php';
+                                const response = await fetch(logoutUrl, { method: 'POST' });
+                                if (response.ok) {
+                                    setTimeout(() => { window.location.href = '/'; }, 1000);
+                                } else { throw new Error('Logout gagal'); }
+                            } catch (error) { alert('Terjadi kesalahan saat logout.'); }
+                        }
+                    });
+                } else {
+                    // Fallback if confirmation modal not loaded
+                    if (confirm('Apakah Anda yakin ingin logout?')) {
+                        const logoutUrl = (window.location.pathname.includes('profile-navigation')) ? '../api/logout.php' : './api/logout.php';
+                        fetch(logoutUrl, { method: 'POST' }).then(() => { window.location.href = '/'; });
+                    }
+                }
+            });
+        }
     });
 </script>
 
