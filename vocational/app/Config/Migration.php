@@ -88,12 +88,17 @@ $migrations = [
         FOREIGN KEY (npm_reporter) REFERENCES mhs_whitelist(npm) ON DELETE CASCADE
     )",
 
-
     // Versi 2.3: Modify kategori ENUM - add Sarpras & Layanan
     "ALTER TABLE aspirasi MODIFY COLUMN kategori ENUM('Akademik', 'Fasilitas', 'Sarpras', 'Layanan', 'UKT', 'Lainnya')",
 
     // Versi 2.4: Auto-approve aspirasi untuk testing (production: needs manual approval)
     "UPDATE aspirasi SET board_approved = 1 WHERE show_on_board = 1 AND board_approved = 0",
+
+    // Versi 3.0: Update aspirasi_reports status ENUM untuk reporting system
+    "ALTER TABLE aspirasi_reports MODIFY COLUMN status ENUM('pending', 'confirmed', 'processing', 'resolved', 'dismissed') DEFAULT 'pending'",
+
+    // Versi 3.1: Add timestamps untuk tracking status changes
+    "ALTER TABLE aspirasi_reports ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
 
     // Versi 1.4: Insert default admin & whitelist with default hashing password php (PASSWORD_BCRYPT)
     "INSERT IGNORE INTO admin_web (admin_id, usn_adm, pw_adm, role_adm) VALUES (1, 'admin-prod', '" . $defaultAdminPass . "', 'Admin')",
@@ -106,11 +111,15 @@ $migrations = [
         ('2420506030', 'Yasabuana Athallahaufa Natawijaya'), 
         ('2430506058', 'Nabila Syafiqah Zahran Firlina'),
         ('2410506016', 'Dzakii Luqman Faid'),
-        ('2420506047', 'Muhammad Asyrof')
+        ('2420506047', 'Muhammad Asyrof'),
+        ('2410506001', 'Julioez Candita Haga Figo Latupeirissa')
     ",
 
     // Versi 2.5: Insert anonim record for anonymized aspirations
     "INSERT IGNORE INTO mhs_whitelist (npm, nama) VALUES ('anonim', 'anonim')",
+
+    // Versi 4.0: Add password column to mhs_whitelist
+    "ALTER TABLE mhs_whitelist ADD COLUMN password VARCHAR(255) DEFAULT NULL",
 ];
 
 try {
@@ -136,6 +145,17 @@ try {
     }
 
     echo "Database sinkron dengan versi terbaru\n";
+
+    // Versi 4.0: Seed default passwords (NPM hashed) for users without password
+    $stmt = $pdo->query("SELECT npm FROM mhs_whitelist WHERE password IS NULL AND npm != 'anonim'");
+    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (count($users) > 0) {
+        $update = $pdo->prepare("UPDATE mhs_whitelist SET password = ? WHERE npm = ?");
+        foreach ($users as $u) {
+            $update->execute([password_hash($u['npm'], PASSWORD_BCRYPT), $u['npm']]);
+        }
+        echo "Seeded default passwords for " . count($users) . " users.\n";
+    }
 } catch (PDOException $e) {
     die("Gagal migrasi: " . $e->getMessage() . "\n");
 }

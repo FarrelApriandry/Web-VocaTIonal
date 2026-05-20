@@ -5,9 +5,9 @@
 header('Content-Type: application/json');
 session_start();
 
-require_once __DIR__ . '/../../app/Config/Database.php';
-require_once __DIR__ . '/../../app/Models/AspirationReaction.php';
-require_once __DIR__ . '/../../app/Controllers/Auth.php';
+require_once __DIR__ . '/../../../app/Config/Database.php';
+require_once __DIR__ . '/../../../app/Models/AspirationReport.php';
+require_once __DIR__ . '/../../../app/Controllers/Auth.php';
 
 // Only POST requests allowed
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

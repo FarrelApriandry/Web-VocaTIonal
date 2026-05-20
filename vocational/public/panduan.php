@@ -30,7 +30,7 @@ include $appDir . '/Views/Components/Navbar.php';
 
 ?>
 
-<main class="mx-auto px-6 md:px-16 py-8 md:py-16">
+<main class="mx-auto px-4 md:px-8 py-8 md:py-16 max-w-7xl">
     <!-- Hero Section -->
     <section class="mb-16 md:mb-24">
         <div class="text-center mb-12">
@@ -500,6 +500,9 @@ include $appDir . '/Views/Components/Navbar.php';
         });
     });
 </script>
+
+<?php include __DIR__ . '/../app/Views/Components/ConfirmationModal.php'; ?>
+<script src="./js/confirmation-modal.js"></script>
 
 </body>
 </html>

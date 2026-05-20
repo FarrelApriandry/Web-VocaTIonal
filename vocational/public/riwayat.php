@@ -29,7 +29,7 @@ include __DIR__ . '/../app/Views/Components/Header.php';
 include __DIR__ . '/../app/Views/Components/Navbar.php';
 ?>
 
-    <main class="mx-auto px-6 md:px-16 py-8 md:py-16">
+    <main class="mx-auto px-4 md:px-8 py-8 md:py-16 max-w-7xl">
         <header class="mb-8 md:mb-12">
             <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-2 leading-tight">
                 Riwayat Aspirasi
@@ -120,7 +120,33 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
         </div>
     </main>
 
+    <!-- Detail Modal -->
+    <div id="riwayat-detail-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm hidden" role="dialog" aria-modal="true" aria-labelledby="riwayat-modal-title">
+        <div class="bg-white rounded-2xl p-6 md:p-8 w-[90%] max-w-lg shadow-2xl max-h-[80vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <span id="riwayat-modal-kategori" class="inline-block px-3 py-1 bg-blue-100 text-blue-900 rounded-full text-xs font-bold uppercase tracking-wider"></span>
+                    <span id="riwayat-modal-status" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"></span>
+                </div>
+                <button id="riwayat-modal-close" type="button" aria-label="Tutup detail" class="text-gray-500 hover:text-gray-900 p-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900">
+                    ✕
+                </button>
+            </div>
+            <h2 id="riwayat-modal-title" class="text-lg font-bold text-gray-900 mb-2"></h2>
+            <time id="riwayat-modal-date" class="text-xs text-gray-600 block mb-4"></time>
+            <p id="riwayat-modal-desc" class="text-sm text-gray-700 leading-relaxed whitespace-pre-line"></p>
+            <div class="mt-6 pt-4 border-t border-gray-200">
+                <button id="riwayat-modal-delete" type="button" data-id=""
+                        class="px-5 py-2.5 border-2 border-red-500 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2">
+                    Hapus Aspirasi
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let loadedData = [];
+
         // Helper function untuk get status badge color
         function getStatusColor(status) {
             const colors = {
@@ -186,6 +212,8 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                 emptyState.classList.add('hidden');
                 tableBody.parentElement.parentElement.style.display = 'block';
 
+                loadedData = result.data;
+
                 // Populate table
                 result.data.forEach((item) => {
                     const row = document.createElement('tr');
@@ -223,8 +251,53 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
 
         // View detail aspirasi
         function viewDetail(id) {
-            alert('Detail aspirasi #' + id + ' - Coming Soon!');
+            const item = loadedData.find(a => a.id_aspirasi == id);
+            if (!item) return;
+            document.getElementById('riwayat-modal-title').textContent = item.judul;
+            document.getElementById('riwayat-modal-kategori').textContent = item.kategori;
+            document.getElementById('riwayat-modal-status').textContent = item.status;
+            document.getElementById('riwayat-modal-status').className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ' + getStatusColor(item.status);
+            document.getElementById('riwayat-modal-date').textContent = item.created_at;
+            document.getElementById('riwayat-modal-desc').textContent = item.deskripsi;
+            document.getElementById('riwayat-modal-delete').dataset.id = id;
+            document.getElementById('riwayat-detail-modal').classList.remove('hidden');
         }
+
+        // Close modal
+        document.getElementById('riwayat-modal-close').addEventListener('click', function() {
+            document.getElementById('riwayat-detail-modal').classList.add('hidden');
+        });
+        document.getElementById('riwayat-detail-modal').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.add('hidden');
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !document.getElementById('riwayat-detail-modal').classList.contains('hidden')) {
+                document.getElementById('riwayat-detail-modal').classList.add('hidden');
+            }
+        });
+
+        // Delete aspirasi
+        document.getElementById('riwayat-modal-delete').addEventListener('click', function() {
+            const id = this.dataset.id;
+            if (!confirm('Apakah Anda yakin ingin menghapus aspirasi ini? Tindakan ini tidak dapat dibatalkan.')) return;
+            
+            const csrfToken = '<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>';
+            fetch('./api/delete-aspirasi.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_aspirasi: parseInt(id), csrf_token: csrfToken })
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    document.getElementById('riwayat-detail-modal').classList.add('hidden');
+                    loadAspirations();
+                } else {
+                    alert('Gagal: ' + result.message);
+                }
+            })
+            .catch(() => alert('Terjadi kesalahan jaringan.'));
+        });
 
         // Event listeners
         document.getElementById('filter-kategori').addEventListener('change', function() {

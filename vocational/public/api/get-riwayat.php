@@ -69,7 +69,7 @@ try {
         return [
             'id_aspirasi' => $item['id_aspirasi'],
             'judul' => $item['judul'],
-            'deskripsi' => substr($item['deskripsi'], 0, 100) . (strlen($item['deskripsi']) > 100 ? '...' : ''),
+            'deskripsi' => $item['deskripsi'],
             'kategori' => $item['kategori'],
             'status' => $item['status'],
             'anonim' => (bool)$item['anonim'],
