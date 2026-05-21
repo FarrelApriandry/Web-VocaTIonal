@@ -100,8 +100,8 @@ include $appDir . '/Views/Components/Navbar.php';
     <div class="bg-white rounded-2xl p-6 md:p-8 w-[90%] max-w-lg shadow-2xl max-h-[80vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
             <span id="detail-modal-kategori" class="inline-block px-3 py-1 bg-blue-100 text-blue-900 rounded-full text-xs font-bold uppercase tracking-wider"></span>
-            <button id="detail-modal-close" type="button" aria-label="Tutup detail" class="text-gray-500 hover:text-gray-900 p-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900">
-                ✕
+            <button id="detail-modal-close" type="button" aria-label="Tutup detail" class="text-gray-500 hover:text-gray-900 p-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900">
+                <i data-lucide="x" aria-hidden="true" class="w-5 h-5"></i>
             </button>
         </div>
         <h2 id="detail-modal-title" class="text-lg font-bold text-gray-900 mb-2"></h2>
@@ -128,8 +128,9 @@ include $appDir . '/Views/Components/Navbar.php';
         document.getElementById('detail-modal-kategori').textContent = aspiration.kategori;
         document.getElementById('detail-modal-date').textContent = new Date(aspiration.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         document.getElementById('detail-modal-desc').textContent = aspiration.deskripsi;
-        document.getElementById('detail-modal-reactions').textContent = '👍 ' + aspiration.total_reactions + ' reaksi';
+        document.getElementById('detail-modal-reactions').innerHTML = '<i data-lucide="thumbs-up" class="w-4 h-4 inline-block"></i> ' + aspiration.total_reactions + ' reaksi';
         modal.classList.remove('hidden');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
     document.getElementById('detail-modal-close').addEventListener('click', function() {
@@ -198,28 +199,28 @@ include $appDir . '/Views/Components/Navbar.php';
                                 </div>
                                 <p class="text-sm leading-relaxed mb-4 line-clamp-3 opacity-90">${aspiration.excerpt}</p>
                                 <div class="flex items-center justify-between pt-3 border-t border-current border-opacity-20">
-                                    <span class="text-sm font-semibold" aria-label="${aspiration.total_reactions} reaksi">
-                                        <span aria-hidden="true">👍</span> ${aspiration.total_reactions}
+                                    <span class="text-sm font-semibold flex items-center gap-1" aria-label="${aspiration.total_reactions} reaksi">
+                                        <i data-lucide="thumbs-up" aria-hidden="true" class="w-4 h-4"></i> ${aspiration.total_reactions}
                                     </span>
-                                    <div class="flex gap-2">
+                                    <div class="flex gap-3">
                                         <button class="btn-view-detail px-3 py-1 bg-white bg-opacity-70 hover:bg-opacity-100 rounded text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900"
                                                 data-aspiration-id="${aspiration.id_aspirasi}"
                                                 aria-label="Lihat detail aspirasi: ${aspiration.judul.replace(/"/g, '&quot;')}">
                                             Selengkapnya
                                         </button>
                                         ${window.isLoggedIn ? `
-                                            <button class="btn-react px-2 py-1 bg-white bg-opacity-70 hover:bg-opacity-100 rounded text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900"
+                                            <button class="btn-react p-2 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white bg-opacity-70 hover:bg-opacity-100 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900"
                                                     data-aspiration-id="${aspiration.id_aspirasi}"
                                                     aria-pressed="${aspiration.userHasReacted ? 'true' : 'false'}"
                                                     aria-label="Suka aspirasi ini">
-                                                ${aspiration.userHasReacted ? '👍' : '🤍'}
+                                                <i data-lucide="${aspiration.userHasReacted ? 'thumbs-up' : 'heart'}" class="w-4 h-4"></i>
                                             </button>
-                                            <button class="btn-report px-2 py-1 bg-white bg-opacity-70 hover:bg-opacity-100 rounded text-xs font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                                            <button class="btn-report p-2 min-w-[44px] min-h-[44px] flex items-center justify-center bg-white bg-opacity-70 hover:bg-opacity-100 rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                                                     data-aspiration-id="${aspiration.id_aspirasi}"
                                                     data-aspiration-title="${aspiration.judul.replace(/"/g, '&quot;')}"
                                                     data-aspiration-description="${aspiration.deskripsi.replace(/"/g, '&quot;')}"
                                                     aria-label="Laporkan aspirasi ini">
-                                                <span aria-hidden="true">🚨</span>
+                                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
                                             </button>
                                         ` : ''}
                                     </div>
@@ -278,12 +279,13 @@ include $appDir . '/Views/Components/Navbar.php';
                     const result = await response.json();
                     if (result.success) {
                         const hasReacted = result.data.userHasReacted;
-                        this.textContent = hasReacted ? '👍' : '🤍';
+                        this.innerHTML = `<i data-lucide="${hasReacted ? 'thumbs-up' : 'heart'}" class="w-4 h-4"></i>`;
                         this.setAttribute('aria-pressed', String(hasReacted));
                         const card = this.closest('article');
                         const countSpan = card.querySelector('[aria-label$="reaksi"]');
-                        countSpan.innerHTML = `<span aria-hidden="true">👍</span> ${result.data.totalReactions}`;
+                        countSpan.innerHTML = `<i data-lucide="thumbs-up" class="w-4 h-4"></i> ${result.data.totalReactions}`;
                         countSpan.setAttribute('aria-label', `${result.data.totalReactions} reaksi`);
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
                     }
                 } catch (error) { console.error('React error:', error); }
             });

@@ -81,15 +81,15 @@ include $appDir . '/Views/Components/Navbar.php';
                             <p class="text-gray-600 mb-4">Kamu perlu login terlebih dahulu menggunakan NPM yang telah terdaftar. Setiap mahasiswa dari prodi Teknologi Informasi memiliki akses otomatis ke platform ini.</p>
                             <ul class="space-y-2 text-gray-600">
                                 <li class="flex items-center gap-2">
-                                    <span class="text-blue-900">✓</span>
+                                    <i data-lucide="check" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0"></i>
                                     Masukkan NPM di form login
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-blue-900">✓</span>
+                                    <i data-lucide="check" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0"></i>
                                     Jangan simpan password di browser untuk keamanan ekstra
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <span class="text-blue-900">✓</span>
+                                    <i data-lucide="check" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0"></i>
                                     Gunakan Incognito Mode jika login di komputer umum
                                 </li>
                             </ul>
@@ -170,8 +170,9 @@ include $appDir . '/Views/Components/Navbar.php';
                             <h3 class="text-2xl font-bold text-gray-900 mb-3">Pilih Anonim (Opsional)</h3>
                             <p class="text-gray-600 mb-4">Kamu bisa memilih untuk mengirim aspirasi secara anonim jika merasa perlu untuk menjaga privasi. Informasi kamu tetap aman dan rahasia.</p>
                             <div class="bg-green-50 border border-green-200 rounded-lg p-4">
-                                <p class="text-sm text-green-900">
-                                    <strong>✓ Aspirasi anonim</strong> tetap diproses dengan serius dan ditangani oleh tim advokasi profesional
+                                <p class="text-sm text-green-900 flex items-center gap-2">
+                                    <i data-lucide="check" aria-hidden="true" class="w-4 h-4 flex-shrink-0"></i>
+                                    <strong>Aspirasi anonim</strong> tetap diproses dengan serius dan ditangani oleh tim advokasi profesional
                                 </p>
                             </div>
                         </div>
@@ -347,19 +348,19 @@ include $appDir . '/Views/Components/Navbar.php';
                 </p>
                 <ul class="space-y-3 text-gray-600">
                     <li class="flex items-start gap-3">
-                        <span class="text-blue-900 font-bold mt-1">✓</span>
+                        <i data-lucide="check" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0 mt-1"></i>
                         <span>Hormati pendapat dan aspirasi orang lain, bahkan jika berbeda dengan pendapat kamu</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-blue-900 font-bold mt-1">✓</span>
+                        <i data-lucide="check" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0 mt-1"></i>
                         <span>Gunakan bahasa yang santun dan tidak menyinggung</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-blue-900 font-bold mt-1">✓</span>
+                        <i data-lucide="check" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0 mt-1"></i>
                         <span>Jangan label atau bully seseorang di platform ini</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-blue-900 font-bold mt-1">✓</span>
+                        <i data-lucide="check" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0 mt-1"></i>
                         <span>Fokus pada solusi, bukan pada menyalahkan orang tertentu</span>
                     </li>
                 </ul>
@@ -372,27 +373,27 @@ include $appDir . '/Views/Components/Navbar.php';
                 </p>
                 <ul class="space-y-3 text-gray-600">
                     <li class="flex items-start gap-3">
-                        <span class="text-red-500 font-bold mt-1">✗</span>
+                        <i data-lucide="x-circle" aria-hidden="true" class="w-4 h-4 text-red-500 flex-shrink-0 mt-1"></i>
                         <span>Konten SARA (Suku, Agama, Ras, Antar-golongan)</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-red-500 font-bold mt-1">✗</span>
+                        <i data-lucide="x-circle" aria-hidden="true" class="w-4 h-4 text-red-500 flex-shrink-0 mt-1"></i>
                         <span>Pornografi atau konten dewasa</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-red-500 font-bold mt-1">✗</span>
+                        <i data-lucide="x-circle" aria-hidden="true" class="w-4 h-4 text-red-500 flex-shrink-0 mt-1"></i>
                         <span>Ancaman atau intimidasi</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-red-500 font-bold mt-1">✗</span>
+                        <i data-lucide="x-circle" aria-hidden="true" class="w-4 h-4 text-red-500 flex-shrink-0 mt-1"></i>
                         <span>Spam atau duplikasi konten</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-red-500 font-bold mt-1">✗</span>
+                        <i data-lucide="x-circle" aria-hidden="true" class="w-4 h-4 text-red-500 flex-shrink-0 mt-1"></i>
                         <span>Iklan atau promosi komersial</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-red-500 font-bold mt-1">✗</span>
+                        <i data-lucide="x-circle" aria-hidden="true" class="w-4 h-4 text-red-500 flex-shrink-0 mt-1"></i>
                         <span>Hoax atau informasi palsu</span>
                     </li>
                 </ul>
@@ -402,19 +403,19 @@ include $appDir . '/Views/Components/Navbar.php';
                 <h3 class="text-2xl font-bold text-gray-900 mb-4">Privasi & Keamanan</h3>
                 <ul class="space-y-3 text-gray-600">
                     <li class="flex items-start gap-3">
-                        <span class="text-blue-900 font-bold mt-1">🔒</span>
+                        <i data-lucide="lock" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0 mt-1"></i>
                         <span>Data kamu dilindungi dengan enkripsi tingkat enterprise</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-blue-900 font-bold mt-1">🔒</span>
+                        <i data-lucide="lock" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0 mt-1"></i>
                         <span>Hanya tim advokasi yang dapat mengakses data pribadi</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-blue-900 font-bold mt-1">🔒</span>
+                        <i data-lucide="lock" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0 mt-1"></i>
                         <span>Aspirasi anonim benar-benar tersembunyi identitasnya</span>
                     </li>
                     <li class="flex items-start gap-3">
-                        <span class="text-blue-900 font-bold mt-1">🔒</span>
+                        <i data-lucide="lock" aria-hidden="true" class="w-4 h-4 text-blue-900 flex-shrink-0 mt-1"></i>
                         <span>Jangan pernah bagikan password atau akun kamu ke orang lain</span>
                     </li>
                 </ul>
