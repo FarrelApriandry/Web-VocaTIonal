@@ -128,8 +128,8 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                     <span id="riwayat-modal-kategori" class="inline-block px-3 py-1 bg-blue-100 text-blue-900 rounded-full text-xs font-bold uppercase tracking-wider"></span>
                     <span id="riwayat-modal-status" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"></span>
                 </div>
-                <button id="riwayat-modal-close" type="button" aria-label="Tutup detail" class="text-gray-500 hover:text-gray-900 p-1 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900">
-                    ✕
+                <button id="riwayat-modal-close" type="button" aria-label="Tutup detail" class="text-gray-500 hover:text-gray-900 p-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900">
+                    <i data-lucide="x" aria-hidden="true" class="w-5 h-5"></i>
                 </button>
             </div>
             <h2 id="riwayat-modal-title" class="text-lg font-bold text-gray-900 mb-2"></h2>

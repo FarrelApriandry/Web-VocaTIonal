@@ -80,7 +80,7 @@ include $appDir . '/Views/Components/Navbar.php';
 
     <!-- Back link -->
     <a href="./profile.php" class="inline-flex items-center gap-2 mt-6 text-xs font-semibold text-gray-700 hover:text-blue-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2 rounded">
-        ← Kembali ke Profile
+        <i data-lucide="arrow-left" aria-hidden="true" class="w-4 h-4"></i> Kembali ke Profile
     </a>
     </div>
 </main>
