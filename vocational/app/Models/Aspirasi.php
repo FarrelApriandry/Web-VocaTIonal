@@ -60,8 +60,7 @@ class Aspirasi
                   FROM aspirasi a
                   WHERE a.id_aspirasi = ? 
                   AND a.show_on_board = TRUE 
-                  AND a.board_approved = TRUE
-                  AND a.anonim = TRUE";
+                  AND a.board_approved = TRUE";
         
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([$id]);

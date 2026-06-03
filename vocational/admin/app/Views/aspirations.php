@@ -86,6 +86,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Judul</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Kategori</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Board</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Tanggal</th>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase">Aksi</th>
                         </tr>
@@ -110,11 +111,22 @@
                                         <?php echo htmlspecialchars($asp['status']); ?>
                                     </span>
                                 </td>
+                                <td class="px-6 py-4 text-sm">
+                                    <?php if ($asp['show_on_board']): ?>
+                                        <?php if ($asp['board_approved']): ?>
+                                            <span class="px-2 py-1 text-xs font-medium bg-purple-100 text-purple-700 rounded">Tampil</span>
+                                        <?php else: ?>
+                                            <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-500 rounded">Menunggu</span>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <span class="text-gray-300 text-xs">—</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td class="px-6 py-4 text-sm text-gray-600">
                                     <?php echo date('d M Y', strtotime($asp['created_at'])); ?>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <button onclick="viewAspirationModal(<?php echo $asp['id_aspirasi']; ?>, '<?php echo htmlspecialchars($asp['judul'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($asp['deskripsi'], ENT_QUOTES); ?>', '<?php echo $asp['status']; ?>', '<?php echo $asp['kategori']; ?>', '<?php echo $asp['anonim']; ?>')"
+                                    <button onclick="viewAspirationModal(<?php echo $asp['id_aspirasi']; ?>, '<?php echo htmlspecialchars($asp['judul'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($asp['deskripsi'], ENT_QUOTES); ?>', '<?php echo $asp['status']; ?>', '<?php echo $asp['kategori']; ?>', '<?php echo $asp['anonim']; ?>', <?php echo (int)$asp['show_on_board']; ?>, <?php echo (int)$asp['board_approved']; ?>)"
                                         class="text-blue-600 hover:text-blue-700 text-sm font-medium">
                                         Lihat
                                     </button>
@@ -199,18 +211,24 @@
                 </p>
             </div>
 
-            <!-- Update Status -->
-            <div>
-                <label class="text-sm font-medium text-gray-700 block mb-2">Update Status</label>
-                <div class="flex gap-2">
-                    <select id="modal-status-select" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-600">
-                        <option value="Pending">Pending</option>
-                        <option value="Proses">Proses</option>
-                        <option value="Selesai">Selesai</option>
-                    </select>
-                    <button onclick="updateAspirationStatus()" class="bg-blue-900 text-white px-4 py-2 rounded-lg hover:bg-blue-800 text-sm font-medium">
-                        Simpan
-                    </button>
+            <!-- Update Form (Status + Board dalam satu form) -->
+            <div class="border-t border-gray-100 pt-4 space-y-4">
+                <div class="grid grid-cols-1 gap-4" id="modal-update-grid">
+                    <div>
+                        <label class="text-xs font-bold text-gray-700 uppercase tracking-wide block mb-1.5">Status</label>
+                        <select id="modal-status-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-900">
+                            <option value="Pending">Pending</option>
+                            <option value="Proses">Proses</option>
+                            <option value="Selesai">Selesai</option>
+                        </select>
+                    </div>
+                    <div id="modal-board-section" class="hidden">
+                        <label class="text-xs font-bold text-gray-700 uppercase tracking-wide block mb-1.5">Papan Buletin</label>
+                        <select id="modal-board-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-900">
+                            <option value="1">Tampilkan</option>
+                            <option value="0">Sembunyikan</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -219,6 +237,9 @@
             <button onclick="closeDetailModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-sm font-medium">
                 Tutup
             </button>
+            <button onclick="saveAllChanges()" class="px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 text-sm font-medium">
+                Simpan Perubahan
+            </button>
         </div>
     </div>
 </div>
@@ -226,9 +247,9 @@
 <script>
     let currentAspirationId = null;
 
-    function viewAspirationModal(id, judul, deskripsi, status, kategori, anonim) {
+    function viewAspirationModal(id, judul, deskripsi, status, kategori, anonim, showOnBoard, boardApproved) {
         currentAspirationId = id;
-        
+
         document.getElementById('modal-title').textContent = `Aspirasi #${id}`;
         document.getElementById('modal-judul').textContent = judul;
         document.getElementById('modal-deskripsi').textContent = deskripsi;
@@ -236,7 +257,15 @@
         document.getElementById('modal-status').textContent = status;
         document.getElementById('modal-status-select').value = status;
         document.getElementById('modal-anonim-badge').textContent = anonim == 1 ? 'Anonim' : 'Tidak Anonim';
-        
+
+        const boardSection = document.getElementById('modal-board-section');
+        if (showOnBoard == 1) {
+            boardSection.classList.remove('hidden');
+            document.getElementById('modal-board-select').value = boardApproved ? '1' : '0';
+        } else {
+            boardSection.classList.add('hidden');
+        }
+
         document.getElementById('detail-modal').classList.remove('hidden');
     }
 
@@ -245,42 +274,40 @@
         currentAspirationId = null;
     }
 
-    function updateAspirationStatus() {
-        const newStatus = document.getElementById('modal-status-select').value;
-        
-        if (!newStatus || !currentAspirationId) {
-            alert('Data tidak lengkap');
-            return;
-        }
+    async function saveAllChanges() {
+        if (!currentAspirationId) return;
 
-        // Send update request
-        fetch('./api/update-aspirasi-status.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id_aspirasi: currentAspirationId,
-                status: newStatus
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Status berhasil diupdate!');
-                closeDetailModal();
-                // Refresh page to show updated data
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
-            } else {
-                alert('Error: ' + (data.message || 'Gagal update status'));
+        const newStatus    = document.getElementById('modal-status-select').value;
+        const boardSection = document.getElementById('modal-board-section');
+        const hasBoardSection = !boardSection.classList.contains('hidden');
+
+        try {
+            // 1. Update status
+            const r1 = await fetch('./api/update-aspirasi-status.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_aspirasi: currentAspirationId, status: newStatus })
+            });
+            const d1 = await r1.json();
+            if (!d1.success) { alert('Gagal update status: ' + d1.message); return; }
+
+            // 2. Update board jika section tampil
+            if (hasBoardSection) {
+                const boardApproved = parseInt(document.getElementById('modal-board-select').value);
+                const r2 = await fetch('./api/update-board-status.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_aspirasi: currentAspirationId, board_approved: boardApproved })
+                });
+                const d2 = await r2.json();
+                if (!d2.success) { alert('Gagal update papan buletin: ' + d2.message); return; }
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat update status');
-        });
+
+            closeDetailModal();
+            setTimeout(() => window.location.reload(), 300);
+        } catch(e) {
+            alert('Terjadi kesalahan: ' + e.message);
+        }
     }
 
     // Initialize lucide icons

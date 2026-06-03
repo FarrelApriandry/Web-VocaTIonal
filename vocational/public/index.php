@@ -123,13 +123,16 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                         </div>
 
                         <div class="flex flex-col sm:flex-row justify-between items-center gap-6 pt-6">
-                            <div class="flex items-center cursor-pointer group self-start" role="switch" aria-checked="false" aria-label="Kirim sebagai anonim" tabindex="0" id="anonim-switch">
-                                <div class="relative">
-                                    <input type="checkbox" id="anonim-checkbox" class="sr-only" aria-hidden="true">
-                                    <div class="block bg-gray-300 w-12 h-7 md:w-14 md:h-8 rounded-full transition"></div>
-                                    <div class="dot absolute left-1 top-1 bg-white w-5 h-5 md:w-6 md:h-6 rounded-full transition shadow-sm"></div>
+                            <div class="flex flex-col sm:flex-row gap-4 self-start">
+                                <div class="flex items-center cursor-pointer group" role="switch" aria-checked="false" aria-label="Kirim sebagai anonim" tabindex="0" id="anonim-switch">
+                                    <div class="relative">
+                                        <input type="checkbox" id="anonim-checkbox" class="sr-only" aria-hidden="true">
+                                        <div class="block bg-gray-300 w-12 h-7 md:w-14 md:h-8 rounded-full transition"></div>
+                                        <div class="dot absolute left-1 top-1 bg-white w-5 h-5 md:w-6 md:h-6 rounded-full transition shadow-sm"></div>
+                                    </div>
+                                    <span class="ml-3 text-gray-700 font-semibold text-sm md:text-base">Kirim Anonim</span>
                                 </div>
-                                <span class="ml-3 text-gray-700 font-semibold text-sm md:text-base">Kirim Anonim</span>
+                                <?php include __DIR__ . '/../app/Views/Components/ShowBoardToggle.php'; ?>
                             </div>
 
                             <button id="btn-show-confirm" type="button" 

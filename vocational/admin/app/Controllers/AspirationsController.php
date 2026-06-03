@@ -16,7 +16,7 @@ class AspirationsController extends AdminBaseController {
             $offset = ($page - 1) * $limit;
 
             // Build query
-            $query = "SELECT * FROM aspirasi WHERE 1=1";
+            $query = "SELECT *, show_on_board, board_approved FROM aspirasi WHERE 1=1";
             $params = [];
 
             if (!empty($status_filter)) {
