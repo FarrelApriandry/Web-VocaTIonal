@@ -402,6 +402,15 @@ include $appDir . '/Views/Components/Navbar.php';
         80%      { transform: translateX(4px); }
     }
 
+    .btn-react svg {
+        transition: all 0.2s ease;
+    }
+    /* Saat tombol udah di-like → icon jadi FILL */
+    .btn-react[aria-pressed="true"] svg {
+        fill: currentColor;
+        stroke-width: 1px;
+    }
+
     .btn-react-bounce {
         animation: btnBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
     }
