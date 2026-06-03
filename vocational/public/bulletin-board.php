@@ -270,6 +270,36 @@ include $appDir . '/Views/Components/Navbar.php';
         document.querySelectorAll('.btn-react').forEach(btn => {
             btn.addEventListener('click', async function() {
                 const id = this.dataset.aspirationId;
+                const card = this.closest('article');
+                const countSpan = card.querySelector('[aria-label$="reaksi"]');
+
+                // --- OPTIMISTIC UI: Simpan state sebelumnya untuk rollback ---
+                const prevPressed = this.getAttribute('aria-pressed') === 'true';
+                const prevCountText = countSpan.textContent.trim();
+                const prevCount = parseInt(prevCountText) || 0;
+
+                // Hitung state baru secara optimistik
+                const newPressed = !prevPressed;
+                const newCount = newPressed ? prevCount + 1 : prevCount - 1;
+
+                // Update UI secara optimistik
+                this.innerHTML = `<i data-lucide="${newPressed ? 'thumbs-up' : 'heart'}" class="w-4 h-4"></i>`;
+                this.setAttribute('aria-pressed', String(newPressed));
+                countSpan.innerHTML = `<i data-lucide="thumbs-up" class="w-4 h-4"></i> ${newCount}`;
+                countSpan.setAttribute('aria-label', `${newCount} reaksi`);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+
+                // --- ANIMASI: bounce effect pada tombol ---
+                this.classList.remove('btn-react-bounce');
+                // Force reflow biar animasi bisa diputer ulang
+                void this.offsetWidth;
+                this.classList.add('btn-react-bounce');
+
+                // --- ANIMASI: efek particle pada counter ---
+                countSpan.classList.remove('counter-pop');
+                void countSpan.offsetWidth;
+                countSpan.classList.add('counter-pop');
+
                 try {
                     const response = await fetch('./api/board/react.php', {
                         method: 'POST',
@@ -277,17 +307,35 @@ include $appDir . '/Views/Components/Navbar.php';
                         body: JSON.stringify({ id_aspirasi: id })
                     });
                     const result = await response.json();
-                    if (result.success) {
-                        const hasReacted = result.data.userHasReacted;
-                        this.innerHTML = `<i data-lucide="${hasReacted ? 'thumbs-up' : 'heart'}" class="w-4 h-4"></i>`;
-                        this.setAttribute('aria-pressed', String(hasReacted));
-                        const card = this.closest('article');
-                        const countSpan = card.querySelector('[aria-label$="reaksi"]');
-                        countSpan.innerHTML = `<i data-lucide="thumbs-up" class="w-4 h-4"></i> ${result.data.totalReactions}`;
-                        countSpan.setAttribute('aria-label', `${result.data.totalReactions} reaksi`);
+
+                    if (!result.success) {
+                        // ROLLBACK jika gagal
+                        throw new Error(result.message || 'Request failed');
+                    }
+
+                    // Sync dengan data real dari server (untuk jaga-jaga kalau ada perbedaan count)
+                    const realReacted = result.data.userHasReacted;
+                    const realCount = result.data.totalReactions;
+                    if (realReacted !== newPressed || realCount !== newCount) {
+                        this.innerHTML = `<i data-lucide="${realReacted ? 'thumbs-up' : 'heart'}" class="w-4 h-4"></i>`;
+                        this.setAttribute('aria-pressed', String(realReacted));
+                        countSpan.innerHTML = `<i data-lucide="thumbs-up" class="w-4 h-4"></i> ${realCount}`;
+                        countSpan.setAttribute('aria-label', `${realCount} reaksi`);
                         if (typeof lucide !== 'undefined') lucide.createIcons();
                     }
-                } catch (error) { console.error('React error:', error); }
+                } catch (error) {
+                    console.error('React error:', error);
+                    // ROLLBACK ke state sebelumnya
+                    this.innerHTML = `<i data-lucide="${prevPressed ? 'thumbs-up' : 'heart'}" class="w-4 h-4"></i>`;
+                    this.setAttribute('aria-pressed', String(prevPressed));
+                    countSpan.innerHTML = `<i data-lucide="thumbs-up" class="w-4 h-4"></i> ${prevCount}`;
+                    countSpan.setAttribute('aria-label', `${prevCount} reaksi`);
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                    
+                    // --- ANIMASI ERROR: shake effect ---
+                    this.classList.add('btn-react-error');
+                    setTimeout(() => this.classList.remove('btn-react-error'), 400);
+                }
             });
         });
 
@@ -332,6 +380,38 @@ include $appDir . '/Views/Components/Navbar.php';
     .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     .board-card { animation: fadeInScale 0.5s ease-out forwards; }
+
+    /* --- Animasi Reaksi --- */
+    @keyframes btnBounce {
+        0%   { transform: scale(1); }
+        30%  { transform: scale(1.3); }
+        50%  { transform: scale(0.9); }
+        70%  { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    @keyframes counterPop {
+        0%   { transform: scale(1); }
+        50%  { transform: scale(1.2); color: #2563eb; }
+        100% { transform: scale(1); }
+    }
+    @keyframes btnShake {
+        0%, 100% { transform: translateX(0); }
+        20%      { transform: translateX(-6px); }
+        40%      { transform: translateX(6px); }
+        60%      { transform: translateX(-4px); }
+        80%      { transform: translateX(4px); }
+    }
+
+    .btn-react-bounce {
+        animation: btnBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+    }
+    .counter-pop {
+        animation: counterPop 0.3s ease-out !important;
+    }
+    .btn-react-error {
+        animation: btnShake 0.4s ease-in-out !important;
+        background-color: rgba(239, 68, 68, 0.3) !important;
+    }
 </style>
 </body>
 </html>
