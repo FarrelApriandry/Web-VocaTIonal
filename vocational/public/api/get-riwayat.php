@@ -64,8 +64,46 @@ try {
     }
     file_put_contents(__DIR__ . '/../../logs/riwayat-debug.log', $debugLog, FILE_APPEND);
     
+    // Ambil total reaksi untuk masing-masing aspirasi
+    $pdo = Database::getConnection();
+    $ids = array_column($data, 'id_aspirasi');
+    $reactionCounts = [];
+    if (!empty($ids)) {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $reactStmt = $pdo->prepare(
+            "SELECT id_aspirasi, COUNT(*) as total FROM aspirasi_reactions WHERE id_aspirasi IN ($placeholders) GROUP BY id_aspirasi"
+        );
+        $reactStmt->execute($ids);
+        while ($row = $reactStmt->fetch(PDO::FETCH_ASSOC)) {
+            $reactionCounts[$row['id_aspirasi']] = (int)$row['total'];
+        }
+    }
+
+    // Ambil tanggapan admin untuk masing-masing aspirasi
+    $tanggapanMap = [];
+    if (!empty($ids)) {
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $tanggapanStmt = $pdo->prepare(
+            "SELECT t.id_tanggapan, t.id_aspirasi, t.isi_tanggapan,
+                    a.role_adm
+             FROM tanggapan t
+             LEFT JOIN admin_web a ON t.admin_id = a.admin_id
+             WHERE t.id_aspirasi IN ($placeholders)
+             ORDER BY t.id_tanggapan ASC"
+        );
+        $tanggapanStmt->execute($ids);
+        while ($row = $tanggapanStmt->fetch(PDO::FETCH_ASSOC)) {
+            $tanggapanMap[$row['id_aspirasi']][] = [
+                'id_tanggapan' => $row['id_tanggapan'],
+                'isi_tanggapan' => $row['isi_tanggapan'],
+                'role_adm' => $row['role_adm'] ?? 'Admin',
+                'created_at' => ''  // tabel tanggapan belum punya kolom created_at
+            ];
+        }
+    }
+
     // Format response
-    $formattedData = array_map(function($item) {
+    $formattedData = array_map(function($item) use ($reactionCounts, $tanggapanMap) {
         return [
             'id_aspirasi' => $item['id_aspirasi'],
             'judul' => $item['judul'],
@@ -75,6 +113,8 @@ try {
             'anonim' => (bool)$item['anonim'],
             'show_on_board' => (bool)$item['show_on_board'],
             'board_approved' => (bool)$item['board_approved'],
+            'total_reactions' => $reactionCounts[$item['id_aspirasi']] ?? 0,
+            'tanggapan' => $tanggapanMap[$item['id_aspirasi']] ?? [],
             'created_at' => date('d M Y, H:i', strtotime($item['created_at'])),
             'created_timestamp' => $item['created_at']
         ];

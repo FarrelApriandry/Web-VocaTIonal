@@ -124,7 +124,7 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
     <div id="riwayat-detail-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/50 backdrop-blur-sm hidden" role="dialog" aria-modal="true" aria-labelledby="riwayat-modal-title">
         <div class="bg-white rounded-2xl p-6 md:p-8 w-[90%] max-w-lg shadow-2xl max-h-[80vh] overflow-y-auto">
             <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
                     <span id="riwayat-modal-kategori" class="inline-block px-3 py-1 bg-blue-100 text-blue-900 rounded-full text-xs font-bold uppercase tracking-wider"></span>
                     <span id="riwayat-modal-status" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"></span>
                 </div>
@@ -132,10 +132,40 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                     <i data-lucide="x" aria-hidden="true" class="w-5 h-5"></i>
                 </button>
             </div>
+
             <h2 id="riwayat-modal-title" class="text-lg font-bold text-gray-900 mb-2"></h2>
-            <time id="riwayat-modal-date" class="text-xs text-gray-600 block mb-4"></time>
-            <p id="riwayat-modal-desc" class="text-sm text-gray-700 leading-relaxed whitespace-pre-line"></p>
-            <div class="mt-6 pt-4 border-t border-gray-200">
+            <time id="riwayat-modal-date" class="text-xs text-gray-600 block mb-1"></time>
+
+            <!-- Info bar -->
+            <div id="riwayat-modal-info" class="flex flex-wrap items-center gap-3 mb-4 text-xs text-gray-600"></div>
+
+            <!-- Deskripsi -->
+            <div class="mb-4">
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Deskripsi</h3>
+                <p id="riwayat-modal-desc" class="text-sm text-gray-700 leading-relaxed whitespace-pre-line"></p>
+            </div>
+
+            <!-- Tanggapan Admin -->
+            <div id="riwayat-modal-tanggapan-section" class="mb-4 hidden">
+                <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tanggapan</h3>
+                <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                    <div id="tanggapan-content" class="text-sm text-gray-700 whitespace-pre-line"></div>
+                    <div id="tanggapan-meta" class="text-xs text-gray-500 mt-2"></div>
+                    <!-- Navigasi -->
+                    <div id="tanggapan-nav" class="flex items-center justify-between mt-3 pt-2 border-t border-blue-100 hidden">
+                        <button id="tanggapan-prev" class="text-xs font-semibold text-blue-900 hover:text-blue-700 flex items-center gap-1">
+                            <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> Sebelumnya
+                        </button>
+                        <span id="tanggapan-counter" class="text-xs text-gray-500"></span>
+                        <button id="tanggapan-next" class="text-xs font-semibold text-blue-900 hover:text-blue-700 flex items-center gap-1">
+                            Berikutnya <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hapus -->
+            <div class="mt-4 pt-4 border-t border-gray-200">
                 <button id="riwayat-modal-delete" type="button" data-id=""
                         class="px-5 py-2.5 border-2 border-red-500 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2">
                     Hapus Aspirasi
@@ -249,6 +279,46 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
             }
         }
 
+        // State untuk navigasi tanggapan
+        let tanggapanList = [];
+        let tanggapanIndex = 0;
+
+        function renderTanggapan() {
+            const contentEl = document.getElementById('tanggapan-content');
+            const metaEl = document.getElementById('tanggapan-meta');
+            const navEl = document.getElementById('tanggapan-nav');
+            const counterEl = document.getElementById('tanggapan-counter');
+
+            if (tanggapanList.length === 0) return;
+
+            const t = tanggapanList[tanggapanIndex];
+            contentEl.textContent = t.isi_tanggapan;
+            metaEl.textContent = `— ${t.role_adm}, ${t.created_at}`;
+
+            if (tanggapanList.length > 1) {
+                navEl.classList.remove('hidden');
+                counterEl.textContent = `${tanggapanIndex + 1} dari ${tanggapanList.length}`;
+                document.getElementById('tanggapan-prev').style.visibility = tanggapanIndex > 0 ? 'visible' : 'hidden';
+                document.getElementById('tanggapan-next').style.visibility = tanggapanIndex < tanggapanList.length - 1 ? 'visible' : 'hidden';
+            } else {
+                navEl.classList.add('hidden');
+            }
+        }
+
+        document.getElementById('tanggapan-prev').addEventListener('click', function() {
+            if (tanggapanIndex > 0) {
+                tanggapanIndex--;
+                renderTanggapan();
+            }
+        });
+
+        document.getElementById('tanggapan-next').addEventListener('click', function() {
+            if (tanggapanIndex < tanggapanList.length - 1) {
+                tanggapanIndex++;
+                renderTanggapan();
+            }
+        });
+
         // View detail aspirasi
         function viewDetail(id) {
             const item = loadedData.find(a => a.id_aspirasi == id);
@@ -260,6 +330,35 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
             document.getElementById('riwayat-modal-date').textContent = item.created_at;
             document.getElementById('riwayat-modal-desc').textContent = item.deskripsi;
             document.getElementById('riwayat-modal-delete').dataset.id = id;
+
+            // Info bar: ID, anonim, reaksi, board
+            let infoHtml = `<span class="font-mono font-semibold text-gray-500">#${item.id_aspirasi}</span>`;
+            infoHtml += `<span class="text-gray-300">|</span>`;
+            if (item.anonim) {
+                infoHtml += `<span class="inline-flex items-center gap-1"><i data-lucide="eye-off" class="w-3.5 h-3.5"></i> Anonim</span>`;
+            } else {
+                infoHtml += `<span class="inline-flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5"></i> Publik</span>`;
+            }
+            infoHtml += `<span class="inline-flex items-center gap-1"><i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i> ${item.total_reactions} reaksi</span>`;
+            if (item.show_on_board) {
+                const boardStatus = item.board_approved ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700';
+                const boardIcon = item.board_approved ? 'check-circle' : 'clock';
+                const boardText = item.board_approved ? 'Ditampilkan di Buletin' : 'Menunggu persetujuan Buletin';
+                infoHtml += `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${boardStatus}"><i data-lucide="${boardIcon}" class="w-3 h-3"></i> ${boardText}</span>`;
+            }
+            document.getElementById('riwayat-modal-info').innerHTML = infoHtml;
+
+            // Tanggapan admin
+            const section = document.getElementById('riwayat-modal-tanggapan-section');
+            if (item.tanggapan && item.tanggapan.length > 0) {
+                section.classList.remove('hidden');
+                tanggapanList = item.tanggapan;
+                tanggapanIndex = 0;
+                renderTanggapan();
+            } else {
+                section.classList.add('hidden');
+            }
+
             document.getElementById('riwayat-detail-modal').classList.remove('hidden');
         }
 
