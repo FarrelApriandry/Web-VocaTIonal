@@ -42,22 +42,37 @@ include $appDir . '/Views/Components/Navbar.php';
             <input type="hidden" id="cp-csrf-token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
             <div>
                 <label for="current-password" class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1.5">Password Saat Ini</label>
-                <input type="password" id="current-password" autocomplete="current-password"
-                       class="w-full bg-gray-50 border border-gray-500 rounded-lg px-3 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
-                       aria-required="true" required>
+                <div class="relative">
+                    <input type="password" id="current-password" autocomplete="current-password"
+                           class="w-full bg-gray-50 border border-gray-500 rounded-lg px-3 py-3 pr-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
+                           aria-required="true" required>
+                    <button type="button" class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1 rounded" data-target="current-password" aria-label="Tampilkan password saat ini">
+                        <i data-lucide="eye" class="w-4 h-4 pointer-events-none"></i>
+                    </button>
+                </div>
             </div>
             <div>
                 <label for="new-password" class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1.5">Password Baru</label>
-                <input type="password" id="new-password" autocomplete="new-password" minlength="8"
-                       class="w-full bg-gray-50 border border-gray-500 rounded-lg px-3 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
-                       aria-required="true" aria-describedby="pw-hint" required>
+                <div class="relative">
+                    <input type="password" id="new-password" autocomplete="new-password" minlength="8"
+                           class="w-full bg-gray-50 border border-gray-500 rounded-lg px-3 py-3 pr-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
+                           aria-required="true" aria-describedby="pw-hint" required>
+                    <button type="button" class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1 rounded" data-target="new-password" aria-label="Tampilkan password baru">
+                        <i data-lucide="eye" class="w-4 h-4 pointer-events-none"></i>
+                    </button>
+                </div>
                 <p id="pw-hint" class="text-[11px] text-gray-600 mt-1">Minimal 8 karakter. Hindari menggunakan NPM sebagai password.</p>
             </div>
             <div>
                 <label for="confirm-password" class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1.5">Konfirmasi Password Baru</label>
-                <input type="password" id="confirm-password" autocomplete="new-password" minlength="8"
-                       class="w-full bg-gray-50 border border-gray-500 rounded-lg px-3 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
-                       aria-required="true" required>
+                <div class="relative">
+                    <input type="password" id="confirm-password" autocomplete="new-password" minlength="8"
+                           class="w-full bg-gray-50 border border-gray-500 rounded-lg px-3 py-3 pr-10 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
+                           aria-required="true" required>
+                    <button type="button" class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1 rounded" data-target="confirm-password" aria-label="Tampilkan konfirmasi password">
+                        <i data-lucide="eye" class="w-4 h-4 pointer-events-none"></i>
+                    </button>
+                </div>
             </div>
             <button type="submit" class="w-full sm:w-auto bg-[#111827] text-white px-8 py-3 rounded-lg font-medium uppercase tracking-widest hover:bg-black transition-all text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-2">
                 Simpan Password Baru
@@ -90,6 +105,24 @@ include $appDir . '/Views/Components/Navbar.php';
 
 <script>
     if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // ============================================
+    // TOGGLE PASSWORD VISIBILITY
+    // ============================================
+    document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const input = document.getElementById(this.dataset.target);
+            const icon = this.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        });
+    });
 
     document.getElementById('change-password-form').addEventListener('submit', async function(e) {
         e.preventDefault();

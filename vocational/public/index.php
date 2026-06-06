@@ -405,9 +405,14 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
 
                     <div class="mb-5">
                         <label for="password-input" class="block text-[10px] font-bold text-gray-700 uppercase tracking-widest mb-1.5">Password</label>
-                        <input type="password" id="password-input" name="password" placeholder="Masukkan password"
-                            class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3.5 text-sm font-medium text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
-                            autocomplete="current-password" aria-required="true" required>
+                        <div class="relative">
+                            <input type="password" id="password-input" name="password" placeholder="Masukkan password"
+                                class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3.5 pr-10 text-sm font-medium text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1"
+                                autocomplete="current-password" aria-required="true" required>
+                            <button type="button" class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-900 focus-visible:ring-offset-1 rounded" data-target="password-input" aria-label="Tampilkan password">
+                                <i data-lucide="eye" class="w-4 h-4 pointer-events-none"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div id="login-error" role="alert" aria-live="assertive" class="text-xs text-red-600 mb-4 hidden font-medium"></div>
@@ -499,6 +504,24 @@ include __DIR__ . '/../app/Views/Components/Navbar.php';
                 this.value = formatted;
             });
         }
+
+        // ============================================
+        // TOGGLE PASSWORD VISIBILITY
+        // ============================================
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const input = document.getElementById(this.dataset.target);
+                const icon = this.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.setAttribute('data-lucide', 'eye-off');
+                } else {
+                    input.type = 'password';
+                    icon.setAttribute('data-lucide', 'eye');
+                }
+                lucide.createIcons();
+            });
+        });
 
         const loginForm = document.getElementById('login-form');
         if (loginForm) {
