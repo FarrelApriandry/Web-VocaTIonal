@@ -14,7 +14,7 @@ error_reporting(E_ALL);
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../../app/Config/Database.php';
-require_once __DIR__ . '/../../app/Models/Report.php';
+require_once __DIR__ . '/../../../app/Models/Report.php';
 
 use App\Models\Report;
 

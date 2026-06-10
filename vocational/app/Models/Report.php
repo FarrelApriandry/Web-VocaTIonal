@@ -4,7 +4,9 @@
 
 namespace App\Models;
 
-require_once __DIR__ . '/../Config/Database.php';
+if (!class_exists('Database')) {
+    require_once __DIR__ . '/../Config/Database.php';
+}
 
 /**
  * Report Model

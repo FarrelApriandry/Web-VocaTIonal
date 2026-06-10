@@ -59,7 +59,7 @@ $currentPage = isset($currentPage) && !empty($currentPage) ? $currentPage : 'das
             <?php endif; ?>
         </a>
 
-        <!-- Board -->
+        <!-- Board
         <a 
             href="./index.php?action=board" 
             class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors <?php echo $currentPage === 'board' ? 'bg-blue-50 text-blue-900' : 'text-gray-700 hover:bg-gray-100'; ?>"
@@ -69,7 +69,7 @@ $currentPage = isset($currentPage) && !empty($currentPage) ? $currentPage : 'das
             <?php if ($currentPage === 'board'): ?>
                 <div class="ml-auto w-2 h-2 bg-blue-600 rounded-full"></div>
             <?php endif; ?>
-        </a>
+        </a> -->
     </nav>
 
     <!-- Sidebar Footer -->
